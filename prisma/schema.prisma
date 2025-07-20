@@ -1,0 +1,142 @@
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    String @id @default(cuid())
+  email String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  password      Password?
+  notes         Note[]
+  name          String
+  emailVerified Boolean
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
+
+  materials Material[] // Materials created by the user
+  library   Library[] // Materials saved to user's library
+
+  @@map("user")
+}
+
+model Material {
+  id                String   @id @default(cuid())
+  title             String
+  description       String
+  category          Category @relation(fields: [categoryId], references: [id])
+  categoryId        String
+  url               String?
+  thumbnailFilePath String?
+  filePath          String? //path to file
+  fileType          String? // MIME type
+  fileSize          Int? // size in bytes
+  price             Float? @default(0) // price in USD
+  isFree            Boolean @default(false) // if true, price is ignored
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  //Relations
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+  savedBy  Library[] // users who saved this material
+
+  @@map("material")
+}
+
+model Library {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  materialId String
+  createdAt  DateTime @default(now())
+  notes      String? //personal notes for saved material
+
+  // Prevent duplicate saves
+
+  @@unique([userId, materialId])
+  @@map("library")
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  materials   Material[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Password {
+  hash String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+}
+
+model Note {
+  id    String @id @default(cuid())
+  title String
+  body  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}

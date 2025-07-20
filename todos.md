@@ -1,0 +1,7 @@
+- upload and get the file
+- save the file URL to the db
+- display list of materials
+- get details of material
+- filter materials
+- pagination
+- landing page improvement
