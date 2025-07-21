@@ -1,9 +1,58 @@
-import type { MetaFunction } from "react-router";
-import { Link } from "react-router";
+import type { ActionFunctionArgs, MetaFunction } from "react-router";
+import { Form, Link, useActionData } from "react-router";
+import { HeroSection } from "~/components/main/HeroSection";
+import satori from "satori";
+import { readFileSync } from "fs";
+import { html } from "satori-html";
+import React from "react";
+import { Route } from "./+types/_index";
+import { Button } from "@mantine/core";
 
 export const meta: MetaFunction = () => [{ title: "Remix Notes" }];
 
-export default function Index() {
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const myText = formData.get("title") || "OG Image2!";
+
+  const fontFilePath = `${process.cwd()}/app/static/InterDisplay-Regular.ttf`;
+  const fontFile = readFileSync(fontFilePath);
+
+  const markup = html` <div
+    style="height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgb(45,26,84); font-size: 32px; font-weight: 600;"
+  >
+    <div
+      style="font-size: 70px; margin-top: 38px; display: flex; flex-direction: column; color: white;"
+    >
+      <span
+        >This is a
+        <span style="margin-left:15ch;color: rgb(255,93,1);"
+          >${myText}</span
+        ></span
+      >
+    </div>
+  </div>`;
+
+  const svg = await satori(markup as unknown as React.ReactNode, {
+    width: 800,
+    fonts: [
+      {
+        name: "Inter",
+        data: fontFile,
+      },
+    ],
+  });
+
+  //console.log("It works", svg);
+
+  return new Response(svg, {
+    status: 200,
+    headers: {
+      "Content-Type": "image/svg+xml",
+    },
+  });
+}
+export default function Index({ actionData }: Route.ComponentProps) {
+  console.log("ActionData:", actionData);
   return (
     <div className="min-h-screen bg-white pt-16">
       {/* Nav Bar */}
@@ -53,72 +102,22 @@ export default function Index() {
       </nav>
 
       {/* Hero Section */}
-      <section
-        id="home"
-        className="flex basis-10 items-center justify-center border-b border-gray-400 px-40 py-52"
-        style={{ backgroundColor: "rgb(247, 247, 247)" }}
-      >
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="mb-6 text-5xl font-light tracking-tight text-gray-900">
-            Marketplace for Notion pages
-          </h2>
-          <p className="mb-8 text-lg text-gray-600">
-            A place to read, write, and share your knowledge
-          </p>
-          <a
-            href="#contact"
-            className="inline-block rounded-md bg-[#303335] px-8 py-3 text-white transition duration-300 hover:bg-[#242628]"
-            style={{ borderRadius: "6px" }}
-          >
-            Get Started
-          </a>
-        </div>
-      </section>
-
-      <section
-        id="about"
-        className="border-b border-gray-400 py-20"
-        style={{ backgroundColor: "#f0f8ff" }}
-      >
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <h3 className="mb-6 text-3xl font-light text-gray-900">About Us</h3>
-          <p className="text-lg leading-relaxed text-gray-600">
-            We believe in the power of minimalism. Our mission is to create
-            experiences that are intuitive, beautiful, and timeless. Every
-            element is carefully crafted to ensure clarity and purpose, leaving
-            a lasting impression.
-          </p>
-        </div>
-      </section>
-
-      <footer className="bg-gray-900 py-12 text-center text-white">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-8 flex justify-center space-x-8">
-            <a
-              href="/"
-              className="text-sm text-gray-400 transition duration-300 hover:text-white"
-            >
-              About Us
-            </a>
-            <a
-              href="#privacy"
-              className="text-sm text-gray-400 transition duration-300 hover:text-white"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#terms"
-              className="text-sm text-gray-400 transition duration-300 hover:text-white"
-            >
-              Terms of Service
-            </a>
-          </div>
-          <p className="text-5xl font-light tracking-wider text-white/10">
-            Udenote
-          </p>
-          <p className="mt-4 text-sm text-gray-400">© 2025 Udenote.</p>
-        </div>
-      </footer>
+      <HeroSection />
+      <Form method="post">
+        <input type="text" name="title" />
+        {/* <button type="submit">Submit</button> */}
+        <Button
+          type="submit"
+          size="xl"
+          variant="gradient"
+          gradient={{ from: "blue", to: "cyan" }}
+        >
+          Generate Image!
+        </Button>
+      </Form>
+      <div className="flex justify-center border">
+        <div dangerouslySetInnerHTML={{ __html: actionData }} />
+      </div>
     </div>
   );
 }
