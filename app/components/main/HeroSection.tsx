@@ -24,18 +24,6 @@ export function HeroSection() {
           includes more than 100 customizable components and hooks to cover you
           in any situation
         </Text>
-
-        <Group className={classes.controls}>
-          <Button
-            component="a"
-            href="https://github.com/mantinedev/mantine"
-            size="xl"
-            variant="default"
-            className={classes.control}
-          >
-            GitHub
-          </Button>
-        </Group>
       </Container>
     </div>
   );
