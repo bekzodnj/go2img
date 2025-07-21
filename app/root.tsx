@@ -38,7 +38,7 @@ export default function App() {
         <ColorSchemeScript />
       </head>
       <body className="h-full">
-        <MantineProvider theme={myTheme}>
+        <MantineProvider theme={myTheme} withCssVariables>
           <Outlet />
           <ScrollRestoration />
           <Scripts />
