@@ -17,20 +17,19 @@ export async function action({ request }: Route.ActionArgs) {
   const fontFilePath = `${process.cwd()}/app/static/InterDisplay-Regular.ttf`;
   const fontFile = readFileSync(fontFilePath);
 
-  const markup = html` <div
-    style="height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgb(45,26,84); font-size: 32px; font-weight: 600;"
-  >
+  const markup = (
     <div
-      style="font-size: 70px; margin-top: 38px; display: flex; flex-direction: column; color: white;"
+      style={{
+        display: "flex",
+        background: "skyblue",
+        padding: "10px 20px",
+        color: "white",
+      }}
+      className="bg-slate-400"
     >
-      <span
-        >This is a
-        <span style="margin-left:15ch;color: rgb(255,93,1);"
-          >${myText}</span
-        ></span
-      >
+      <h2>Hey</h2>
     </div>
-  </div>`;
+  );
 
   const svg = await satori(markup as unknown as React.ReactNode, {
     width: 800,
@@ -101,7 +100,6 @@ export default function Index({ actionData }: Route.ComponentProps) {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <HeroSection />
       <Form method="post">
         <input type="text" name="title" />
