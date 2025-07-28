@@ -5,25 +5,32 @@ import { ActionFunctionArgs, Form } from "react-router";
 export function HeroSection() {
   return (
     <div className={classes.wrapper}>
-      <Container size={700} className={classes.inner}>
+      <Container size={700} className={classes.inner + " space-y-4"}>
         <h1 className={classes.title}>
-          A blazing fast{" "}
+          Make{" "}
           <Text
             component="span"
             variant="gradient"
             gradient={{ from: "blue", to: "cyan" }}
             inherit
           >
-            OG Image
+            interactive images
           </Text>{" "}
-          generating tool
+          without coding!
         </h1>
 
         <Text className={classes.description} color="dimmed">
-          Build fully functional accessible web applications with ease – React
-          includes more than 100 customizable components and hooks to cover you
-          in any situation
+          Explain your image with pins, tooltips, and many more!
         </Text>
+        <Button
+          className=""
+          type="submit"
+          size="xl"
+          variant="gradient"
+          gradient={{ from: "blue", to: "cyan" }}
+        >
+          See in action!
+        </Button>
       </Container>
     </div>
   );
