@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => [{ title: "Remix Notes" }];
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
-  const myText = formData.get("title") || "OG Image2!";
+  const myText = (formData.get("title") as string) || "OG Image2!";
 
   const fontFilePath = `${process.cwd()}/app/static/InterDisplay-Regular.ttf`;
   const fontFile = readFileSync(fontFilePath);
@@ -27,7 +27,7 @@ export async function action({ request }: Route.ActionArgs) {
       }}
       className="bg-slate-400"
     >
-      <h2>Hey</h2>
+      <h2>{myText}</h2>
     </div>
   );
 
@@ -40,8 +40,6 @@ export async function action({ request }: Route.ActionArgs) {
       },
     ],
   });
-
-  //console.log("It works", svg);
 
   return new Response(svg, {
     status: 200,
@@ -103,7 +101,6 @@ export default function Index({ actionData }: Route.ComponentProps) {
       <HeroSection />
       <Form method="post">
         <input type="text" name="title" />
-        {/* <button type="submit">Submit</button> */}
         <Button
           type="submit"
           size="xl"
