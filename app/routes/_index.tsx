@@ -10,44 +10,6 @@ import { Button } from "@mantine/core";
 
 export const meta: MetaFunction = () => [{ title: "Remix Notes" }];
 
-export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData();
-  const myText = (formData.get("title") as string) || "OG Image2!";
-
-  const fontFilePath = `${process.cwd()}/app/static/InterDisplay-Regular.ttf`;
-  const fontFile = readFileSync(fontFilePath);
-
-  const markup = (
-    <div
-      style={{
-        display: "flex",
-        background: "skyblue",
-        padding: "10px 20px",
-        color: "white",
-      }}
-      className="bg-slate-400"
-    >
-      <h2>{myText}</h2>
-    </div>
-  );
-
-  const svg = await satori(markup as unknown as React.ReactNode, {
-    width: 800,
-    fonts: [
-      {
-        name: "Inter",
-        data: fontFile,
-      },
-    ],
-  });
-
-  return new Response(svg, {
-    status: 200,
-    headers: {
-      "Content-Type": "image/svg+xml",
-    },
-  });
-}
 export default function Index({ actionData }: Route.ComponentProps) {
   console.log("ActionData:", actionData);
   return (
@@ -99,20 +61,6 @@ export default function Index({ actionData }: Route.ComponentProps) {
       </nav>
 
       <HeroSection />
-      <Form method="post">
-        <input type="text" name="title" />
-        <Button
-          type="submit"
-          size="xl"
-          variant="gradient"
-          gradient={{ from: "blue", to: "cyan" }}
-        >
-          Generate Image!
-        </Button>
-      </Form>
-      <div className="flex justify-center border">
-        <div dangerouslySetInnerHTML={{ __html: actionData }} />
-      </div>
     </div>
   );
 }
