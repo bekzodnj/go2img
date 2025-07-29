@@ -7,4 +7,8 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [reactRouter(), tsconfigPaths()],
+  ssr: {
+    // Bundle `problematic-dependency` into the server build
+    noExternal: ["polygon-annotation", "react-konva", "konva"],
+  },
 });

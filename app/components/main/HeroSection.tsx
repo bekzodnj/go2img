@@ -1,6 +1,5 @@
-import { Button, Container, Group, Text } from "@mantine/core";
+import { Button, Container, Text } from "@mantine/core";
 import classes from "./HeroTitle.module.css";
-import { ActionFunctionArgs, Form } from "react-router";
 
 export function HeroSection() {
   return (

@@ -4,16 +4,22 @@ import { HeroSection } from "~/components/main/HeroSection";
 import satori from "satori";
 import { readFileSync } from "fs";
 import { html } from "satori-html";
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Route } from "./+types/_index";
-import { Button } from "@mantine/core";
+import { Box, Button, Container } from "@mantine/core";
+import ImageMap from "~/components/main/ImageMap/ImageMapDemo";
+import { OnlineStatus } from "~/components/main/OnlineStatus.client";
+
+const Canvas = lazy(() => import("../components/Canvas"));
+
+import ClientOnly from "~/components/ClientOnly";
 
 export const meta: MetaFunction = () => [{ title: "Remix Notes" }];
 
 export default function Index({ actionData }: Route.ComponentProps) {
   console.log("ActionData:", actionData);
   return (
-    <div className="min-h-screen bg-white pt-16">
+    <div className="min-h-screen bg-white pt-14">
       {/* Nav Bar */}
       <nav className="fixed top-0 z-10 w-full border-b border-gray-400 bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -60,7 +66,16 @@ export default function Index({ actionData }: Route.ComponentProps) {
         </div>
       </nav>
 
-      <HeroSection />
+      <Container strategy="grid" size={500}>
+        <Box bg="var(--mantine-color-indigo-light)" h={50}>
+          <HeroSection />
+          {/* <ClientOnly fallback={<>hey</>}>{() => <ImageMap />}</ClientOnly> */}
+          {/* <FullClient /> */}
+          <ClientOnly>
+            <Canvas />
+          </ClientOnly>
+        </Box>
+      </Container>
     </div>
   );
 }
