@@ -69,8 +69,7 @@ export default function Index({ actionData }: Route.ComponentProps) {
       <Container strategy="grid" size={500}>
         <Box bg="var(--mantine-color-indigo-light)" h={50}>
           <HeroSection />
-          {/* <ClientOnly fallback={<>hey</>}>{() => <ImageMap />}</ClientOnly> */}
-          {/* <FullClient /> */}
+
           <ClientOnly>
             <Canvas />
           </ClientOnly>

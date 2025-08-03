@@ -8,7 +8,6 @@ export default defineConfig({
   },
   plugins: [reactRouter(), tsconfigPaths()],
   ssr: {
-    // Bundle `problematic-dependency` into the server build
-    noExternal: ["polygon-annotation", "react-konva", "konva"],
+    external: ["react", "react-dom", "react/jsx-runtime"],
   },
 });
