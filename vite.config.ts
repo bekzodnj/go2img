@@ -8,6 +8,6 @@ export default defineConfig({
   },
   plugins: [reactRouter(), tsconfigPaths()],
   ssr: {
-    external: ["react", "react-dom", "react/jsx-runtime"],
+    external: ["react", "react-dom"],
   },
 });

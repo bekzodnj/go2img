@@ -1,41 +1,61 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Stage, Layer, Circle, Line, Group } from "react-konva";
 import Konva from "konva";
-import { Button } from "@mantine/core";
 
 type Point = { x: number; y: number };
+type Polygon = {
+  id: string;
+  points: Point[];
+  isClosed: boolean;
+  color: string;
+};
 
 const PenToolPolygon: React.FC = () => {
-  const [points, setPoints] = useState<Point[]>([]);
-  const [isDrawing, setIsDrawing] = useState(true);
-  const [isClosed, setIsClosed] = useState(false);
+  const [polygons, setPolygons] = useState<Polygon[]>([]);
+  const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [selectedPolygonId, setSelectedPolygonId] = useState<string | null>(
+    null,
+  );
   const [mousePos, setMousePos] = useState<Point | null>(null);
-  const polygonGroupRef = useRef<Konva.Group | null>(null);
 
-  const getLinePoints = () =>
+  const colors = ["blue", "red", "green", "purple", "orange", "cyan"];
+
+  const startNewPolygon = () => {
+    setCurrentPoints([]);
+    setIsDrawing(true);
+    setSelectedPolygonId(null);
+  };
+
+  const getLinePoints = (points: Point[], isClosed: boolean) =>
     (isClosed ? [...points, points[0]] : points).flatMap((p) => [p.x, p.y]);
 
   const handleStageClick = (e: any) => {
-    if (!isDrawing || isClosed) return;
+    if (!isDrawing) return;
     const pos = e.target.getStage().getPointerPosition();
     if (!pos) return;
 
-    console.log("points", points);
-    console.log("pos", pos);
-
     // Check for closing
-    if (points.length > 2) {
-      const dx = points[0].x - pos.x;
-      const dy = points[0].y - pos.y;
+    if (currentPoints.length > 2) {
+      const dx = currentPoints[0].x - pos.x;
+      const dy = currentPoints[0].y - pos.y;
       if (Math.sqrt(dx * dx + dy * dy) < 10) {
-        setIsClosed(true);
+        // Close and save polygon
+        const newPolygon: Polygon = {
+          id: Date.now().toString(),
+          points: currentPoints,
+          isClosed: true,
+          color: colors[polygons.length % colors.length],
+        };
+        setPolygons([...polygons, newPolygon]);
+        setCurrentPoints([]);
         setIsDrawing(false);
         setMousePos(null);
         return;
       }
     }
 
-    setPoints([...points, pos]);
+    setCurrentPoints([...currentPoints, pos]);
   };
 
   const handleMouseMove = (e: any) => {
@@ -45,46 +65,75 @@ const PenToolPolygon: React.FC = () => {
     setMousePos(pos);
   };
 
-  // 👇 Group dragging to move polygon
-  const handlePolygonDrag = (e: Konva.KonvaEventObject<DragEvent>) => {
-    const node = e.target;
-    const dx = node.x();
-    const dy = node.y();
+  // Fixed: Group dragging updates polygon in state
+  const handlePolygonDrag =
+    (polygonId: string) => (e: Konva.KonvaEventObject<DragEvent>) => {
+      // Ignore bubbled dragend coming from child nodes (anchors)
+      if (e.target !== e.currentTarget) return;
 
-    const updatedPoints = points.map((p) => ({
-      x: p.x + dx,
-      y: p.y + dy,
-    }));
+      const node = e.target;
+      const dx = node.x();
+      const dy = node.y();
 
-    setPoints(updatedPoints);
+      setPolygons((prev) =>
+        prev.map((polygon) => {
+          if (polygon.id === polygonId) {
+            const updatedPoints = polygon.points.map((p) => ({
+              x: p.x + dx,
+              y: p.y + dy,
+            }));
+            return { ...polygon, points: updatedPoints };
+          }
+          return polygon;
+        }),
+      );
 
-    // reset position of group back to (0,0) after move
-    node.position({ x: 0, y: 0 });
+      // Reset group position
+      node.position({ x: 0, y: 0 });
+      // Extra safety: don't bubble further
+      e.cancelBubble = true;
+    };
+
+  const updatePolygonPoint = (
+    polygonId: string,
+    pointIndex: number,
+    newPos: Point,
+  ) => {
+    setPolygons((prev) =>
+      prev.map((polygon) => {
+        if (polygon.id === polygonId) {
+          const updated = [...polygon.points];
+          updated[pointIndex] = newPos;
+          return { ...polygon, points: updated };
+        }
+        return polygon;
+      }),
+    );
   };
 
   const handleUndo = () => {
-    if (points.length === 0) return;
-    setPoints(points.slice(0, -1));
-    if (isClosed) {
-      setIsClosed(false);
-      setIsDrawing(true);
+    if (isDrawing && currentPoints.length > 0) {
+      setCurrentPoints(currentPoints.slice(0, -1));
+    } else if (polygons.length > 0) {
+      setPolygons(polygons.slice(0, -1));
     }
   };
 
   const handleReset = () => {
-    setPoints([]);
-    setIsDrawing(true);
-    setIsClosed(false);
+    setPolygons([]);
+    setCurrentPoints([]);
+    setIsDrawing(false);
+    setSelectedPolygonId(null);
     setMousePos(null);
   };
 
-  const updatePoint = (index: number, pos: Point) => {
-    const updated = [...points];
-    updated[index] = pos;
-    setPoints(updated);
+  const deletePolygon = (polygonId: string) => {
+    setPolygons((prev) => prev.filter((p) => p.id !== polygonId));
+    if (selectedPolygonId === polygonId) {
+      setSelectedPolygonId(null);
+    }
   };
 
-  // 🔁 Ctrl+Z / Cmd+Z support
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
@@ -92,7 +141,7 @@ const PenToolPolygon: React.FC = () => {
         handleUndo();
       }
     },
-    [points, isClosed],
+    [currentPoints, polygons, isDrawing],
   );
 
   useEffect(() => {
@@ -102,78 +151,163 @@ const PenToolPolygon: React.FC = () => {
 
   return (
     <div>
-      <Button color="blue">Hey</Button>
-      {/* 🧼 Clean Toolbar */}
-      <div style={{ margin: "1rem 0", display: "flex", gap: "1rem" }}>
-        <button onClick={handleUndo} disabled={points.length === 0}>
+      <div
+        style={{
+          margin: "1rem 0",
+          display: "flex",
+          gap: "1rem",
+          flexWrap: "wrap",
+        }}
+      >
+        <button onClick={startNewPolygon} disabled={isDrawing}>
+          Start New Polygon
+        </button>
+        <button
+          onClick={handleUndo}
+          disabled={currentPoints.length === 0 && polygons.length === 0}
+        >
           Undo (Ctrl+Z)
         </button>
-        <button onClick={handleReset}>Reset</button>
+        <button onClick={handleReset}>Reset All</button>
+        <span>Polygons: {polygons.length}</span>
+        {isDrawing && (
+          <span style={{ color: "green" }}>Drawing mode active</span>
+        )}
       </div>
 
+      {/* Polygon list */}
+      {polygons.length > 0 && (
+        <div style={{ margin: "1rem 0" }}>
+          <h4>Polygons:</h4>
+          {polygons.map((polygon, index) => (
+            <div
+              key={polygon.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                margin: "5px 0",
+                padding: "5px",
+                backgroundColor:
+                  selectedPolygonId === polygon.id ? "#e0e0e0" : "transparent",
+              }}
+            >
+              <div
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  backgroundColor: polygon.color,
+                  border: "1px solid black",
+                }}
+              ></div>
+              <span>
+                Polygon {index + 1} ({polygon.points.length} points)
+              </span>
+              <button
+                onClick={() =>
+                  setSelectedPolygonId(
+                    selectedPolygonId === polygon.id ? null : polygon.id,
+                  )
+                }
+                style={{ fontSize: "12px" }}
+              >
+                {selectedPolygonId === polygon.id ? "Deselect" : "Select"}
+              </button>
+              <button
+                onClick={() => deletePolygon(polygon.id)}
+                style={{ fontSize: "12px", color: "red" }}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <Stage
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={800}
+        height={600}
         onClick={handleStageClick}
         onMouseMove={handleMouseMove}
-        style={{ background: "#f0f0f0", border: "1px solid red" }}
+        style={{ background: "#f0f0f0", border: "1px solid lightgray" }}
       >
         <Layer>
-          {/* 🟦 Polygon + Drag logic */}
-          <Group
-            ref={polygonGroupRef}
-            draggable={isClosed}
-            onDragEnd={handlePolygonDrag}
-          >
-            <Line
-              points={getLinePoints()}
-              closed={isClosed}
-              stroke="blue"
-              strokeWidth={2}
-              fill={isClosed ? "rgba(0,0,255,0.1)" : ""}
-            />
-          </Group>
-
-          {/* 🔘 Points — editable after closing */}
-          {points.map((p, i) => {
-            const isFirst = i === 0;
-            const isClosing =
-              isFirst &&
-              isDrawing &&
-              mousePos &&
-              Math.hypot(p.x - mousePos.x, p.y - mousePos.y) < 10;
-
-            return (
-              <Circle
-                key={i}
-                x={p.x}
-                y={p.y}
-                radius={isClosing ? 10 : 6}
-                fill={
-                  isClosing
-                    ? "orange"
-                    : isFirst
-                      ? "red"
-                      : isClosed
-                        ? "#4caf50"
-                        : "black"
-                }
-                draggable={isClosed}
-                onDragMove={(e) => {
-                  if (!isClosed) return;
-                  const { x, y } = e.target.position();
-                  updatePoint(i, { x, y });
-                }}
+          {/* Render completed polygons */}
+          {polygons.map((polygon) => (
+            <Group
+              key={polygon.id}
+              draggable={true}
+              onDragEnd={handlePolygonDrag(polygon.id)}
+              opacity={selectedPolygonId === polygon.id ? 1 : 0.7}
+            >
+              {/* Polygon line */}
+              <Line
+                points={getLinePoints(polygon.points, polygon.isClosed)}
+                closed={polygon.isClosed}
+                stroke={polygon.color}
+                strokeWidth={selectedPolygonId === polygon.id ? 3 : 2}
+                fill={polygon.isClosed ? `${polygon.color}40` : ""}
               />
-            );
-          })}
 
-          {/* 🔄 Preview line from last point to cursor */}
-          {!isClosed && isDrawing && mousePos && points.length > 0 && (
+              {/* FIXED: Anchor points are now inside the Group */}
+              {selectedPolygonId === polygon.id &&
+                polygon.points.map((p, i) => (
+                  <Circle
+                    key={i}
+                    x={p.x}
+                    y={p.y}
+                    radius={6}
+                    fill={i === 0 ? "red" : "#4caf50"}
+                    stroke="white"
+                    strokeWidth={1}
+                    draggable={true}
+                    onDragMove={(e) => {
+                      const { x, y } = e.target.position();
+                      updatePolygonPoint(polygon.id, i, { x, y });
+
+                      e.evt.stopPropagation();
+                    }}
+                  />
+                ))}
+            </Group>
+          ))}
+
+          {/* Current drawing polygon */}
+          {isDrawing && (
+            <Group>
+              <Line
+                points={getLinePoints(currentPoints, false)}
+                stroke="blue"
+                strokeWidth={2}
+              />
+
+              {/* Current drawing points */}
+              {currentPoints.map((p, i) => {
+                const isFirst = i === 0;
+                const isClosing =
+                  isFirst &&
+                  mousePos &&
+                  Math.hypot(p.x - mousePos.x, p.y - mousePos.y) < 10;
+
+                return (
+                  <Circle
+                    key={i}
+                    x={p.x}
+                    y={p.y}
+                    radius={isClosing ? 10 : 6}
+                    fill={isClosing ? "orange" : isFirst ? "red" : "black"}
+                  />
+                );
+              })}
+            </Group>
+          )}
+
+          {/* Preview line from last point to cursor */}
+          {isDrawing && mousePos && currentPoints.length > 0 && (
             <Line
               points={[
-                points[points.length - 1].x,
-                points[points.length - 1].y,
+                currentPoints[currentPoints.length - 1].x,
+                currentPoints[currentPoints.length - 1].y,
                 mousePos.x,
                 mousePos.y,
               ]}
@@ -183,7 +317,7 @@ const PenToolPolygon: React.FC = () => {
             />
           )}
 
-          {/* 👆 Ghost cursor point */}
+          {/* Ghost cursor point */}
           {isDrawing && mousePos && (
             <Circle
               x={mousePos.x}
