@@ -4,20 +4,24 @@ import { HeroSection } from "~/components/main/HeroSection";
 import satori from "satori";
 import { readFileSync } from "fs";
 import { html } from "satori-html";
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { Route } from "./+types/_index";
 import { Box, Button, Container } from "@mantine/core";
-import ImageMap from "~/components/main/ImageMap/ImageMapDemo";
+
 import { OnlineStatus } from "~/components/main/OnlineStatus.client";
 
 const Canvas = lazy(() => import("../components/Canvas"));
+const ImageMap = lazy(() => import("../components/ImageMap"));
 
 import ClientOnly from "~/components/ClientOnly";
+import { Polygon } from "../components/Canvas";
 
 export const meta: MetaFunction = () => [{ title: "Remix Notes" }];
 
 export default function Index({ actionData }: Route.ComponentProps) {
-  console.log("ActionData:", actionData);
+  const [polygons, setPolygons] = useState<Polygon[]>([]);
+
+  console.log("Copy polygons", polygons);
   return (
     <div className="min-h-screen bg-white pt-14">
       {/* Nav Bar */}
@@ -66,14 +70,20 @@ export default function Index({ actionData }: Route.ComponentProps) {
         </div>
       </nav>
 
-      <Container strategy="grid" size={500}>
-        <Box bg="var(--mantine-color-indigo-light)" h={50}>
+      <Container strategy="grid" size={800} className="border">
+        <div>
           <HeroSection />
 
           <ClientOnly>
-            <Canvas />
+            <Canvas setPolygonsCopy={setPolygons} />
           </ClientOnly>
-        </Box>
+
+          <h2>SVG box</h2>
+
+          <ClientOnly>
+            <ImageMap polygonsCopy={polygons} />
+          </ClientOnly>
+        </div>
       </Container>
     </div>
   );

@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Stage, Layer, Circle, Line, Group } from "react-konva";
 import Konva from "konva";
+import { Button } from "@mantine/core";
 
 type Point = { x: number; y: number };
-type Polygon = {
+export type Polygon = {
   id: string;
   points: Point[];
   isClosed: boolean;
   color: string;
 };
 
-const PenToolPolygon: React.FC = () => {
+const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
   const [polygons, setPolygons] = useState<Polygon[]>([]);
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -151,6 +152,16 @@ const PenToolPolygon: React.FC = () => {
 
   return (
     <div>
+      <Button
+        onClick={() => {
+          console.log("Points", currentPoints);
+          console.log("Polygons: ", polygons);
+
+          setPolygonsCopy(polygons);
+        }}
+      >
+        Show Points
+      </Button>
       <div
         style={{
           margin: "1rem 0",
