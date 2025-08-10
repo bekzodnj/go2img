@@ -133,8 +133,8 @@ const ImageMap = (props: any) => {
   );
 
   return (
-    <div className="mx-auto min-h-screen max-w-6xl bg-gray-100 p-5 font-sans">
-      <div className="rounded-lg bg-white p-5 shadow-lg">
+    <div className="mx-auto min-h-screen max-w-6xl bg-gray-100 font-sans">
+      <div className="rounded-lg bg-white shadow-lg">
         <h1 className="mb-4 text-2xl font-bold">
           Interactive SVG Image Map Prototype
         </h1>
@@ -145,9 +145,11 @@ const ImageMap = (props: any) => {
 
         <div className="relative mb-5">
           <svg
-            viewBox="0 0 1000 600"
-            preserveAspectRatio="xMidYMid meet"
-            className="h-auto w-full rounded-lg border-2 border-gray-300"
+            width={800}
+            height={600}
+            preserveAspectRatio="xMidYMid"
+            viewBox="0 0 800 600"
+            className="border-2 border-gray-300 border-red-500"
           >
             {/* Background pattern to simulate an image */}
             <defs>

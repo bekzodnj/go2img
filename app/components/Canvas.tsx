@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Stage, Layer, Circle, Line, Group } from "react-konva";
-import Konva from "konva";
-import { Button } from "@mantine/core";
+
+import { Button, Flex, Space } from "@mantine/core";
 
 type Point = { x: number; y: number };
 export type Polygon = {
@@ -67,33 +67,32 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
   };
 
   // Fixed: Group dragging updates polygon in state
-  const handlePolygonDrag =
-    (polygonId: string) => (e: Konva.KonvaEventObject<DragEvent>) => {
-      // Ignore bubbled dragend coming from child nodes (anchors)
-      if (e.target !== e.currentTarget) return;
+  const handlePolygonDrag = (e: any, polygonId: string) => {
+    // Ignore bubbled dragend coming from child nodes (anchors)
+    if (e.target !== e.currentTarget) return;
 
-      const node = e.target;
-      const dx = node.x();
-      const dy = node.y();
+    const node = e.target;
+    const dx = node.x();
+    const dy = node.y();
 
-      setPolygons((prev) =>
-        prev.map((polygon) => {
-          if (polygon.id === polygonId) {
-            const updatedPoints = polygon.points.map((p) => ({
-              x: p.x + dx,
-              y: p.y + dy,
-            }));
-            return { ...polygon, points: updatedPoints };
-          }
-          return polygon;
-        }),
-      );
+    setPolygons((prev) =>
+      prev.map((polygon) => {
+        if (polygon.id === polygonId) {
+          const updatedPoints = polygon.points.map((p) => ({
+            x: p.x + dx,
+            y: p.y + dy,
+          }));
+          return { ...polygon, points: updatedPoints };
+        }
+        return polygon;
+      }),
+    );
 
-      // Reset group position
-      node.position({ x: 0, y: 0 });
-      // Extra safety: don't bubble further
-      e.cancelBubble = true;
-    };
+    // Reset group position
+    node.position({ x: 0, y: 0 });
+    // Extra safety: don't bubble further
+    e.cancelBubble = true;
+  };
 
   const updatePolygonPoint = (
     polygonId: string,
@@ -141,6 +140,11 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
         e.preventDefault();
         handleUndo();
       }
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setIsDrawing(false);
+      }
     },
     [currentPoints, polygons, isDrawing],
   );
@@ -151,43 +155,43 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
   }, [handleKeyDown]);
 
   return (
-    <div>
-      <Button
-        onClick={() => {
-          console.log("Points", currentPoints);
-          console.log("Polygons: ", polygons);
+    <div className="border">
+      <div>
+        <Button
+          mb={"sm"}
+          variant="outline"
+          onClick={() => {
+            console.log("Points", currentPoints);
+            console.log("Polygons: ", polygons);
 
-          setPolygonsCopy(polygons);
-        }}
-      >
-        Show Points
-      </Button>
-      <div
-        style={{
-          margin: "1rem 0",
-          display: "flex",
-          gap: "1rem",
-          flexWrap: "wrap",
-        }}
-      >
-        <button onClick={startNewPolygon} disabled={isDrawing}>
-          Start New Polygon
-        </button>
-        <button
+            setPolygonsCopy(polygons);
+          }}
+        >
+          Render!
+        </Button>
+      </div>
+
+      <Flex gap="sm" align={"baseline"}>
+        <Button variant="filled" onClick={startNewPolygon} disabled={isDrawing}>
+          Start Drawing
+        </Button>
+        <Button
+          variant="white"
           onClick={handleUndo}
           disabled={currentPoints.length === 0 && polygons.length === 0}
         >
           Undo (Ctrl+Z)
-        </button>
-        <button onClick={handleReset}>Reset All</button>
+        </Button>
+        {isDrawing ? (
+          <span style={{ color: "green" }}>
+            Drawing mode active (press Escape when to finish)
+          </span>
+        ) : null}
         <span>Polygons: {polygons.length}</span>
-        {isDrawing && (
-          <span style={{ color: "green" }}>Drawing mode active</span>
-        )}
-      </div>
+      </Flex>
 
       {/* Polygon list */}
-      {polygons.length > 0 && (
+      {polygons.length > 0 ? (
         <div style={{ margin: "1rem 0" }}>
           <h4>Polygons:</h4>
           {polygons.map((polygon, index) => (
@@ -200,7 +204,9 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 margin: "5px 0",
                 padding: "5px",
                 backgroundColor:
-                  selectedPolygonId === polygon.id ? "#e0e0e0" : "transparent",
+                  selectedPolygonId === polygon.id
+                    ? "var(--mantine-color-indigo-0)"
+                    : "transparent",
               }}
             >
               <div
@@ -214,26 +220,28 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               <span>
                 Polygon {index + 1} ({polygon.points.length} points)
               </span>
-              <button
+              <Button
+                variant="light"
+                px={100}
                 onClick={() =>
                   setSelectedPolygonId(
                     selectedPolygonId === polygon.id ? null : polygon.id,
                   )
                 }
-                style={{ fontSize: "12px" }}
               >
-                {selectedPolygonId === polygon.id ? "Deselect" : "Select"}
-              </button>
-              <button
+                {selectedPolygonId === polygon.id ? "Done" : "Edit"}
+              </Button>
+              <Button
+                variant="subtle"
                 onClick={() => deletePolygon(polygon.id)}
-                style={{ fontSize: "12px", color: "red" }}
+                style={{ color: "red" }}
               >
                 Delete
-              </button>
+              </Button>
             </div>
           ))}
         </div>
-      )}
+      ) : null}
 
       <Stage
         width={800}
@@ -248,7 +256,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
             <Group
               key={polygon.id}
               draggable={true}
-              onDragEnd={handlePolygonDrag(polygon.id)}
+              onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
               opacity={selectedPolygonId === polygon.id ? 1 : 0.7}
             >
               {/* Polygon line */}
@@ -261,30 +269,31 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               />
 
               {/* FIXED: Anchor points are now inside the Group */}
-              {selectedPolygonId === polygon.id &&
-                polygon.points.map((p, i) => (
-                  <Circle
-                    key={i}
-                    x={p.x}
-                    y={p.y}
-                    radius={6}
-                    fill={i === 0 ? "red" : "#4caf50"}
-                    stroke="white"
-                    strokeWidth={1}
-                    draggable={true}
-                    onDragMove={(e) => {
-                      const { x, y } = e.target.position();
-                      updatePolygonPoint(polygon.id, i, { x, y });
+              {selectedPolygonId === polygon.id
+                ? polygon.points.map((p, i) => (
+                    <Circle
+                      key={i}
+                      x={p.x}
+                      y={p.y}
+                      radius={6}
+                      fill={i === 0 ? "red" : "#4caf50"}
+                      stroke="white"
+                      strokeWidth={1}
+                      draggable={true}
+                      onDragMove={(e) => {
+                        const { x, y } = e.target.position();
+                        updatePolygonPoint(polygon.id, i, { x, y });
 
-                      e.evt.stopPropagation();
-                    }}
-                  />
-                ))}
+                        e.evt.stopPropagation();
+                      }}
+                    />
+                  ))
+                : null}
             </Group>
           ))}
 
           {/* Current drawing polygon */}
-          {isDrawing && (
+          {isDrawing ? (
             <Group>
               <Line
                 points={getLinePoints(currentPoints, false)}
@@ -311,10 +320,10 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 );
               })}
             </Group>
-          )}
+          ) : null}
 
           {/* Preview line from last point to cursor */}
-          {isDrawing && mousePos && currentPoints.length > 0 && (
+          {isDrawing && mousePos && currentPoints.length > 0 ? (
             <Line
               points={[
                 currentPoints[currentPoints.length - 1].x,
@@ -326,10 +335,10 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               strokeWidth={1}
               dash={[4, 4]}
             />
-          )}
+          ) : null}
 
           {/* Ghost cursor point */}
-          {isDrawing && mousePos && (
+          {isDrawing && mousePos ? (
             <Circle
               x={mousePos.x}
               y={mousePos.y}
@@ -337,7 +346,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               fill="gray"
               opacity={0.4}
             />
-          )}
+          ) : null}
         </Layer>
       </Stage>
     </div>
