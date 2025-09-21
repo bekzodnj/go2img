@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Stage, Layer, Circle, Line, Group } from "react-konva";
 
-import { Button, Flex, Space } from "@mantine/core";
+import { Button, Flex, Space, Tooltip } from "@mantine/core";
 
 type Point = { x: number; y: number };
 export type Polygon = {
@@ -135,9 +135,6 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
 
   const deletePolygon = (polygonId: string) => {
     setPolygons((prev) => prev.filter((p) => p.id !== polygonId));
-    if (selectedPolygonId === polygonId) {
-      setSelectedPolygonId(null);
-    }
   };
 
   const handleKeyDown = useCallback(
@@ -151,8 +148,21 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
         e.preventDefault();
         setIsDrawing(false);
       }
+
+      if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
+        if (selectedPolygonId) {
+          deletePolygon(selectedPolygonId);
+          setSelectedPolygonId(null);
+        }
+      }
+
+      if (e.key.toLowerCase() === "p") {
+        e.preventDefault();
+        setIsDrawing(true);
+      }
     },
-    [currentPoints, polygons, isDrawing],
+    [currentPoints, polygons, isDrawing, selectedPolygonId, setIsDrawing],
   );
 
   useEffect(() => {
@@ -178,9 +188,15 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
       </div>
 
       <Flex gap="sm" align={"baseline"}>
-        <Button variant="filled" onClick={startNewPolygon} disabled={isDrawing}>
-          Start Drawing
-        </Button>
+        <Tooltip label="Pen (press P)">
+          <Button
+            variant="filled"
+            onClick={startNewPolygon}
+            disabled={isDrawing}
+          >
+            Start Drawing
+          </Button>
+        </Tooltip>
         <Button
           variant="white"
           onClick={handleUndo}
@@ -264,7 +280,10 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               draggable={true}
               onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
               opacity={selectedPolygonId === polygon.id ? 1 : 0.7}
-              onClick={() => setSelectedPolygonId(polygon.id)}
+              onClick={() => {
+                setSelectedPolygonId(polygon.id);
+                console.log("selected", selectedPolygonId);
+              }}
             >
               {/* Polygon line */}
               <Line
