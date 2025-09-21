@@ -32,7 +32,13 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
     (isClosed ? [...points, points[0]] : points).flatMap((p) => [p.x, p.y]);
 
   const handleStageClick = (e: any) => {
+    // if click happened directly on the stage, deselect
+    if (e.target === e.target.getStage()) {
+      setSelectedPolygonId(null);
+    }
     if (!isDrawing) return;
+
+    /** Logic for drawing below */
     const pos = e.target.getStage().getPointerPosition();
     if (!pos) return;
 
@@ -258,6 +264,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               draggable={true}
               onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
               opacity={selectedPolygonId === polygon.id ? 1 : 0.7}
+              onClick={() => setSelectedPolygonId(polygon.id)}
             >
               {/* Polygon line */}
               <Line
@@ -265,7 +272,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 closed={polygon.isClosed}
                 stroke={polygon.color}
                 strokeWidth={selectedPolygonId === polygon.id ? 3 : 2}
-                fill={polygon.isClosed ? `${polygon.color}40` : ""}
+                fill={polygon.isClosed ? `lightblue` : ""}
               />
 
               {/* FIXED: Anchor points are now inside the Group */}

@@ -6,7 +6,7 @@ import { readFileSync } from "fs";
 import { html } from "satori-html";
 import React, { lazy, Suspense, useState } from "react";
 import { Route } from "./+types/_index";
-import { Box, Button, Container } from "@mantine/core";
+import { Box, Button, Container, Flex } from "@mantine/core";
 
 import { OnlineStatus } from "~/components/main/OnlineStatus.client";
 
@@ -73,18 +73,22 @@ export default function Index({ actionData }: Route.ComponentProps) {
       <Container strategy="grid" size={800} className="border">
         <div>
           <HeroSection />
+        </div>
+      </Container>
 
+      <div>
+        <Flex px={"md"}>
           <ClientOnly>
             <Canvas setPolygonsCopy={setPolygons} />
           </ClientOnly>
 
-          <h2>SVG box</h2>
+          {/* <h2>SVG box</h2> */}
 
           <ClientOnly>
             <ImageMap polygonsCopy={polygons} />
           </ClientOnly>
-        </div>
-      </Container>
+        </Flex>
+      </div>
     </div>
   );
 }

@@ -12,12 +12,30 @@ const ImageMap = (props: any) => {
   );
 
   const poly = props.polygonsCopy as [];
-
+  console.log("poly", poly);
   let pointString = "";
+
+  //
+  let pointStringArr: any[] = [];
   poly.map((singlePolygon) => {
+    let pointString = "";
+
     singlePolygon.points.forEach((point) => {
       pointString += point.x + "," + point.y + " ";
     });
+
+    pointStringArr.push(pointString);
+  });
+
+  pointStringArr.map((pointString) => {
+    return (
+      <polygon
+        key={pointString}
+        points={pointString}
+        fill="#e91e63"
+        opacity="0.7"
+      />
+    );
   });
 
   const newShape = (
@@ -138,7 +156,7 @@ const ImageMap = (props: any) => {
         <h1 className="mb-4 text-2xl font-bold">
           Interactive SVG Image Map Prototype
         </h1>
-        <p className="mb-5">
+        <p className="mb-4">
           Hover over the colored regions in the image below to see interactive
           hotspots with metadata.
         </p>
@@ -149,7 +167,7 @@ const ImageMap = (props: any) => {
             height={600}
             preserveAspectRatio="xMidYMid"
             viewBox="0 0 800 600"
-            className="border-2 border-gray-300 border-red-500"
+            className=""
           >
             {/* Background pattern to simulate an image */}
             <defs>
@@ -216,6 +234,7 @@ const ImageMap = (props: any) => {
               opacity="0.7"
               rx="10"
             />
+
             <text
               x="150"
               y="130"
@@ -244,14 +263,6 @@ const ImageMap = (props: any) => {
               fill="#e91e63"
               opacity="0.7"
             />
-
-            {newShape}
-
-            {/* <polygon
-              points="80,85 36,213 248,187"
-              fill="#e91e63"
-              opacity="0.7"
-            /> */}
             <text
               x="475"
               y="425"
@@ -262,6 +273,29 @@ const ImageMap = (props: any) => {
             >
               Feature C
             </text>
+
+            {pointStringArr.map((pointString) => {
+              return (
+                <g
+                  key={pointString}
+                  className="cursor-pointer transition-all duration-300 hover:drop-shadow-lg"
+                  onMouseEnter={() =>
+                    handleMouseEnter({
+                      title: "This us CUSTOM polygon!",
+                      description: "test description",
+                      type: "polygon",
+                      link: "https://example.com/dashboard",
+                      coordinates: pointString,
+                    })
+                  }
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => handleClick(hotspots[2])}
+                >
+                  <polygon points={pointString} fill="#e91e63" opacity="0.7" />
+                </g>
+              );
+            })}
 
             {/* Rectangle hotspot */}
             <g
@@ -277,8 +311,8 @@ const ImageMap = (props: any) => {
               }}
             >
               <rect
-                x="50"
-                y="50"
+                x="0"
+                y="0"
                 width="200"
                 height="150"
                 fill="transparent"
