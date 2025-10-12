@@ -77,12 +77,12 @@ export default function Index({ actionData }: Route.ComponentProps) {
       </Container>
 
       <div>
-        <Flex px={"md"}>
-          <ClientOnly>
-            <Canvas setPolygonsCopy={setPolygons} />
-          </ClientOnly>
-
-          {/* <h2>SVG box</h2> */}
+        <Flex px={"xl"} direction="column" align={"center"}>
+          <div className="w-[1100px]">
+            <ClientOnly>
+              <Canvas setPolygonsCopy={setPolygons} />
+            </ClientOnly>
+          </div>
 
           <ClientOnly>
             <ImageMap polygonsCopy={polygons} />

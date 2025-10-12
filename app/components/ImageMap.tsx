@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 const ImageMap = (props: any) => {
   const [tooltip, setTooltip] = useState({
@@ -170,58 +170,13 @@ const ImageMap = (props: any) => {
             className=""
           >
             {/* Background pattern to simulate an image */}
-            <defs>
-              <pattern
-                id="sampleImage"
-                patternUnits="userSpaceOnUse"
-                width="100"
-                height="100"
-              >
-                <rect width="100" height="100" fill="#e3f2fd" />
-                <circle cx="50" cy="50" r="30" fill="#bbdefb" />
-                <rect
-                  x="20"
-                  y="20"
-                  width="60"
-                  height="60"
-                  fill="none"
-                  stroke="#90caf9"
-                  strokeWidth="2"
-                />
-              </pattern>
-              <linearGradient
-                id="bgGradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop
-                  offset="0%"
-                  style={{ stopColor: "#e8eaf6", stopOpacity: 1 }}
-                />
-                <stop
-                  offset="100%"
-                  style={{ stopColor: "#c5cae9", stopOpacity: 1 }}
-                />
-              </linearGradient>
-            </defs>
-
-            {/* Background */}
-            <rect
+            <image
+              href="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // static file or dynamic URL
               x="0"
               y="0"
-              width="1000"
+              width="800"
               height="600"
-              fill="url(#bgGradient)"
-            />
-            <rect
-              x="0"
-              y="0"
-              width="1000"
-              height="600"
-              fill="url(#sampleImage)"
-              opacity="0.3"
+              preserveAspectRatio="xMidYMid slice"
             />
 
             {/* Sample content to make it look like a real image */}

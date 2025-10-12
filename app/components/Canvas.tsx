@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Stage, Layer, Circle, Line, Group } from "react-konva";
+import { Stage, Layer, Circle, Line, Group, Image } from "react-konva";
 
 import { Button, Flex, Space, Tooltip } from "@mantine/core";
+import useImage from "use-image";
 
 type Point = { x: number; y: number };
 export type Polygon = {
@@ -19,6 +20,9 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
     null,
   );
   const [mousePos, setMousePos] = useState<Point | null>(null);
+  const [bgImage] = useImage(
+    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  );
 
   const colors = ["blue", "red", "green", "purple", "orange", "cyan"];
 
@@ -227,7 +231,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 padding: "5px",
                 backgroundColor:
                   selectedPolygonId === polygon.id
-                    ? "var(--mantine-color-indigo-0)"
+                    ? "var(--mantine-color-gray-5)"
                     : "transparent",
               }}
             >
@@ -273,13 +277,19 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
         style={{ background: "#f0f0f0", border: "1px solid lightgray" }}
       >
         <Layer>
+          <Image
+            image={bgImage}
+            width={800} // TODO: fix fixed width-height
+            height={600}
+            listening={false} // ← prevents clicks from selecting the image
+          />
           {/* Render completed polygons */}
           {polygons.map((polygon) => (
             <Group
               key={polygon.id}
               draggable={true}
               onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
-              opacity={selectedPolygonId === polygon.id ? 1 : 0.7}
+              opacity={selectedPolygonId === polygon.id ? 0.3 : 0.2}
               onClick={() => {
                 setSelectedPolygonId(polygon.id);
                 console.log("selected", selectedPolygonId);
@@ -291,7 +301,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 closed={polygon.isClosed}
                 stroke={polygon.color}
                 strokeWidth={selectedPolygonId === polygon.id ? 3 : 2}
-                fill={polygon.isClosed ? `lightblue` : ""}
+                fill={polygon.isClosed ? `gray` : ""}
               />
 
               {/* FIXED: Anchor points are now inside the Group */}
