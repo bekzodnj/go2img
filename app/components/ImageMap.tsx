@@ -12,15 +12,13 @@ const ImageMap = (props: any) => {
   );
 
   const poly = props.polygonsCopy as [];
-  console.log("poly", poly);
-  let pointString = "";
 
   //
   let pointStringArr: any[] = [];
   poly.map((singlePolygon) => {
     let pointString = "";
 
-    singlePolygon.points.forEach((point) => {
+    singlePolygon.points.forEach((point: any) => {
       pointString += point.x + "," + point.y + " ";
     });
 
@@ -38,11 +36,7 @@ const ImageMap = (props: any) => {
     );
   });
 
-  const newShape = (
-    <polygon points={pointString} fill="#e91e63" opacity="0.7" />
-  );
-
-  console.log("PointString: ", pointString);
+  console.log("pointStringArr: ", pointStringArr);
 
   // Hotspot data (equivalent to the original hotspots array)
   const hotspots = [
@@ -84,7 +78,7 @@ const ImageMap = (props: any) => {
     },
   ];
 
-  const handleMouseEnter = (hotspot) => {
+  const handleMouseEnter = (hotspot: any) => {
     const content = `
             <strong>${hotspot.title}</strong><br>
             <em>${hotspot.type}</em><br>

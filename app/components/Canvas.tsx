@@ -12,6 +12,9 @@ export type Polygon = {
   color: string;
 };
 
+const STAGE_WIDTH = 1280;
+const STAGE_HEIGHT = 740;
+
 const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
   const [polygons, setPolygons] = useState<Polygon[]>([]);
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
@@ -20,9 +23,27 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
     null,
   );
   const [mousePos, setMousePos] = useState<Point | null>(null);
-  const [bgImage] = useImage(
-    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  const [bgImage, status] = useImage(
+    "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=774",
   );
+  const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    if (status === "loaded" && bgImage) {
+      const maxWidth = STAGE_WIDTH * 0.9;
+      const maxHeight = STAGE_HEIGHT * 0.8;
+      const scale = Math.min(
+        maxWidth / bgImage.width,
+        maxHeight / bgImage.height,
+      );
+
+      setImgSize({
+        width: bgImage.width * scale,
+        height: bgImage.height * scale,
+      });
+
+      console.log("Image dimensions:", bgImage.width, bgImage.height);
+    }
+  }, [bgImage, status]);
 
   const colors = ["blue", "red", "green", "purple", "orange", "cyan"];
 
@@ -181,9 +202,6 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
           mb={"sm"}
           variant="outline"
           onClick={() => {
-            console.log("Points", currentPoints);
-            console.log("Polygons: ", polygons);
-
             setPolygonsCopy(polygons);
           }}
         >
@@ -231,7 +249,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 padding: "5px",
                 backgroundColor:
                   selectedPolygonId === polygon.id
-                    ? "var(--mantine-color-gray-5)"
+                    ? "var(--mantine-color-gray-1)"
                     : "transparent",
               }}
             >
@@ -270,8 +288,8 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
       ) : null}
 
       <Stage
-        width={800}
-        height={600}
+        width={imgSize.width}
+        height={imgSize.height}
         onClick={handleStageClick}
         onMouseMove={handleMouseMove}
         style={{ background: "#f0f0f0", border: "1px solid lightgray" }}
@@ -279,8 +297,8 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
         <Layer>
           <Image
             image={bgImage}
-            width={800} // TODO: fix fixed width-height
-            height={600}
+            width={imgSize.width} // TODO: fix fixed width-height
+            height={imgSize.height}
             listening={false} // ← prevents clicks from selecting the image
           />
           {/* Render completed polygons */}
@@ -292,7 +310,6 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               opacity={selectedPolygonId === polygon.id ? 0.3 : 0.2}
               onClick={() => {
                 setSelectedPolygonId(polygon.id);
-                console.log("selected", selectedPolygonId);
               }}
             >
               {/* Polygon line */}
