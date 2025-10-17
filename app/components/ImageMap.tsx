@@ -157,18 +157,18 @@ const ImageMap = (props: any) => {
 
         <div className="relative mb-5">
           <svg
-            width={800}
+            width={900}
             height={600}
             preserveAspectRatio="xMidYMid"
-            viewBox="0 0 800 600"
+            viewBox="0 0 900 600"
             className=""
           >
             {/* Background pattern to simulate an image */}
             <image
-              href="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // static file or dynamic URL
+              href="https://plus.unsplash.com/premium_photo-1670360414483-64e6d9ba9038?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1740"
               x="0"
               y="0"
-              width="800"
+              width="900"
               height="600"
               preserveAspectRatio="xMidYMid slice"
             />

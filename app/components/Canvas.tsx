@@ -12,8 +12,8 @@ export type Polygon = {
   color: string;
 };
 
-const STAGE_WIDTH = 1280;
-const STAGE_HEIGHT = 740;
+const STAGE_WIDTH = 1300;
+const STAGE_HEIGHT = 750;
 
 const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
   const [polygons, setPolygons] = useState<Polygon[]>([]);
@@ -24,7 +24,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
   );
   const [mousePos, setMousePos] = useState<Point | null>(null);
   const [bgImage, status] = useImage(
-    "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=774",
+    "https://plus.unsplash.com/premium_photo-1670360414483-64e6d9ba9038?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1740",
   );
   const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
@@ -41,7 +41,11 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
         height: bgImage.height * scale,
       });
 
-      console.log("Image dimensions:", bgImage.width, bgImage.height);
+      console.log(
+        "Image dimensions:",
+        bgImage.width * scale,
+        bgImage.height * scale,
+      );
     }
   }, [bgImage, status]);
 
@@ -307,7 +311,6 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
               key={polygon.id}
               draggable={true}
               onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
-              opacity={selectedPolygonId === polygon.id ? 0.3 : 0.2}
               onClick={() => {
                 setSelectedPolygonId(polygon.id);
               }}
@@ -317,6 +320,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                 points={getLinePoints(polygon.points, polygon.isClosed)}
                 closed={polygon.isClosed}
                 stroke={polygon.color}
+                opacity={selectedPolygonId === polygon.id ? 0.6 : 0.3}
                 strokeWidth={selectedPolygonId === polygon.id ? 3 : 2}
                 fill={polygon.isClosed ? `gray` : ""}
               />
@@ -330,6 +334,7 @@ const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
                       y={p.y}
                       radius={6}
                       fill={i === 0 ? "red" : "#4caf50"}
+                      opacity={0.8}
                       stroke="white"
                       strokeWidth={1}
                       draggable={true}
