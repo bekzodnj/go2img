@@ -15,7 +15,11 @@ export type Polygon = {
 const STAGE_WIDTH = 1300;
 const STAGE_HEIGHT = 750;
 
-const PenToolPolygon: React.FC = ({ setPolygonsCopy }: any) => {
+const PenToolPolygon = ({
+  setPolygonsCopy,
+}: {
+  setPolygonsCopy: React.Dispatch<React.SetStateAction<Polygon[]>>;
+}) => {
   const [polygons, setPolygons] = useState<Polygon[]>([]);
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);

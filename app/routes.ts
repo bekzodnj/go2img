@@ -2,6 +2,7 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
   index("routes/_index.tsx"),
+  route("studio", "routes/studio/studio.tsx"),
 
   // new sign-in
   route("join", "routes/join.tsx"),

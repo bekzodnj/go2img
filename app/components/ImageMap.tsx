@@ -1,6 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Polygon } from "./Canvas";
 
-const ImageMap = (props: any) => {
+interface IImageMapProps {
+  polygonsCopy: Polygon[];
+}
+const ImageMap = (props: IImageMapProps) => {
   const [tooltip, setTooltip] = useState({
     visible: false,
     content: "",
@@ -11,10 +15,10 @@ const ImageMap = (props: any) => {
     "Hover over the highlighted areas in the image above to see interactive hotspots.",
   );
 
-  const poly = props.polygonsCopy as [];
+  const poly = props.polygonsCopy || [];
 
   //
-  let pointStringArr: any[] = [];
+  let pointStringArr: string[] = [];
   poly.map((singlePolygon) => {
     let pointString = "";
 
@@ -87,20 +91,22 @@ const ImageMap = (props: any) => {
     setTooltip((prev) => ({ ...prev, content, visible: true }));
   };
 
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.closest("svg").getBoundingClientRect();
-    setTooltip((prev) => ({
-      ...prev,
-      x: e.clientX - rect.left + 10,
-      y: e.clientY - rect.top - 10,
-    }));
+  const handleMouseMove = (e: React.MouseEvent<SVGAElement, MouseEvent>) => {
+    const rect = e.currentTarget?.closest("svg")?.getBoundingClientRect();
+    if (rect) {
+      setTooltip((prev) => ({
+        ...prev,
+        x: e.clientX - rect.left + 10,
+        y: e.clientY - rect.top - 10,
+      }));
+    }
   };
 
   const handleMouseLeave = () => {
     setTooltip((prev) => ({ ...prev, visible: false }));
   };
 
-  const handleClick = (hotspot) => {
+  const handleClick = (hotspot: any) => {
     let linkText = "";
     if (hotspot.link) {
       linkText = `<br><strong>Link:</strong> <a href="${hotspot.link}" target="_blank">${hotspot.link}</a>`;

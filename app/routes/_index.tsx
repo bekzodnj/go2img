@@ -1,14 +1,10 @@
 import type { ActionFunctionArgs, MetaFunction } from "react-router";
 import { Form, Link, useActionData } from "react-router";
 import { HeroSection } from "~/components/main/HeroSection";
-import satori from "satori";
-import { readFileSync } from "fs";
-import { html } from "satori-html";
-import React, { lazy, Suspense, useState } from "react";
+
+import React, { lazy, useState } from "react";
 import { Route } from "./+types/_index";
 import { Box, Button, Container, Flex } from "@mantine/core";
-
-import { OnlineStatus } from "~/components/main/OnlineStatus.client";
 
 const Canvas = lazy(() => import("../components/Canvas"));
 const ImageMap = lazy(() => import("../components/ImageMap"));
@@ -44,6 +40,12 @@ export default function Index({ actionData }: Route.ComponentProps) {
                 Home
               </Link>
               <Link
+                to="/studio"
+                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
+              >
+                Studio
+              </Link>
+              <Link
                 to="/materials"
                 className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
               >
@@ -55,6 +57,7 @@ export default function Index({ actionData }: Route.ComponentProps) {
               >
                 Create
               </Link>
+
               <a
                 href="/login"
                 className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
@@ -86,9 +89,11 @@ export default function Index({ actionData }: Route.ComponentProps) {
             </ClientOnly>
           </div>
 
-          <ClientOnly>
-            <ImageMap polygonsCopy={polygons} />
-          </ClientOnly>
+          <div className="w-[1100px]">
+            <ClientOnly>
+              <ImageMap polygonsCopy={polygons} />
+            </ClientOnly>
+          </div>
         </Flex>
       </div>
     </div>
