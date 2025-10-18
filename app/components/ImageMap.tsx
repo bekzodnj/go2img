@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Polygon } from "./Canvas";
 
-interface IImageMapProps {
+interface ImageMapProps {
   polygonsCopy: Polygon[];
 }
-const ImageMap = (props: IImageMapProps) => {
+const ImageMap = (props: ImageMapProps) => {
   const [tooltip, setTooltip] = useState({
     visible: false,
     content: "",
@@ -17,7 +17,6 @@ const ImageMap = (props: IImageMapProps) => {
 
   const poly = props.polygonsCopy || [];
 
-  //
   let pointStringArr: string[] = [];
   poly.map((singlePolygon) => {
     let pointString = "";

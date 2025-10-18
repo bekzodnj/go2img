@@ -7,8 +7,8 @@ export const prisma = singleton("prisma", () => new PrismaClient());
 //prisma.$queryRaw`PRAGMA journal_mode = WAL;`
 try {
   // Set journal mode to WAL and busy timeout in one go
-  await prisma.$queryRaw`PRAGMA journal_mode = WAL;`;
-  await prisma.$queryRaw`PRAGMA busy_timeout = 15000;`;
+  // await prisma.$queryRaw`PRAGMA journal_mode = WAL;`;
+  // await prisma.$queryRaw`PRAGMA busy_timeout = 15000;`;
 
   console.log("Database configured: WAL mode and busy timeout set.");
 } catch (error) {
