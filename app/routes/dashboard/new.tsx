@@ -21,7 +21,7 @@ import {
 import { createMaterial, getCategories } from "~/models/material.server";
 import { requireUserId, requireUserIdWithRedirect } from "~/session.server";
 import { fileStorage, getStorageKey } from "~/server/storage.server";
-import { FileUpload, parseFormData } from "@mjackson/form-data-parser";
+import { FileUpload, parseFormData } from "@remix-run/form-data-parser";
 import { useState } from "react";
 
 export async function loader({ request }: LoaderFunctionArgs) {

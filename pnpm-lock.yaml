@@ -23,12 +23,6 @@ importers:
       '@mantine/tiptap':
         specifier: ^8.2.1
         version: 8.2.1(@mantine/core@8.2.1(@mantine/hooks@8.2.1(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@8.2.1(react@18.3.1))(@tiptap/extension-link@2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5))(@tiptap/react@2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@mjackson/file-storage':
-        specifier: ^0.6.1
-        version: 0.6.1
-      '@mjackson/form-data-parser':
-        specifier: ^0.7.0
-        version: 0.7.0
       '@polar-sh/better-auth':
         specifier: ^0.1.0
         version: 0.1.0(@polar-sh/sdk@0.32.11(zod@3.24.3))(better-auth@1.2.4(typescript@5.8.2))
@@ -47,6 +41,12 @@ importers:
       '@react-router/serve':
         specifier: ^7.9.4
         version: 7.9.4(react-router@7.9.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.8.2)
+      '@remix-run/file-storage':
+        specifier: ^0.9.0
+        version: 0.9.0
+      '@remix-run/form-data-parser':
+        specifier: ^0.11.0
+        version: 0.11.0
       '@tiptap/extension-link':
         specifier: ^2.10.4
         version: 2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5)
@@ -1069,21 +1069,6 @@ packages:
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
 
-  '@mjackson/file-storage@0.6.1':
-    resolution: {integrity: sha512-H3GEVpmfmNryNoYloddIOba5OAwckfVGMvutPeI94Shbv/R+NVh89gIYa8SK3Vfa+ky9PitclP+5XQ6/zlSdQQ==}
-
-  '@mjackson/form-data-parser@0.7.0':
-    resolution: {integrity: sha512-Y8O5+nsTv4K9Q8ziyuoru8JqYTLsP1PRi7xiFDAx4vrXEvO16NtOO7RmvXIJ2ZB59gP/wV3X1OvqdpoeRgsruA==}
-
-  '@mjackson/headers@0.10.0':
-    resolution: {integrity: sha512-U1Eu1gF979k7ZoIBsJyD+T5l9MjtPONsZfoXfktsQHPJD0s7SokBGx+tLKDLsOY+gzVYAWS0yRFDNY8cgbQzWQ==}
-
-  '@mjackson/lazy-file@3.3.1':
-    resolution: {integrity: sha512-BxpNT1KmLx0OLYfgQESx/AKGD2czwfZXh9c0SaDUQY2DRAaVYtAvSQE5EkpATFdQQKqfL+iXVoaQ/SN+w7/CDA==}
-
-  '@mjackson/multipart-parser@0.8.2':
-    resolution: {integrity: sha512-KltttyypazaJ9kD1GpiOTEop9/YA5aZPwKfpbmuMYoYSyJhQc+0pqaQcZSHUJVdJBvIWgx7TTQSDJdnNqP5dxA==}
-
   '@mjackson/node-fetch-server@0.2.0':
     resolution: {integrity: sha512-EMlH1e30yzmTpGLQjlFmaDAjyOeZhng1/XCd7DExR8PNAnG/G1tyruZxEoUe11ClnwGhGrtsdnyyUx1frSzjng==}
 
@@ -1293,6 +1278,21 @@ packages:
 
   '@remirror/core-constants@3.0.0':
     resolution: {integrity: sha512-42aWfPrimMfDKDi4YegyS7x+/0tlzaqwPQCULLanv3DMIlu96KTJR0fM5isWX2UViOqlGnX6YFgqWepcX+XMNg==}
+
+  '@remix-run/file-storage@0.9.0':
+    resolution: {integrity: sha512-GbrmqGTdgevRMqkcTzGG9eyUn3eo32ST/jmqdh2g8h5MNKmONF6TJpVDZvtGhrvl93kX/k01WigUk/R8j58/eA==}
+
+  '@remix-run/form-data-parser@0.11.0':
+    resolution: {integrity: sha512-vD1xko5NntvKKzCOM6hAmCfUOPguIWJJ3WqcBFMqqUYlk3Z4j9t4CpvL0taq9gaB8kMtYN78lD4r8Nb8xXI4zw==}
+
+  '@remix-run/headers@0.12.0':
+    resolution: {integrity: sha512-eqVSL5UOIyqVx0NTqgtNKMKVokE9jPchkZHl/N13KKPQYw/leS8VCoX5zRhkB1UvcLyfj113LX0OvEcuNbc5Hg==}
+
+  '@remix-run/lazy-file@3.5.0':
+    resolution: {integrity: sha512-/QuQA1XXaVSco02fI2RRL6K6av81gcfb8MVtINbciqGjA24p3qAZ5M7YytLBrK0cAb7S39eEte9p0nrlqKnUrw==}
+
+  '@remix-run/multipart-parser@0.11.0':
+    resolution: {integrity: sha512-AE/H+ok0fWOZb84sJ8vREOJiSwYoEoGL0rpHZSAiPmCkBKbnsmHCbiUtg5+wELem4Q0HAEY6vjVK83u9cIlAhw==}
 
   '@remix-run/node-fetch-server@0.9.0':
     resolution: {integrity: sha512-SoLMv7dbH+njWzXnOY6fI08dFMI5+/dQ+vY3n8RnnbdG7MdJEgiP28Xj/xWlnRnED/aB6SFw56Zop+LbmaaKqA==}
@@ -6296,24 +6296,6 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@mjackson/file-storage@0.6.1':
-    dependencies:
-      '@mjackson/lazy-file': 3.3.1
-
-  '@mjackson/form-data-parser@0.7.0':
-    dependencies:
-      '@mjackson/multipart-parser': 0.8.2
-
-  '@mjackson/headers@0.10.0': {}
-
-  '@mjackson/lazy-file@3.3.1':
-    dependencies:
-      mrmime: 2.0.1
-
-  '@mjackson/multipart-parser@0.8.2':
-    dependencies:
-      '@mjackson/headers': 0.10.0
-
   '@mjackson/node-fetch-server@0.2.0': {}
 
   '@mrleebo/prisma-ast@0.12.1':
@@ -6593,6 +6575,24 @@ snapshots:
       - typescript
 
   '@remirror/core-constants@3.0.0': {}
+
+  '@remix-run/file-storage@0.9.0':
+    dependencies:
+      '@remix-run/lazy-file': 3.5.0
+
+  '@remix-run/form-data-parser@0.11.0':
+    dependencies:
+      '@remix-run/multipart-parser': 0.11.0
+
+  '@remix-run/headers@0.12.0': {}
+
+  '@remix-run/lazy-file@3.5.0':
+    dependencies:
+      mrmime: 2.0.1
+
+  '@remix-run/multipart-parser@0.11.0':
+    dependencies:
+      '@remix-run/headers': 0.12.0
 
   '@remix-run/node-fetch-server@0.9.0': {}
 

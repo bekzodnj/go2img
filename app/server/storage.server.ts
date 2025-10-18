@@ -1,4 +1,4 @@
-import { LocalFileStorage } from "@mjackson/file-storage/local";
+import { LocalFileStorage } from "@remix-run/file-storage/local";
 
 export const fileStorage = new LocalFileStorage("./uploads/files");
 export const getStorageKey = (userId: string, materialTitle: string) => {
