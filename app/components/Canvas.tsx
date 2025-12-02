@@ -3,6 +3,8 @@ import { Stage, Layer, Circle, Line, Group, Image } from "react-konva";
 
 import { Button, Flex, Space, Tooltip } from "@mantine/core";
 import useImage from "use-image";
+import { LabelStore } from "~/lib/editorLogic";
+import { useSelector } from "@xstate/store/react";
 
 type Point = { x: number; y: number };
 export type Polygon = {
@@ -20,12 +22,9 @@ const PenToolPolygon = ({
 }: {
   setPolygonsCopy: React.Dispatch<React.SetStateAction<Polygon[]>>;
 }) => {
-  const [polygons, setPolygons] = useState<Polygon[]>([]);
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [selectedPolygonId, setSelectedPolygonId] = useState<string | null>(
-    null,
-  );
+
   const [mousePos, setMousePos] = useState<Point | null>(null);
   const [bgImage, status] = useImage(
     "https://plus.unsplash.com/premium_photo-1670360414483-64e6d9ba9038?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1740",
@@ -53,12 +52,22 @@ const PenToolPolygon = ({
     }
   }, [bgImage, status]);
 
+  const selectedPolygonId = useSelector(
+    LabelStore,
+    (state) => state.context.selectedPolygonId,
+  );
+
+  const polygons = useSelector(LabelStore, (state) => state.context.polygons);
+
   const colors = ["blue", "red", "green", "purple", "orange", "cyan"];
 
   const startNewPolygon = () => {
     setCurrentPoints([]);
     setIsDrawing(true);
-    setSelectedPolygonId(null);
+
+    LabelStore.trigger.setSelectedLabel({
+      id: null,
+    });
   };
 
   const getLinePoints = (points: Point[], isClosed: boolean) =>
@@ -67,7 +76,9 @@ const PenToolPolygon = ({
   const handleStageClick = (e: any) => {
     // if click happened directly on the stage, deselect
     if (e.target === e.target.getStage()) {
-      setSelectedPolygonId(null);
+      LabelStore.trigger.setSelectedLabel({
+        id: null,
+      });
     }
     if (!isDrawing) return;
 
@@ -87,7 +98,9 @@ const PenToolPolygon = ({
           isClosed: true,
           color: colors[polygons.length % colors.length],
         };
-        setPolygons([...polygons, newPolygon]);
+
+        LabelStore.trigger.setLabels({ polygons: [...polygons, newPolygon] });
+        //setPolygons([...polygons, newPolygon]);
         setCurrentPoints([]);
         setIsDrawing(false);
         setMousePos(null);
@@ -114,8 +127,8 @@ const PenToolPolygon = ({
     const dx = node.x();
     const dy = node.y();
 
-    setPolygons((prev) =>
-      prev.map((polygon) => {
+    LabelStore.trigger.setLabels({
+      polygons: polygons.map((polygon) => {
         if (polygon.id === polygonId) {
           const updatedPoints = polygon.points.map((p) => ({
             x: p.x + dx,
@@ -125,7 +138,7 @@ const PenToolPolygon = ({
         }
         return polygon;
       }),
-    );
+    });
 
     // Reset group position
     node.position({ x: 0, y: 0 });
@@ -138,8 +151,8 @@ const PenToolPolygon = ({
     pointIndex: number,
     newPos: Point,
   ) => {
-    setPolygons((prev) =>
-      prev.map((polygon) => {
+    LabelStore.trigger.setLabels({
+      polygons: polygons.map((polygon) => {
         if (polygon.id === polygonId) {
           const updated = [...polygon.points];
           updated[pointIndex] = newPos;
@@ -147,27 +160,31 @@ const PenToolPolygon = ({
         }
         return polygon;
       }),
-    );
+    });
   };
 
   const handleUndo = () => {
     if (isDrawing && currentPoints.length > 0) {
       setCurrentPoints(currentPoints.slice(0, -1));
     } else if (polygons.length > 0) {
-      setPolygons(polygons.slice(0, -1));
+      // setPolygons(polygons.slice(0, -1));
+      LabelStore.trigger.setLabels({ polygons: polygons.slice(0, -1) });
     }
   };
 
   const handleReset = () => {
-    setPolygons([]);
+    LabelStore.trigger.setLabels({ polygons: [] });
     setCurrentPoints([]);
     setIsDrawing(false);
-    setSelectedPolygonId(null);
+
+    LabelStore.trigger.setSelectedLabel({
+      id: null,
+    });
     setMousePos(null);
   };
 
   const deletePolygon = (polygonId: string) => {
-    setPolygons((prev) => prev.filter((p) => p.id !== polygonId));
+    LabelStore.trigger.removeLabel({ id: polygonId });
   };
 
   const handleKeyDown = useCallback(
@@ -186,7 +203,10 @@ const PenToolPolygon = ({
         e.preventDefault();
         if (selectedPolygonId) {
           deletePolygon(selectedPolygonId);
-          setSelectedPolygonId(null);
+
+          LabelStore.trigger.setSelectedLabel({
+            id: null,
+          });
         }
       }
 
@@ -275,11 +295,14 @@ const PenToolPolygon = ({
               <Button
                 variant="light"
                 px={100}
-                onClick={() =>
-                  setSelectedPolygonId(
-                    selectedPolygonId === polygon.id ? null : polygon.id,
-                  )
-                }
+                onClick={() => {
+                  // setSelectedPolygonId(
+                  //   selectedPolygonId === polygon.id ? null : polygon.id,
+                  // );
+                  LabelStore.trigger.setSelectedLabel({
+                    id: selectedPolygonId === polygon.id ? null : polygon.id,
+                  });
+                }}
               >
                 {selectedPolygonId === polygon.id ? "Done" : "Edit"}
               </Button>
@@ -316,7 +339,10 @@ const PenToolPolygon = ({
               draggable={true}
               onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
               onClick={() => {
-                setSelectedPolygonId(polygon.id);
+                // setSelectedPolygonId(polygon.id);
+                LabelStore.trigger.setSelectedLabel({
+                  id: selectedPolygonId === polygon.id ? null : polygon.id,
+                });
               }}
             >
               {/* Polygon line */}

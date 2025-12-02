@@ -8,6 +8,7 @@
     "module": "ESNext",
     "isolatedModules": true,
     "esModuleInterop": true,
+    "strictNullChecks": true,
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
