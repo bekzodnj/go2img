@@ -44,11 +44,9 @@ const PenToolPolygon = ({
         height: bgImage.height * scale,
       });
 
-      console.log(
-        "Image dimensions:",
-        bgImage.width * scale,
-        bgImage.height * scale,
-      );
+      return () => {
+        LabelStore.trigger.reset();
+      };
     }
   }, [bgImage, status]);
 
