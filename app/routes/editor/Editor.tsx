@@ -1,12 +1,21 @@
-import { AppShell, Burger, Flex, Group, Text } from "@mantine/core";
+import {
+  AppShell,
+  Burger,
+  Button,
+  Flex,
+  Group,
+  Input,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { lazy, useState } from "react";
 import { Link } from "react-router";
 import { Polygon } from "~/components/Canvas";
 import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
-import { editorStore } from "~/lib/editorLogic";
-import { Label } from "react-konva";
+import { editorStore, LabelStore } from "~/lib/editorLogic";
+
 import { LabelNav } from "./LabelNav";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
@@ -14,7 +23,15 @@ const ImageMap = lazy(() => import("~/components/ImageMap"));
 
 export default function Editor() {
   const count = useSelector(editorStore, (state) => state.context.count);
-  console.log("Count:", count);
+  const selectedPolygonId = useSelector(
+    LabelStore,
+    (state) => state.context.selectedPolygonId,
+  );
+
+  const polygons2 = useSelector(LabelStore, (state) => state.context.polygons);
+  const selectedPolygon = polygons2.find((p) => p.id === selectedPolygonId);
+  console.log("~~~ selectedPolygon:", selectedPolygon, selectedPolygon?.label);
+
   const [opened, { toggle }] = useDisclosure();
   const [polygons, setPolygons] = useState<Polygon[]>([]);
   return (
@@ -59,12 +76,26 @@ export default function Editor() {
           </Flex>
         </div>
       </AppShell.Main>
-      <AppShell.Aside p="md">
-        Aside {count}
-        <button onClick={() => editorStore.trigger.inc()}>Inc</button>
-        <button onClick={() => editorStore.trigger.add({ num: 10 })}>
-          New
-        </button>
+      <AppShell.Aside p="xs">
+        Label Settings {selectedPolygonId}
+        <p>{selectedPolygon?.color}</p>
+        {selectedPolygonId !== null && selectedPolygon ? (
+          <TextInput
+            description="Input description"
+            placeholder="Type label here"
+            value={
+              selectedPolygon?.label !== undefined ? selectedPolygon.label : ""
+            }
+            onChange={(event) => {
+              event.preventDefault();
+              if (!selectedPolygonId) return;
+              LabelStore.trigger.changeLabelName({
+                id: selectedPolygonId!,
+                newLabel: event.currentTarget.value,
+              });
+            }}
+          />
+        ) : null}
       </AppShell.Aside>
     </AppShell>
   );

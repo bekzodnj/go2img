@@ -34,8 +34,8 @@ export default function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <ColorSchemeScript />
-        <Meta />
         <Links />
+        <Meta />
       </head>
       <body className="h-full">
         <MantineProvider theme={myTheme} withCssVariables>

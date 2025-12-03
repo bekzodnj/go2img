@@ -12,7 +12,7 @@ const ImageMap = lazy(() => import("../components/ImageMap"));
 import ClientOnly from "~/components/ClientOnly";
 import { Polygon } from "../components/Canvas";
 
-export const meta: MetaFunction = () => [{ title: "Remix Notes" }];
+export const meta: MetaFunction = () => [{ title: "Go2Img" }];
 
 export default function Index({ actionData }: Route.ComponentProps) {
   const [polygons, setPolygons] = useState<Polygon[]>([]);

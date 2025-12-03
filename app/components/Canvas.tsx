@@ -57,7 +57,36 @@ const PenToolPolygon = ({
 
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
 
-  const colors = ["blue", "red", "green", "purple", "orange", "cyan"];
+  const COLORS = [
+    "#FF5E5B", // modern red
+    "#00CECB", // aqua teal
+    "#FFB400", // golden pop
+    "#9D4EDD", // royal purple
+    "#4CC9F0", // bright ice blue
+    "#6A994E", // deep leaf green
+
+    "#F15BB5", // hot pink (tasteful)
+    "#2EC4B6", // turquoise teal
+    "#F77F00", // vivid warm orange
+    "#7209B7", // deep electric purple
+    "#3A86FF", // vivid but stylish blue
+    "#70E000", // fresh lime green
+
+    "#FF006E", // vibrant magenta
+    "#5A189A", // rich violet
+    "#3F88C5", // saturated steel-blue
+    "#16DB93", // mint-candy green
+    "#FDC500", // strong yellow (modern)
+    "#9E2A2B", // dark red wine
+
+    "#43AA8B", // green with elegance
+    "#577590", // muted ocean blue
+    "#FF8500", // warm honey orange
+    "#4895EF", // smooth electric blue
+    "#B5179E", // raspberry violet
+    "#38B000", // intense green
+    "#FF4D6D", // coral-pink punch
+  ];
 
   const startNewPolygon = () => {
     setCurrentPoints([]);
@@ -94,7 +123,7 @@ const PenToolPolygon = ({
           id: Date.now().toString(),
           points: currentPoints,
           isClosed: true,
-          color: colors[polygons.length % colors.length],
+          color: COLORS[polygons.length % COLORS.length],
         };
 
         LabelStore.trigger.setLabels({ polygons: [...polygons, newPolygon] });
@@ -198,6 +227,14 @@ const PenToolPolygon = ({
       }
 
       if (e.key === "Backspace" || e.key === "Delete") {
+        const el = e.target;
+        if (
+          el instanceof HTMLInputElement ||
+          el instanceof HTMLTextAreaElement
+        ) {
+          return; // Let other global text inputs pass
+        }
+
         e.preventDefault();
         if (selectedPolygonId) {
           deletePolygon(selectedPolygonId);
@@ -242,7 +279,7 @@ const PenToolPolygon = ({
             onClick={startNewPolygon}
             disabled={isDrawing}
           >
-            Start Drawing
+            Start Polygon
           </Button>
         </Tooltip>
         <Button
@@ -254,67 +291,11 @@ const PenToolPolygon = ({
         </Button>
         {isDrawing ? (
           <span style={{ color: "green" }}>
-            Drawing mode active (press Escape when to finish)
+            Drawing mode active (press Esc to finish)
           </span>
         ) : null}
         <span>Polygons: {polygons.length}</span>
       </Flex>
-
-      {/* Polygon list */}
-      {polygons.length > 0 ? (
-        <div style={{ margin: "1rem 0" }}>
-          <h4>Polygons:</h4>
-          {polygons.map((polygon, index) => (
-            <div
-              key={polygon.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                margin: "5px 0",
-                padding: "5px",
-                backgroundColor:
-                  selectedPolygonId === polygon.id
-                    ? "var(--mantine-color-gray-1)"
-                    : "transparent",
-              }}
-            >
-              <div
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  backgroundColor: polygon.color,
-                  border: "1px solid black",
-                }}
-              ></div>
-              <span>
-                Polygon {index + 1} ({polygon.points.length} points)
-              </span>
-              <Button
-                variant="light"
-                px={100}
-                onClick={() => {
-                  // setSelectedPolygonId(
-                  //   selectedPolygonId === polygon.id ? null : polygon.id,
-                  // );
-                  LabelStore.trigger.setSelectedLabel({
-                    id: selectedPolygonId === polygon.id ? null : polygon.id,
-                  });
-                }}
-              >
-                {selectedPolygonId === polygon.id ? "Done" : "Edit"}
-              </Button>
-              <Button
-                variant="subtle"
-                onClick={() => deletePolygon(polygon.id)}
-                style={{ color: "red" }}
-              >
-                Delete
-              </Button>
-            </div>
-          ))}
-        </div>
-      ) : null}
 
       <Stage
         width={imgSize.width}

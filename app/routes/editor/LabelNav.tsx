@@ -1,6 +1,6 @@
 import { Button } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
-import { editorStore, LabelStore } from "~/lib/editorLogic";
+import { LabelStore } from "~/lib/editorLogic";
 
 export function LabelNav() {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
@@ -14,58 +14,63 @@ export function LabelNav() {
 
   return (
     <div>
-      {/* <div>
-        <button onClick={() => editorStore.trigger.inc()}>Inc</button>
-        <button onClick={() => editorStore.trigger.add({ num: 10 })}></button>
-      </div> */}
-      Polygon list
       {polygons.length > 0 ? (
-        <div style={{ margin: "1rem 0" }}>
+        <div
+          style={{
+            margin: "1rem 0",
+            borderTop: "1px solid #ccc",
+            overflowY: "auto",
+            overflowX: "auto",
+            maxHeight: "500px",
+            paddingTop: "1rem",
+          }}
+        >
           <h4>Polygons:</h4>
           {polygons.map((polygon, index) => (
             <div
               key={polygon.id}
               style={{
                 display: "flex",
-                alignItems: "center",
-                gap: "10px",
+                justifyContent: "space-between",
+                gap: "5px",
                 margin: "5px 0",
-                padding: "5px",
-                // backgroundColor:
-                //   selectedPolygonId === polygon.id
-                //     ? "var(--mantine-color-gray-1)"
-                //     : "transparent",
               }}
             >
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  backgroundColor: polygon.color,
-                  border: "1px solid black",
-                }}
-              ></div>
-              <span className="text-xs">
-                Polygon {index + 1} ({polygon.points.length} points)
-              </span>
               <Button
-                variant="light"
-                size="compact-xs"
+                size="compact-md"
+                variant={
+                  selectedPolygonId === polygon.id ? "outline" : "default"
+                }
                 onClick={() =>
                   LabelStore.trigger.setSelectedLabel({
                     id: selectedPolygonId === polygon.id ? null : polygon.id,
                   })
                 }
+                className="grow border"
               >
-                {selectedPolygonId === polygon.id ? "Done" : "Edit"}
+                <span className="flex items-center gap-1">
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: polygon.color,
+                      border: "1px solid black",
+                    }}
+                  ></span>
+                  <span className="text-xs">
+                    Polygon {index + 1} ({polygon.points.length} dots)
+                  </span>
+                </span>
               </Button>
               <Button
-                variant="subtle"
                 size="compact-xs"
-                // onClick={() => deletePolygon(polygon.id)}
+                variant="subtle"
+                onClick={() =>
+                  LabelStore.trigger.removeLabel({ id: polygon.id })
+                }
                 style={{ color: "red" }}
               >
-                Delete todo
+                Delete
               </Button>
             </div>
           ))}

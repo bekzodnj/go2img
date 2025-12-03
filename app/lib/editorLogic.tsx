@@ -1,4 +1,5 @@
 import { createStore } from "@xstate/store";
+import { P } from "node_modules/better-auth/dist/shared/better-auth.6BOIvSei";
 
 export const editorStore = createStore({
   // Initial context
@@ -30,6 +31,7 @@ export type Polygon = {
   points: Point[];
   isClosed: boolean;
   color: string;
+  label?: string;
 };
 
 export const LabelStore = createStore({
@@ -49,6 +51,12 @@ export const LabelStore = createStore({
     setSelectedLabel: (context, event: { id: string | null }) => ({
       ...context,
       selectedPolygonId: event.id,
+    }),
+    changeLabelName: (context, event: { id: string; newLabel: string }) => ({
+      ...context,
+      polygons: context.polygons.map((p) =>
+        p.id === event.id ? { ...p, label: event.newLabel } : p,
+      ),
     }),
     removeLabel: (context, event: { id: string }) => ({
       ...context,
