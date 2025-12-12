@@ -63,7 +63,7 @@ export default function Editor() {
       <AppShell.Main>
         <div>
           <Flex direction="column">
-            <div className="w-[800px]">
+            <div className="w-[820px]">
               <ClientOnly>
                 <Canvas setPolygonsCopy={setPolygons} />
               </ClientOnly>

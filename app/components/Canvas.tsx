@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Stage, Layer, Circle, Line, Group, Image } from "react-konva";
 
-import { Button, Flex, Space, Tooltip } from "@mantine/core";
+import { Button, Flex, Input, Space, Tooltip } from "@mantine/core";
 import useImage from "use-image";
 import { LabelStore } from "~/lib/editorLogic";
 import { useSelector } from "@xstate/store/react";
 import { parse } from "path";
 import { type Polygon } from "~/lib/editorLogic";
+import { set } from "better-auth";
 
 type Point = { x: number; y: number };
 
 const STAGE_WIDTH = 1000;
 const STAGE_HEIGHT = 750;
 
-export const COLORS = [
+const COLORS = [
   "#FF5E5B", // modern red
   "#00CECB", // aqua teal
   "#FFB400", // golden pop
@@ -53,14 +54,19 @@ const PenToolPolygon = ({
   const [isDrawing, setIsDrawing] = useState(false);
 
   const [mousePos, setMousePos] = useState<Point | null>(null);
+
+  const [imageURL, setImageURL] = useState("");
+
   const [bgImage, status] = useImage(
-    "https://plus.unsplash.com/premium_photo-1670360414483-64e6d9ba9038?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1740",
+    imageURL || "https://images.unsplash.com/photo-1615873968403-89e068629265",
   );
+
   const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     if (status === "loaded" && bgImage) {
-      const maxWidth = STAGE_WIDTH * 0.8;
-      const maxHeight = STAGE_HEIGHT * 0.7;
+      console.log("BG image loaded:", bgImage.width, bgImage.height);
+      const maxWidth = STAGE_WIDTH * 1;
+      const maxHeight = STAGE_HEIGHT * 1;
       const scale = parseFloat(
         Math.min(maxWidth / bgImage.width, maxHeight / bgImage.height).toFixed(
           2,
@@ -257,8 +263,22 @@ const PenToolPolygon = ({
   }, [handleKeyDown]);
 
   return (
-    <div className="border">
-      <div>
+    <div className="border p-2">
+      <Space h="sm" />
+      <div className="">
+        <Input
+          value={imageURL}
+          onChange={(e) => setImageURL(e.currentTarget.value)}
+          variant="filled"
+          size="md"
+          radius="xs"
+          placeholder="Paste here image URL"
+        />
+      </div>
+      <Space h="sm" />
+
+      {/* todo: render svg later on here */}
+      {/* <div>
         <Button
           mb={"sm"}
           variant="outline"
@@ -266,9 +286,9 @@ const PenToolPolygon = ({
             setPolygonsCopy(polygons);
           }}
         >
-          Render!
+          Render
         </Button>
-      </div>
+      </div> */}
 
       <Flex gap="sm" align={"baseline"}>
         <Tooltip label="Pen (press P)">
@@ -293,128 +313,134 @@ const PenToolPolygon = ({
           </span>
         ) : null}
         <span>Polygons: {polygons.length}</span>
-        <span>Img Width x Height: {imgSize.width + "x" + imgSize.height} </span>
+        <span>
+          Image Width x Height: {imgSize.width + "x" + imgSize.height}{" "}
+        </span>
       </Flex>
+      <Space h="sm" />
 
-      <Stage
-        width={imgSize.width}
-        height={imgSize.height}
-        onClick={handleStageClick}
-        onMouseMove={handleMouseMove}
-        style={{ background: "#f0f0f0", border: "1px solid lightgray" }}
-      >
-        <Layer>
-          <Image
-            image={bgImage}
-            width={imgSize.width} // TODO: fix fixed width-height
-            height={imgSize.height}
-            listening={false} // ← prevents clicks from selecting the image
-          />
-          {/* Render completed polygons */}
-          {polygons.map((polygon) => (
-            <Group
-              key={polygon.id}
-              draggable={true}
-              onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
-              onClick={() => {
-                // setSelectedPolygonId(polygon.id);
-                LabelStore.trigger.setSelectedLabel({
-                  id: selectedPolygonId === polygon.id ? null : polygon.id,
-                });
-              }}
-            >
-              {/* Polygon line */}
-              <Line
-                points={getLinePoints(polygon.points, polygon.isClosed)}
-                closed={polygon.isClosed}
-                stroke={polygon.color}
-                opacity={selectedPolygonId === polygon.id ? 0.6 : 0.3}
-                strokeWidth={selectedPolygonId === polygon.id ? 3 : 2}
-                fill={polygon.isClosed ? `gray` : ""}
-              />
+      <section style={{ width: 800, overflow: "auto" }}>
+        <Stage
+          width={imgSize.width}
+          height={imgSize.height}
+          onClick={handleStageClick}
+          onMouseMove={handleMouseMove}
+          style={{ background: "#f0f0f0", border: "1px solid lightgray" }}
+        >
+          <Layer>
+            <Image
+              image={bgImage}
+              width={imgSize.width} // TODO: fix fixed width-height
+              height={imgSize.height}
+              listening={false} // ← prevents clicks from selecting the image
+            />
 
-              {/* FIXED: Anchor points are now inside the Group */}
-              {selectedPolygonId === polygon.id
-                ? polygon.points.map((p, i) => (
+            {/* Render completed polygons */}
+            {polygons.map((polygon) => (
+              <Group
+                key={polygon.id}
+                draggable={true}
+                onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
+                onClick={() => {
+                  // setSelectedPolygonId(polygon.id);
+                  LabelStore.trigger.setSelectedLabel({
+                    id: selectedPolygonId === polygon.id ? null : polygon.id,
+                  });
+                }}
+              >
+                {/* Polygon line */}
+                <Line
+                  points={getLinePoints(polygon.points, polygon.isClosed)}
+                  closed={polygon.isClosed}
+                  stroke={polygon.color}
+                  opacity={selectedPolygonId === polygon.id ? 0.6 : 0.3}
+                  strokeWidth={selectedPolygonId === polygon.id ? 3 : 2}
+                  fill={polygon.isClosed ? `gray` : ""}
+                />
+
+                {/* FIXED: Anchor points are now inside the Group */}
+                {selectedPolygonId === polygon.id
+                  ? polygon.points.map((p, i) => (
+                      <Circle
+                        key={i}
+                        x={p.x}
+                        y={p.y}
+                        radius={6}
+                        fill={i === 0 ? "red" : "#4caf50"}
+                        opacity={0.8}
+                        stroke="white"
+                        strokeWidth={1}
+                        draggable={true}
+                        onDragMove={(e) => {
+                          const { x, y } = e.target.position();
+                          updatePolygonPoint(polygon.id, i, { x, y });
+
+                          e.evt.stopPropagation();
+                        }}
+                      />
+                    ))
+                  : null}
+              </Group>
+            ))}
+
+            {/* Current drawing polygon */}
+            {isDrawing ? (
+              <Group>
+                <Line
+                  points={getLinePoints(currentPoints, false)}
+                  stroke="blue"
+                  strokeWidth={2}
+                />
+
+                {/* Current drawing points */}
+                {currentPoints.map((p, i) => {
+                  const isFirst = i === 0;
+                  const isClosing =
+                    isFirst &&
+                    mousePos &&
+                    Math.hypot(p.x - mousePos.x, p.y - mousePos.y) < 10;
+
+                  return (
                     <Circle
                       key={i}
                       x={p.x}
                       y={p.y}
-                      radius={6}
-                      fill={i === 0 ? "red" : "#4caf50"}
-                      opacity={0.8}
-                      stroke="white"
-                      strokeWidth={1}
-                      draggable={true}
-                      onDragMove={(e) => {
-                        const { x, y } = e.target.position();
-                        updatePolygonPoint(polygon.id, i, { x, y });
-
-                        e.evt.stopPropagation();
-                      }}
+                      radius={isClosing ? 10 : 6}
+                      fill={isClosing ? "orange" : isFirst ? "red" : "black"}
                     />
-                  ))
-                : null}
-            </Group>
-          ))}
+                  );
+                })}
+              </Group>
+            ) : null}
 
-          {/* Current drawing polygon */}
-          {isDrawing ? (
-            <Group>
+            {/* Preview line from last point to cursor */}
+            {isDrawing && mousePos && currentPoints.length > 0 ? (
               <Line
-                points={getLinePoints(currentPoints, false)}
-                stroke="blue"
-                strokeWidth={2}
+                points={[
+                  currentPoints[currentPoints.length - 1].x,
+                  currentPoints[currentPoints.length - 1].y,
+                  mousePos.x,
+                  mousePos.y,
+                ]}
+                stroke="gray"
+                strokeWidth={1}
+                dash={[4, 4]}
               />
+            ) : null}
 
-              {/* Current drawing points */}
-              {currentPoints.map((p, i) => {
-                const isFirst = i === 0;
-                const isClosing =
-                  isFirst &&
-                  mousePos &&
-                  Math.hypot(p.x - mousePos.x, p.y - mousePos.y) < 10;
-
-                return (
-                  <Circle
-                    key={i}
-                    x={p.x}
-                    y={p.y}
-                    radius={isClosing ? 10 : 6}
-                    fill={isClosing ? "orange" : isFirst ? "red" : "black"}
-                  />
-                );
-              })}
-            </Group>
-          ) : null}
-
-          {/* Preview line from last point to cursor */}
-          {isDrawing && mousePos && currentPoints.length > 0 ? (
-            <Line
-              points={[
-                currentPoints[currentPoints.length - 1].x,
-                currentPoints[currentPoints.length - 1].y,
-                mousePos.x,
-                mousePos.y,
-              ]}
-              stroke="gray"
-              strokeWidth={1}
-              dash={[4, 4]}
-            />
-          ) : null}
-
-          {/* Ghost cursor point */}
-          {isDrawing && mousePos ? (
-            <Circle
-              x={mousePos.x}
-              y={mousePos.y}
-              radius={4}
-              fill="gray"
-              opacity={0.4}
-            />
-          ) : null}
-        </Layer>
-      </Stage>
+            {/* Ghost cursor point */}
+            {isDrawing && mousePos ? (
+              <Circle
+                x={mousePos.x}
+                y={mousePos.y}
+                radius={4}
+                fill="gray"
+                opacity={0.4}
+              />
+            ) : null}
+          </Layer>
+        </Stage>
+      </section>
     </div>
   );
 };
