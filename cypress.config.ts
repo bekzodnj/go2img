@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+import type Cypress from "cypress";
 
 export default defineConfig({
   e2e: {
