@@ -5,17 +5,44 @@ import { Button, Flex, Space, Tooltip } from "@mantine/core";
 import useImage from "use-image";
 import { LabelStore } from "~/lib/editorLogic";
 import { useSelector } from "@xstate/store/react";
+import { parse } from "path";
+import { type Polygon } from "~/lib/editorLogic";
 
 type Point = { x: number; y: number };
-export type Polygon = {
-  id: string;
-  points: Point[];
-  isClosed: boolean;
-  color: string;
-};
 
-const STAGE_WIDTH = 1300;
+const STAGE_WIDTH = 1000;
 const STAGE_HEIGHT = 750;
+
+export const COLORS = [
+  "#FF5E5B", // modern red
+  "#00CECB", // aqua teal
+  "#FFB400", // golden pop
+  "#9D4EDD", // royal purple
+  "#4CC9F0", // bright ice blue
+  "#6A994E", // deep leaf green
+
+  "#F15BB5", // hot pink (tasteful)
+  "#2EC4B6", // turquoise teal
+  "#F77F00", // vivid warm orange
+  "#7209B7", // deep electric purple
+  "#3A86FF", // vivid but stylish blue
+  "#70E000", // fresh lime green
+
+  "#FF006E", // vibrant magenta
+  "#5A189A", // rich violet
+  "#3F88C5", // saturated steel-blue
+  "#16DB93", // mint-candy green
+  "#FDC500", // strong yellow (modern)
+  "#9E2A2B", // dark red wine
+
+  "#43AA8B", // green with elegance
+  "#577590", // muted ocean blue
+  "#FF8500", // warm honey orange
+  "#4895EF", // smooth electric blue
+  "#B5179E", // raspberry violet
+  "#38B000", // intense green
+  "#FF4D6D", // coral-pink punch
+];
 
 const PenToolPolygon = ({
   setPolygonsCopy,
@@ -32,16 +59,17 @@ const PenToolPolygon = ({
   const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     if (status === "loaded" && bgImage) {
-      const maxWidth = STAGE_WIDTH * 0.9;
-      const maxHeight = STAGE_HEIGHT * 0.8;
-      const scale = Math.min(
-        maxWidth / bgImage.width,
-        maxHeight / bgImage.height,
+      const maxWidth = STAGE_WIDTH * 0.8;
+      const maxHeight = STAGE_HEIGHT * 0.7;
+      const scale = parseFloat(
+        Math.min(maxWidth / bgImage.width, maxHeight / bgImage.height).toFixed(
+          2,
+        ),
       );
 
       setImgSize({
-        width: bgImage.width * scale,
-        height: bgImage.height * scale,
+        width: Math.trunc(bgImage.width * scale),
+        height: Math.trunc(bgImage.height * scale),
       });
 
       return () => {
@@ -56,37 +84,6 @@ const PenToolPolygon = ({
   );
 
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
-
-  const COLORS = [
-    "#FF5E5B", // modern red
-    "#00CECB", // aqua teal
-    "#FFB400", // golden pop
-    "#9D4EDD", // royal purple
-    "#4CC9F0", // bright ice blue
-    "#6A994E", // deep leaf green
-
-    "#F15BB5", // hot pink (tasteful)
-    "#2EC4B6", // turquoise teal
-    "#F77F00", // vivid warm orange
-    "#7209B7", // deep electric purple
-    "#3A86FF", // vivid but stylish blue
-    "#70E000", // fresh lime green
-
-    "#FF006E", // vibrant magenta
-    "#5A189A", // rich violet
-    "#3F88C5", // saturated steel-blue
-    "#16DB93", // mint-candy green
-    "#FDC500", // strong yellow (modern)
-    "#9E2A2B", // dark red wine
-
-    "#43AA8B", // green with elegance
-    "#577590", // muted ocean blue
-    "#FF8500", // warm honey orange
-    "#4895EF", // smooth electric blue
-    "#B5179E", // raspberry violet
-    "#38B000", // intense green
-    "#FF4D6D", // coral-pink punch
-  ];
 
   const startNewPolygon = () => {
     setCurrentPoints([]);
@@ -124,6 +121,7 @@ const PenToolPolygon = ({
           points: currentPoints,
           isClosed: true,
           color: COLORS[polygons.length % COLORS.length],
+          name: "Polygon " + (polygons.length + 1),
         };
 
         LabelStore.trigger.setLabels({ polygons: [...polygons, newPolygon] });
@@ -295,6 +293,7 @@ const PenToolPolygon = ({
           </span>
         ) : null}
         <span>Polygons: {polygons.length}</span>
+        <span>Img Width x Height: {imgSize.width + "x" + imgSize.height} </span>
       </Flex>
 
       <Stage

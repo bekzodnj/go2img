@@ -32,6 +32,7 @@ export type Polygon = {
   isClosed: boolean;
   color: string;
   label?: string;
+  name?: string;
 };
 
 export const LabelStore = createStore({
@@ -52,10 +53,16 @@ export const LabelStore = createStore({
       ...context,
       selectedPolygonId: event.id,
     }),
-    changeLabelName: (context, event: { id: string; newLabel: string }) => ({
+    changeLabelColor: (context, event: { id: string; color: string }) => ({
       ...context,
       polygons: context.polygons.map((p) =>
-        p.id === event.id ? { ...p, label: event.newLabel } : p,
+        p.id === event.id ? { ...p, color: event.color } : p,
+      ),
+    }),
+    changeLabelName: (context, event: { id: string; newName: string }) => ({
+      ...context,
+      polygons: context.polygons.map((p) =>
+        p.id === event.id ? { ...p, name: event.newName } : p,
       ),
     }),
     removeLabel: (context, event: { id: string }) => ({

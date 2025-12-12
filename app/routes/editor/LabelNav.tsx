@@ -12,6 +12,8 @@ export function LabelNav() {
     (state) => state.context.selectedPolygonId,
   );
 
+  const selectedPolygon = polygons.find((p) => p.id === selectedPolygonId);
+
   return (
     <div>
       {polygons.length > 0 ? (
@@ -58,7 +60,7 @@ export function LabelNav() {
                     }}
                   ></span>
                   <span className="text-xs">
-                    Polygon {index + 1} ({polygon.points.length} dots)
+                    {polygon.name || "Polygon"} ({polygon.points.length} dots)
                   </span>
                 </span>
               </Button>

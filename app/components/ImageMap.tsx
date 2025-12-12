@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Polygon } from "./Canvas";
+import { type Polygon } from "~/lib/editorLogic";
 
 interface ImageMapProps {
   polygonsCopy: Polygon[];
