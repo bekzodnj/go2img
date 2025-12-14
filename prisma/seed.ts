@@ -1,60 +1,50 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./generated/prisma/client";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { env } from "prisma/config";
+import { prisma } from "~/db.server";
 
 async function seed() {
-  const email = "rachel@remix.run";
-
-  // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
-    // no worries if it doesn't exist yet
-  });
-
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
-
-  const user = await prisma.user.create({
-    data: {
-      email,
+  // Example users
+  const users = [
+    {
+      email: "rachel@remix.run",
       name: "Rachel",
-      emailVerified: true,
-      password: {
-        create: {
-          hash: hashedPassword,
+      password: "racheliscool",
+    },
+    {
+      email: "alice@prisma.io",
+      name: "Alice",
+      password: "aliceiscool",
+    },
+  ];
+
+  for (const u of users) {
+    const hashedPassword = await bcrypt.hash(u.password, 10);
+
+    const user = await prisma.user.upsert({
+      where: { email: u.email },
+      update: {}, // you can add fields to update if needed
+      create: {
+        email: u.email,
+        name: u.name,
+        emailVerified: true,
+        password: {
+          create: { hash: hashedPassword },
         },
       },
-    },
-  });
+    });
 
-  await prisma.note.create({
-    data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
+    // Seed some notes for this user
+    await prisma.note.createMany({
+      data: [
+        { title: "My first note", body: "Hello, world!", userId: user.id },
+        { title: "My second note", body: "Hello, world!", userId: user.id },
+      ],
+    });
+  }
 
-  await prisma.note.create({
-    data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
-
-  // Array.from({ length: 100 }, (_, index) => index + 1).forEach(
-  //   async (item, index) => {
-  //     await prisma.note.create({
-  //       data: {
-  //         title: `My note - item: ${item}`,
-  //         body: `Hello, world - index: ${index}!`,
-  //         userId: user.id,
-  //       },
-  //     });
-  //   },
-  // );
-
-  console.log(`Database has been seeded. 🌱`);
+  console.log("Database has been seeded. 🌱");
 }
 
 seed()

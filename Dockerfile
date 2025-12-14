@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Base image
 # --------------------------------------------------
-FROM node:22-bullseye-slim AS base
+FROM node:24-bullseye-slim AS base
 
 ENV NODE_ENV=production
 ENV PNPM_HOME="/pnpm"
@@ -35,6 +35,7 @@ FROM base AS production-deps
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 COPY package.json pnpm-lock.yaml ./
 
+# Remove devDependencies
 RUN pnpm prune --prod
 
 
@@ -42,20 +43,19 @@ RUN pnpm prune --prod
 # Build stage
 # --------------------------------------------------
 FROM base AS build
-WORKDIR /myapp
 
-COPY package.json pnpm-lock.yaml ./
-
+# We NEED devDependencies here (react-router, prisma, etc.)
 COPY --from=deps /myapp/node_modules /myapp/node_modules
-
 
 # Prisma schema first (cache-friendly)
 COPY prisma ./prisma
-RUN pnpm prisma generate
+RUN pnpm exec prisma generate
 
 # App source
 COPY . .
-RUN pnpm build
+
+# IMPORTANT: run script, not binary
+RUN pnpm run build
 
 
 # --------------------------------------------------
@@ -67,16 +67,20 @@ ENV DATABASE_URL="file:/data/sqlite.db"
 ENV PORT=8080
 ENV NODE_ENV=production
 
-# SQLite helper (Prisma uses file:, sqlite does not)
+# SQLite helper
 RUN echo '#!/bin/sh\nset -x\nsqlite3 /data/sqlite.db' \
   > /usr/local/bin/database-cli \
   && chmod +x /usr/local/bin/database-cli
 
 WORKDIR /myapp
 
+# Only production deps in final image
 COPY --from=production-deps /myapp/node_modules /myapp/node_modules
+
+# Prisma engine + generated client
 COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 
+# Built app + runtime files
 COPY --from=build /myapp/build ./build
 COPY --from=build /myapp/public ./public
 COPY --from=build /myapp/package.json ./package.json
