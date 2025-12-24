@@ -1,7 +1,6 @@
 
 datasource db {
   provider = "sqlite"
-
 }
 
 generator client {
