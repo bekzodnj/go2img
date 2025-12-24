@@ -16,7 +16,7 @@ import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
 import { editorStore, LabelStore } from "~/lib/editorLogic";
 
-import { LabelNav } from "./LabelNav";
+import { LabelNav } from "../../components/editors/LabelNav";
 import { ColorPickerPanel } from "~/components/editors/ColorPickerPanel";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
