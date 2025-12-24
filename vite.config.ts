@@ -7,7 +7,9 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [reactRouter(), tsconfigPaths()],
-  ssr: {
-    external: ["react", "react-dom"],
+  build: {
+    rollupOptions: {
+      external: /konva/,
+    },
   },
 });

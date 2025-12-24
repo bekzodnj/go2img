@@ -10,7 +10,8 @@ const Canvas = lazy(() => import("../components/Canvas"));
 const ImageMap = lazy(() => import("../components/ImageMap"));
 
 import ClientOnly from "~/components/ClientOnly";
-import { Polygon } from "../components/Canvas";
+import { Polygon } from "~/lib/editorLogic";
+
 
 export const meta: MetaFunction = () => [{ title: "Go2Img" }];
 
