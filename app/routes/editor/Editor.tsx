@@ -2,9 +2,12 @@ import {
   AppShell,
   Burger,
   Button,
+  Divider,
   Flex,
   Group,
   Input,
+  ScrollArea,
+  Space,
   Text,
   TextInput,
 } from "@mantine/core";
@@ -14,16 +17,16 @@ import { Link } from "react-router";
 import { type Polygon } from "~/lib/editorLogic";
 import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
-import { editorStore, LabelStore } from "~/lib/editorLogic";
+import { LabelStore } from "~/lib/editorLogic";
 
 import { LabelNav } from "../../components/editors/LabelNav";
 import { ColorPickerPanel } from "~/components/editors/ColorPickerPanel";
+import { OutputCodeBlock } from "~/components/editors/OutputCodeBlock";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 const ImageMap = lazy(() => import("~/components/ImageMap"));
 
 export default function Editor() {
-  const count = useSelector(editorStore, (state) => state.context.count);
   const selectedPolygonId = useSelector(
     LabelStore,
     (state) => state.context.selectedPolygonId,
@@ -79,27 +82,34 @@ export default function Editor() {
         </div>
       </AppShell.Main>
       <AppShell.Aside p="xs" w={300}>
-        Label Settings
-        <div>
-          {selectedPolygonId !== null && selectedPolygon ? (
-            <TextInput
-              label="Label name"
-              placeholder="Shape name"
-              value={
-                selectedPolygon?.name !== undefined ? selectedPolygon.name : ""
-              }
-              onChange={(event) => {
-                event.preventDefault();
-                if (!selectedPolygonId) return;
-                LabelStore.trigger.changeLabelName({
-                  id: selectedPolygonId!,
-                  newName: event.currentTarget.value,
-                });
-              }}
-            />
-          ) : null}
-          <ColorPickerPanel />
-        </div>
+        <ScrollArea h={850} type="auto">
+          Label Settings
+          <div>
+            {selectedPolygonId !== null && selectedPolygon ? (
+              <TextInput
+                label="Label name"
+                placeholder="Shape name"
+                value={
+                  selectedPolygon?.name !== undefined
+                    ? selectedPolygon.name
+                    : ""
+                }
+                onChange={(event) => {
+                  event.preventDefault();
+                  if (!selectedPolygonId) return;
+                  LabelStore.trigger.changeLabelName({
+                    id: selectedPolygonId!,
+                    newName: event.currentTarget.value,
+                  });
+                }}
+              />
+            ) : null}
+            <ColorPickerPanel />
+            <Space h="md" />
+            <Divider my="sm" />
+            <OutputCodeBlock />
+          </div>
+        </ScrollArea>
       </AppShell.Aside>
     </AppShell>
   );

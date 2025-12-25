@@ -1,5 +1,4 @@
 import { createStore } from "@xstate/store";
-import { P } from "node_modules/better-auth/dist/shared/better-auth.6BOIvSei";
 
 export const editorStore = createStore({
   // Initial context

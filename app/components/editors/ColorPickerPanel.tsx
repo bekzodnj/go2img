@@ -42,7 +42,7 @@ export function ColorPickerPanel() {
   const selected = polygons.find((p) => p.id === selectedId);
 
   if (!selected) {
-    return <div style={{ opacity: 0.5 }}>No polygon selected</div>;
+    return <p style={{ opacity: 0.5 }}>No polygon selected</p>;
   }
 
   return (
