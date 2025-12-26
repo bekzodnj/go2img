@@ -1,7 +1,7 @@
 # -------------------------------
 # Development dependencies
 # -------------------------------
-FROM node:24-alpine AS development-dependencies-env
+FROM node:24-bullseye AS development-dependencies-env
 
 WORKDIR /app
 
@@ -9,6 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Prisma schema must exist BEFORE npm ci
+COPY prisma.config.ts .
 COPY prisma ./prisma
 
 RUN npm ci
@@ -17,20 +18,21 @@ RUN npm ci
 # -------------------------------
 # Production dependencies
 # -------------------------------
-FROM node:24-alpine AS production-dependencies-env
+FROM node:24-bullseye AS production-dependencies-env
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+COPY prisma.config.ts .
 COPY prisma ./prisma
 
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 
 # -------------------------------
 # Build stage
 # -------------------------------
-FROM node:24-alpine AS build-env
+FROM node:24-bullseye AS build-env
 
 WORKDIR /app
 
@@ -43,15 +45,17 @@ RUN npm run build
 # -------------------------------
 # Runtime
 # -------------------------------
-FROM node:24-alpine
+FROM node:24-bullseye
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
 COPY package.json package-lock.json ./
+COPY prisma.config.ts .
 COPY prisma ./prisma
+
 COPY --from=production-dependencies-env /app/node_modules ./node_modules
 COPY --from=build-env /app/build ./build
 
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm run start"]
