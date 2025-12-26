@@ -38,6 +38,7 @@ export const LabelStore = createStore({
   context: {
     polygons: [] as Polygon[],
     selectedPolygonId: null as string | null,
+    imgScale: 1,
   },
   on: {
     addLabel: (context, event: { newPolygon: Polygon }) => ({
@@ -58,6 +59,10 @@ export const LabelStore = createStore({
         p.id === event.id ? { ...p, color: event.color } : p,
       ),
     }),
+    setImgScale: (context, event: { imgScale: number }) => ({
+      ...context,
+      imgScale: event.imgScale,
+    }),
     changeLabelName: (context, event: { id: string; newName: string }) => ({
       ...context,
       polygons: context.polygons.map((p) =>
@@ -71,6 +76,43 @@ export const LabelStore = createStore({
     reset: (context) => ({
       ...context,
       polygons: [],
+    }),
+  },
+});
+
+export const BackgroundImageStore = createStore({
+  context: {
+    imageUrl: null as string | null,
+    imageWidth: 0,
+    imageHeight: 0,
+    originalImageWidth: 0,
+    originalImageHeight: 0,
+  },
+  on: {
+    setImageUrl: (context, event: { imageUrl: string | null }) => ({
+      ...context,
+      imageUrl: event.imageUrl,
+    }),
+    setSizeImage: (
+      context,
+      event: { imageWidth: number; imageHeight: number },
+    ) => ({
+      ...context,
+      imageWidth: event.imageWidth,
+      imageHeight: event.imageHeight,
+    }),
+    setOriginalSizeImage: (
+      context,
+      event: { originalImageWidth: number; originalImageHeight: number },
+    ) => ({
+      ...context,
+      originalImageWidth: event.originalImageWidth,
+      originalImageHeight: event.originalImageHeight,
+    }),
+
+    clearImageUrl: (context) => ({
+      ...context,
+      imageUrl: null,
     }),
   },
 });

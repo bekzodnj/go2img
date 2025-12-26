@@ -3,11 +3,10 @@ import { Stage, Layer, Circle, Line, Group, Image } from "react-konva";
 
 import { Button, Flex, Input, Space, Tooltip } from "@mantine/core";
 import useImage from "use-image";
-import { LabelStore } from "~/lib/editorLogic";
+import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
 import { useSelector } from "@xstate/store/react";
-import { parse } from "path";
+
 import { type Polygon } from "~/lib/editorLogic";
-import { set } from "better-auth";
 
 type Point = { x: number; y: number };
 
@@ -61,28 +60,36 @@ const PenToolPolygon = ({
     imageURL || "https://images.unsplash.com/photo-1615873968403-89e068629265",
   );
 
+  const imgScale = useSelector(LabelStore, (state) => state.context.imgScale);
+
   const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     if (status === "loaded" && bgImage) {
       console.log("BG image loaded:", bgImage.width, bgImage.height);
-      const maxWidth = STAGE_WIDTH * 1;
-      const maxHeight = STAGE_HEIGHT * 1;
+
+      BackgroundImageStore.trigger.setOriginalSizeImage({
+        originalImageWidth: bgImage.width,
+        originalImageHeight: bgImage.height,
+      });
+
+      const maxWidth = STAGE_WIDTH * imgScale;
+      const maxHeight = STAGE_HEIGHT * imgScale;
       const scale = parseFloat(
         Math.min(maxWidth / bgImage.width, maxHeight / bgImage.height).toFixed(
           2,
         ),
       );
 
-      setImgSize({
-        width: Math.trunc(bgImage.width * scale),
-        height: Math.trunc(bgImage.height * scale),
+      BackgroundImageStore.trigger.setSizeImage({
+        imageWidth: Math.trunc(bgImage.width * scale),
+        imageHeight: Math.trunc(bgImage.height * scale),
       });
 
       return () => {
-        LabelStore.trigger.reset();
+        // LabelStore.trigger.reset();
       };
     }
-  }, [bgImage, status]);
+  }, [bgImage, status, imageURL, imgScale]);
 
   const selectedPolygonId = useSelector(
     LabelStore,
@@ -90,6 +97,14 @@ const PenToolPolygon = ({
   );
 
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
+  const bgImgHeight = useSelector(
+    BackgroundImageStore,
+    (state) => state.context.imageHeight,
+  );
+  const bgImgWidth = useSelector(
+    BackgroundImageStore,
+    (state) => state.context.imageWidth,
+  );
 
   const startNewPolygon = () => {
     setCurrentPoints([]);
@@ -313,16 +328,14 @@ const PenToolPolygon = ({
           </span>
         ) : null}
         <span>Polygons: {polygons.length}</span>
-        <span>
-          Image Width x Height: {imgSize.width + "x" + imgSize.height}{" "}
-        </span>
+        <span>Image Width x Height: {bgImgWidth + "x" + bgImgHeight} </span>
       </Flex>
       <Space h="sm" />
 
-      <section style={{ width: 800, overflow: "auto" }}>
+      <section style={{ width: 800, height: 600, overflow: "auto" }}>
         <Stage
-          width={imgSize.width}
-          height={imgSize.height}
+          width={bgImgWidth}
+          height={bgImgHeight}
           onClick={handleStageClick}
           onMouseMove={handleMouseMove}
           style={{ background: "#f0f0f0", border: "1px solid lightgray" }}
@@ -330,14 +343,16 @@ const PenToolPolygon = ({
           <Layer>
             <Image
               image={bgImage}
-              width={imgSize.width} // TODO: fix fixed width-height
-              height={imgSize.height}
+              width={bgImgWidth}
+              height={bgImgHeight}
               listening={false} // ← prevents clicks from selecting the image
             />
 
             {/* Render completed polygons */}
             {polygons.map((polygon) => (
               <Group
+                scaleX={imgScale} // todo: drawing on higher scale doesnt work well
+                scaleY={imgScale}
                 key={polygon.id}
                 draggable={true}
                 onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}

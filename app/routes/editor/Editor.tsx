@@ -22,6 +22,7 @@ import { LabelStore } from "~/lib/editorLogic";
 import { LabelNav } from "../../components/editors/LabelNav";
 import { ColorPickerPanel } from "~/components/editors/ColorPickerPanel";
 import { OutputCodeBlock } from "~/components/editors/OutputCodeBlock";
+import { ImageScaleSlider } from "~/components/editors/ImageScaleSlider";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 const ImageMap = lazy(() => import("~/components/ImageMap"));
@@ -105,6 +106,9 @@ export default function Editor() {
               />
             ) : null}
             <ColorPickerPanel />
+            <Space h="md" />
+            <Divider my="sm" />
+            <ImageScaleSlider />
             <Space h="md" />
             <Divider my="sm" />
             <OutputCodeBlock />
