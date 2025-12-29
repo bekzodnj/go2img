@@ -1,9 +1,8 @@
 import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 
-import "@mantine/core/styles.css";
-import { getUser } from "~/session.server";
 import stylesheet from "~/tailwind.css?url";
+import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
 import {
   ColorSchemeScript,
@@ -15,10 +14,6 @@ import {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return { user: await getUser(request) };
-};
 
 const myTheme = createTheme({
   primaryColor: "indigo",

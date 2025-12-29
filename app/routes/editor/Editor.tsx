@@ -23,6 +23,7 @@ import { LabelNav } from "../../components/editors/LabelNav";
 import { ColorPickerPanel } from "~/components/editors/ColorPickerPanel";
 import { OutputCodeBlock } from "~/components/editors/OutputCodeBlock";
 import { ImageScaleSlider } from "~/components/editors/ImageScaleSlider";
+import { ImageUpload } from "~/components/main/ImageUpload";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 const ImageMap = lazy(() => import("~/components/ImageMap"));
@@ -66,6 +67,8 @@ export default function Editor() {
       </AppShell.Navbar>
       <AppShell.Main>
         <div>
+          <ImageUpload />
+          <Space h="md" />
           <Flex direction="column">
             <div className="w-[820px]">
               <ClientOnly>
