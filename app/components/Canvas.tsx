@@ -58,6 +58,7 @@ const PenToolPolygon = ({
 
   const [bgImage, status] = useImage(
     imageURL || "https://images.unsplash.com/photo-1615873968403-89e068629265",
+    "anonymous",
   );
 
   const imgScale = useSelector(LabelStore, (state) => state.context.imgScale);
