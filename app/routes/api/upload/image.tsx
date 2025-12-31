@@ -22,7 +22,7 @@ export async function action({ request }: ActionFunctionArgs) {
     contentType: file.type,
   });
 
-  return new Response(JSON.stringify({ result }), {
+  return new Response(JSON.stringify(result), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

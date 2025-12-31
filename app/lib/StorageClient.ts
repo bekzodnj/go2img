@@ -1,3 +1,4 @@
+import { ok } from "assert";
 import { AwsClient } from "aws4fetch";
 import { err, ResultAsync } from "neverthrow";
 
@@ -43,7 +44,12 @@ class StorageClient {
       throw new Error("Failed to upload file");
     }
 
-    return `${R2_URL}/${key}`;
+    return {
+      key,
+      url: `${R2_URL}/${key}`,
+      devUrl: `${process.env.R2_DEV_URL}/${key}`,
+      ok: true,
+    };
   }
 
   async delete(key: string) {
