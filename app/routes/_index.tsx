@@ -12,7 +12,6 @@ const ImageMap = lazy(() => import("../components/ImageMap"));
 import ClientOnly from "~/components/ClientOnly";
 import { Polygon } from "~/lib/editorLogic";
 
-
 export const meta: MetaFunction = () => [{ title: "Go2Img" }];
 
 export default function Index({ actionData }: Route.ComponentProps) {
@@ -82,7 +81,7 @@ export default function Index({ actionData }: Route.ComponentProps) {
         </div>
       </Container>
 
-      <div>
+      {/* <div>
         <Flex px={"xl"} direction="column" align={"center"}>
           <div className="w-[1100px]">
             <ClientOnly>
@@ -96,7 +95,7 @@ export default function Index({ actionData }: Route.ComponentProps) {
             </ClientOnly>
           </div>
         </Flex>
-      </div>
+      </div> */}
     </div>
   );
 }

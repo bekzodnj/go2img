@@ -52,7 +52,10 @@ export function ColorPickerPanel() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(6, 1fr)",
-          gap: 6,
+          columnGap: 4,
+          rowGap: 4,
+          gap: 3,
+          padding: 8,
         }}
       >
         {COLORS.map((color) => {
