@@ -153,10 +153,13 @@ const PenToolPolygon = ({
         };
 
         LabelStore.trigger.setLabels({ polygons: [...polygons, newPolygon] });
-        //setPolygons([...polygons, newPolygon]);
+
         setCurrentPoints([]);
         setIsDrawing(false);
         setMousePos(null);
+        LabelStore.trigger.setSelectedLabel({
+          id: newPolygon.id,
+        });
         return;
       }
     }
