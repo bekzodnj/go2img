@@ -250,9 +250,14 @@ const PenToolPolygon = ({
       if (e.key === "Escape") {
         e.preventDefault();
         setIsDrawing(false);
+        setCurrentPoints([]);
       }
 
-      if (e.key === "Backspace" || e.key === "Delete") {
+      if (
+        e.key === "Backspace" ||
+        e.key === "Delete" ||
+        e.key.toLowerCase() === "p"
+      ) {
         const el = e.target;
         if (
           el instanceof HTMLInputElement ||
