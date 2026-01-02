@@ -37,8 +37,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formDataCopy = await cloneReq.formData();
   const fileAttachment = formDataCopy.get("fileAttachment") as File | undefined;
 
-  console.log("fileAttachment", fileAttachment);
-
   const isFileAttached =
     fileAttachment !== null && fileAttachment !== undefined;
   let fileName = fileAttachment?.name.replace(/\s+/g, "_") || null;

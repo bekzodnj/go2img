@@ -1,4 +1,9 @@
-import type { User, Library, Material, Category } from "@prisma/client";
+import type {
+  User,
+  Library,
+  Material,
+  Category,
+} from "../../prisma/generated/prisma/client";
 import { prisma } from "~/db.server";
 
 type MaterialWithCategory = Material & {

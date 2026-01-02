@@ -2,6 +2,7 @@ import {
   AppShell,
   Burger,
   Button,
+  ButtonGroup,
   Divider,
   Flex,
   Group,
@@ -13,7 +14,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { lazy, useState } from "react";
-import { Link } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { type Polygon } from "~/lib/editorLogic";
 import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
@@ -33,6 +34,7 @@ export default function Editor() {
     LabelStore,
     (state) => state.context.selectedPolygonId,
   );
+  const fetcher = useFetcher();
 
   const polygons2 = useSelector(LabelStore, (state) => state.context.polygons);
   const selectedPolygon = polygons2.find((p) => p.id === selectedPolygonId);
@@ -40,6 +42,8 @@ export default function Editor() {
 
   const [opened, { toggle }] = useDisclosure();
   const [polygons, setPolygons] = useState<Polygon[]>([]);
+
+  console.log("Fetcher data:", fetcher.data);
   return (
     <AppShell
       header={{ height: 60 }}
@@ -62,13 +66,34 @@ export default function Editor() {
       </AppShell.Header>
 
       <AppShell.Navbar p="sm" w={300}>
-        Navbar
+        Polygons
         <LabelNav />
       </AppShell.Navbar>
       <AppShell.Main>
         <div>
           <ImageUpload />
           <Space h="md" />
+          <div>
+            <Button
+              variant="light"
+              onClick={() => {
+                const formData = new FormData();
+                formData.append("content", JSON.stringify(polygons2));
+                formData.append("imageUrl", ""); // TODO: add image URL here
+                formData.append("metadata", ""); // TODO: add metadata here
+
+                fetcher.submit(formData, {
+                  method: "post",
+                  action: "/api/annotation",
+                  encType: "multipart/form-data",
+                });
+
+                console.log("Saved polygons:", polygons2);
+              }}
+            >
+              Save progress
+            </Button>
+          </div>
           <Flex direction="column">
             <div className="w-[820px]">
               <ClientOnly>

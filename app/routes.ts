@@ -34,4 +34,5 @@ export default [
   route("api/auth/*", "routes/api/auth.tsx"),
   route("api/checkout/*", "api/checkout.tsx"),
   route("api/upload/image", "routes/api/upload/image.tsx"),
+  route("api/annotation", "routes/api/annotation.tsx"),
 ] satisfies RouteConfig;

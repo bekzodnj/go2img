@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  Annotation: 'Annotation',
   Material: 'Material',
   Library: 'Library',
   Category: 'Category',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "material" | "library" | "category" | "password" | "note" | "session" | "account" | "verification"
+    modelProps: "user" | "annotation" | "material" | "library" | "category" | "password" | "note" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -483,6 +484,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    Annotation: {
+      payload: Prisma.$AnnotationPayload<ExtArgs>
+      fields: Prisma.AnnotationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnnotationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnnotationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>
+        }
+        findFirst: {
+          args: Prisma.AnnotationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnnotationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>
+        }
+        findMany: {
+          args: Prisma.AnnotationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>[]
+        }
+        create: {
+          args: Prisma.AnnotationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>
+        }
+        createMany: {
+          args: Prisma.AnnotationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnnotationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>[]
+        }
+        delete: {
+          args: Prisma.AnnotationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>
+        }
+        update: {
+          args: Prisma.AnnotationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnnotationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnnotationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnnotationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnnotationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnnotationPayload>
+        }
+        aggregate: {
+          args: Prisma.AnnotationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnnotation>
+        }
+        groupBy: {
+          args: Prisma.AnnotationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnnotationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnnotationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnnotationCountAggregateOutputType> | number
         }
       }
     }
@@ -1127,6 +1202,19 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const AnnotationScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  imageUrl: 'imageUrl',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+} as const
+
+export type AnnotationScalarFieldEnum = (typeof AnnotationScalarFieldEnum)[keyof typeof AnnotationScalarFieldEnum]
+
+
 export const MaterialScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -1386,6 +1474,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  annotation?: Prisma.AnnotationOmit
   material?: Prisma.MaterialOmit
   library?: Prisma.LibraryOmit
   category?: Prisma.CategoryOmit

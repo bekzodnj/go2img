@@ -41,21 +41,9 @@ export default function Index({ actionData }: Route.ComponentProps) {
               </Link>
               <Link
                 to="/editor"
-                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
+                className="relative pl-4 text-lg font-semibold text-gray-900 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-full before:bg-gradient-to-r before:from-indigo-500 before:to-pink-500 after:absolute after:-bottom-2 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-indigo-500 after:to-pink-500 after:transition-all after:duration-300 hover:after:w-full"
               >
-                Studio
-              </Link>
-              <Link
-                to="/materials"
-                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
-              >
-                Search materials
-              </Link>
-              <Link
-                to="/create"
-                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
-              >
-                Create
+                Editor
               </Link>
 
               <a
