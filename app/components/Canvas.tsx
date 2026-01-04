@@ -117,7 +117,7 @@ const PenToolPolygon = ({
     setCurrentPoints([]);
     setIsDrawing(true);
 
-    LabelStore.trigger.setSelectedLabel({
+    LabelStore.trigger.setSelectedPolygon({
       id: null,
     });
   };
@@ -128,7 +128,7 @@ const PenToolPolygon = ({
   const handleStageClick = (e: any) => {
     // if click happened directly on the stage, deselect
     if (e.target === e.target.getStage()) {
-      LabelStore.trigger.setSelectedLabel({
+      LabelStore.trigger.setSelectedPolygon({
         id: null,
       });
     }
@@ -152,12 +152,12 @@ const PenToolPolygon = ({
           name: "Polygon " + (polygons.length + 1),
         };
 
-        LabelStore.trigger.setLabels({ polygons: [...polygons, newPolygon] });
+        LabelStore.trigger.setPolygons({ polygons: [...polygons, newPolygon] });
 
         setCurrentPoints([]);
         setIsDrawing(false);
         setMousePos(null);
-        LabelStore.trigger.setSelectedLabel({
+        LabelStore.trigger.setSelectedPolygon({
           id: newPolygon.id,
         });
         return;
@@ -183,7 +183,7 @@ const PenToolPolygon = ({
     const dx = node.x();
     const dy = node.y();
 
-    LabelStore.trigger.setLabels({
+    LabelStore.trigger.setPolygons({
       polygons: polygons.map((polygon) => {
         if (polygon.id === polygonId) {
           const updatedPoints = polygon.points.map((p) => ({
@@ -207,7 +207,7 @@ const PenToolPolygon = ({
     pointIndex: number,
     newPos: Point,
   ) => {
-    LabelStore.trigger.setLabels({
+    LabelStore.trigger.setPolygons({
       polygons: polygons.map((polygon) => {
         if (polygon.id === polygonId) {
           const updated = [...polygon.points];
@@ -224,16 +224,16 @@ const PenToolPolygon = ({
       setCurrentPoints(currentPoints.slice(0, -1));
     } else if (polygons.length > 0) {
       // setPolygons(polygons.slice(0, -1));
-      LabelStore.trigger.setLabels({ polygons: polygons.slice(0, -1) });
+      LabelStore.trigger.setPolygons({ polygons: polygons.slice(0, -1) });
     }
   };
 
   const handleReset = () => {
-    LabelStore.trigger.setLabels({ polygons: [] });
+    LabelStore.trigger.setPolygons({ polygons: [] });
     setCurrentPoints([]);
     setIsDrawing(false);
 
-    LabelStore.trigger.setSelectedLabel({
+    LabelStore.trigger.setSelectedPolygon({
       id: null,
     });
     setMousePos(null);
@@ -273,7 +273,7 @@ const PenToolPolygon = ({
         if (selectedPolygonId) {
           deletePolygon(selectedPolygonId);
 
-          LabelStore.trigger.setSelectedLabel({
+          LabelStore.trigger.setSelectedPolygon({
             id: null,
           });
         }
@@ -373,7 +373,7 @@ const PenToolPolygon = ({
                 onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
                 onClick={() => {
                   // setSelectedPolygonId(polygon.id);
-                  LabelStore.trigger.setSelectedLabel({
+                  LabelStore.trigger.setSelectedPolygon({
                     id: selectedPolygonId === polygon.id ? null : polygon.id,
                   });
                 }}

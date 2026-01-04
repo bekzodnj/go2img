@@ -2,7 +2,7 @@ import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
   index("routes/_index.tsx"),
-  route("editor", "routes/editor/Editor.tsx"),
+  route("editor/:projectId?", "routes/editor/Editor.tsx"),
 
   // new sign-in
   route("join", "routes/join.tsx"),
@@ -27,6 +27,9 @@ export default [
     route("created", "routes/dashboard/created.tsx"),
     route("saved", "routes/dashboard/saved.tsx"),
   ]),
+
+  // dash
+  route("app", "routes/app/layout.tsx", [index("./routes/app/home.tsx")]),
 
   route("healthcheck", "routes/healthcheck.tsx"),
 

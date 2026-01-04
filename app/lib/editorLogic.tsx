@@ -45,11 +45,11 @@ export const LabelStore = createStore({
       ...context,
       polygons: [...context.polygons, event.newPolygon],
     }),
-    setLabels: (context, event: { polygons: Polygon[] }) => ({
+    setPolygons: (context, event: { polygons: Polygon[] }) => ({
       ...context,
       polygons: event.polygons,
     }),
-    setSelectedLabel: (context, event: { id: string | null }) => ({
+    setSelectedPolygon: (context, event: { id: string | null }) => ({
       ...context,
       selectedPolygonId: event.id,
     }),

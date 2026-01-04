@@ -5,8 +5,6 @@ import { LabelStore } from "~/lib/editorLogic";
 export function LabelNav() {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
 
-  console.log("LabelNav polygons:", polygons);
-
   const selectedPolygonId = useSelector(
     LabelStore,
     (state) => state.context.selectedPolygonId,
@@ -44,7 +42,7 @@ export function LabelNav() {
                   selectedPolygonId === polygon.id ? "outline" : "default"
                 }
                 onClick={() =>
-                  LabelStore.trigger.setSelectedLabel({
+                  LabelStore.trigger.setSelectedPolygon({
                     id: selectedPolygonId === polygon.id ? null : polygon.id,
                   })
                 }

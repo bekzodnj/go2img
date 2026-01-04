@@ -1,5 +1,6 @@
 import { Group, Text } from "@mantine/core";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { useEffect } from "react";
 import { Form, useFetcher, useSubmit } from "react-router";
 import { BackgroundImageStore } from "~/lib/editorLogic";
 
@@ -18,9 +19,14 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
     });
   }
 
-  if (fetcher.data) {
-    BackgroundImageStore.trigger.setImageUrl({ imageUrl: fetcher.data.devUrl });
-  }
+  useEffect(() => {
+    if (fetcher.data) {
+      BackgroundImageStore.trigger.setImageUrl({
+        imageUrl: fetcher.data.devUrl,
+      });
+    }
+    return () => {};
+  }, [fetcher.data]);
 
   return !fetcher.data ? (
     <div>

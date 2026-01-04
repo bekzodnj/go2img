@@ -2,18 +2,20 @@ import { prisma } from "~/db.server";
 import type { User, Annotation } from "../../prisma/generated/prisma/client";
 
 export function createAnnotation({
-  content,
+  polygons,
   imageUrl,
-  metadata,
+  imageWidth,
+  imageHeight,
   userId,
-}: Pick<Annotation, "content" | "imageUrl" | "metadata"> & {
+}: Pick<Annotation, "polygons" | "imageUrl" | "imageWidth" | "imageHeight"> & {
   userId: User["id"];
 }) {
   return prisma.annotation.create({
     data: {
-      content,
       imageUrl,
-      metadata,
+      imageWidth,
+      imageHeight,
+      polygons,
       user: {
         connect: { id: userId },
       },
@@ -25,6 +27,15 @@ export function getAnnotationsByUser({ userId }: { userId: User["id"] }) {
   return prisma.annotation.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export function getAnnotationById({
+  id,
+  userId,
+}: Pick<Annotation, "id"> & { userId: User["id"] }) {
+  return prisma.annotation.findFirst({
+    where: { id, userId },
   });
 }
 

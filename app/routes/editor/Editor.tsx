@@ -13,9 +13,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { lazy, useState } from "react";
+import { lazy, use, useEffect, useState } from "react";
 import { Link, useFetcher } from "react-router";
-import { type Polygon } from "~/lib/editorLogic";
+import { BackgroundImageStore, type Polygon } from "~/lib/editorLogic";
 import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
 import { LabelStore } from "~/lib/editorLogic";
@@ -25,25 +25,73 @@ import { ColorPickerPanel } from "~/components/editors/ColorPickerPanel";
 import { OutputCodeBlock } from "~/components/editors/OutputCodeBlock";
 import { ImageScaleSlider } from "~/components/editors/ImageScaleSlider";
 import { ImageUpload } from "~/components/main/ImageUpload";
+import { Route } from "./+types/Editor";
+import { getAnnotationById } from "~/models/annotation.server";
+import { requireUserIdWithRedirect } from "~/session.server";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 const ImageMap = lazy(() => import("~/components/ImageMap"));
 
-export default function Editor() {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  if (!params.projectId) {
+    return {};
+  }
+
+  const user = await requireUserIdWithRedirect(request);
+
+  const projectId = params.projectId;
+  const annotation = await getAnnotationById({
+    id: projectId,
+    userId: user.id,
+  });
+
+  if (!annotation) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  return { annotation };
+};
+
+export default function Editor({ loaderData }: Route.ComponentProps) {
   const selectedPolygonId = useSelector(
     LabelStore,
     (state) => state.context.selectedPolygonId,
   );
   const fetcher = useFetcher();
 
+  useEffect(() => {
+    console.log("+++ loaderData changed:", loaderData.annotation);
+    if (loaderData.annotation) {
+      const annotation = loaderData.annotation;
+      // Load background image
+      BackgroundImageStore.trigger.setImageUrl({
+        imageUrl: annotation.imageUrl || "",
+      });
+      BackgroundImageStore.trigger.setSizeImage({
+        imageWidth: Number(annotation.imageWidth) || 0,
+        imageHeight: Number(annotation.imageHeight) || 0,
+      });
+
+      // Load polygons
+      const polygons: Polygon[] = JSON.parse(annotation.polygons);
+      LabelStore.trigger.setPolygons({ polygons });
+    }
+  }, [loaderData.annotation]);
+
   const polygons2 = useSelector(LabelStore, (state) => state.context.polygons);
   const selectedPolygon = polygons2.find((p) => p.id === selectedPolygonId);
-  console.log("~~~ selectedPolygon:", selectedPolygon, selectedPolygon?.label);
 
   const [opened, { toggle }] = useDisclosure();
   const [polygons, setPolygons] = useState<Polygon[]>([]);
 
-  console.log("Fetcher data:", fetcher.data);
+  const imageUrl =
+    useSelector(BackgroundImageStore, (state) => state.context.imageUrl) || "";
+  const imageHeight =
+    useSelector(BackgroundImageStore, (state) => state.context.imageHeight) ||
+    0;
+  const imageWidth =
+    useSelector(BackgroundImageStore, (state) => state.context.imageWidth) || 0;
+
   return (
     <AppShell
       header={{ height: 60 }}
@@ -78,17 +126,16 @@ export default function Editor() {
               variant="light"
               onClick={() => {
                 const formData = new FormData();
-                formData.append("content", JSON.stringify(polygons2));
-                formData.append("imageUrl", ""); // TODO: add image URL here
-                formData.append("metadata", ""); // TODO: add metadata here
+                formData.append("imageUrl", imageUrl);
+                formData.append("polygons", JSON.stringify(polygons2));
+                formData.append("imageWidth", imageWidth.toString());
+                formData.append("imageHeight", imageHeight.toString());
 
                 fetcher.submit(formData, {
                   method: "post",
                   action: "/api/annotation",
                   encType: "multipart/form-data",
                 });
-
-                console.log("Saved polygons:", polygons2);
               }}
             >
               Save progress

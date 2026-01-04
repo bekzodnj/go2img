@@ -25,7 +25,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   if (session) {
-    return redirect("/dashboard");
+    return redirect("/app");
   }
 
   console.log("Session", session);

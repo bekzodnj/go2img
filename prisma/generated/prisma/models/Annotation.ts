@@ -26,9 +26,10 @@ export type AggregateAnnotation = {
 
 export type AnnotationMinAggregateOutputType = {
   id: string | null
-  content: string | null
   imageUrl: string | null
-  metadata: string | null
+  imageWidth: string | null
+  imageHeight: string | null
+  polygons: string | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -36,9 +37,10 @@ export type AnnotationMinAggregateOutputType = {
 
 export type AnnotationMaxAggregateOutputType = {
   id: string | null
-  content: string | null
   imageUrl: string | null
-  metadata: string | null
+  imageWidth: string | null
+  imageHeight: string | null
+  polygons: string | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -46,9 +48,10 @@ export type AnnotationMaxAggregateOutputType = {
 
 export type AnnotationCountAggregateOutputType = {
   id: number
-  content: number
   imageUrl: number
-  metadata: number
+  imageWidth: number
+  imageHeight: number
+  polygons: number
   createdAt: number
   updatedAt: number
   userId: number
@@ -58,9 +61,10 @@ export type AnnotationCountAggregateOutputType = {
 
 export type AnnotationMinAggregateInputType = {
   id?: true
-  content?: true
   imageUrl?: true
-  metadata?: true
+  imageWidth?: true
+  imageHeight?: true
+  polygons?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -68,9 +72,10 @@ export type AnnotationMinAggregateInputType = {
 
 export type AnnotationMaxAggregateInputType = {
   id?: true
-  content?: true
   imageUrl?: true
-  metadata?: true
+  imageWidth?: true
+  imageHeight?: true
+  polygons?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -78,9 +83,10 @@ export type AnnotationMaxAggregateInputType = {
 
 export type AnnotationCountAggregateInputType = {
   id?: true
-  content?: true
   imageUrl?: true
-  metadata?: true
+  imageWidth?: true
+  imageHeight?: true
+  polygons?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -161,9 +167,10 @@ export type AnnotationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type AnnotationGroupByOutputType = {
   id: string
-  content: string
   imageUrl: string | null
-  metadata: string | null
+  imageWidth: string | null
+  imageHeight: string | null
+  polygons: string
   createdAt: Date
   updatedAt: Date
   userId: string
@@ -192,9 +199,10 @@ export type AnnotationWhereInput = {
   OR?: Prisma.AnnotationWhereInput[]
   NOT?: Prisma.AnnotationWhereInput | Prisma.AnnotationWhereInput[]
   id?: Prisma.StringFilter<"Annotation"> | string
-  content?: Prisma.StringFilter<"Annotation"> | string
   imageUrl?: Prisma.StringNullableFilter<"Annotation"> | string | null
-  metadata?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  imageWidth?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  imageHeight?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  polygons?: Prisma.StringFilter<"Annotation"> | string
   createdAt?: Prisma.DateTimeFilter<"Annotation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Annotation"> | Date | string
   userId?: Prisma.StringFilter<"Annotation"> | string
@@ -203,9 +211,10 @@ export type AnnotationWhereInput = {
 
 export type AnnotationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageWidth?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageHeight?: Prisma.SortOrderInput | Prisma.SortOrder
+  polygons?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -217,9 +226,10 @@ export type AnnotationWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AnnotationWhereInput | Prisma.AnnotationWhereInput[]
   OR?: Prisma.AnnotationWhereInput[]
   NOT?: Prisma.AnnotationWhereInput | Prisma.AnnotationWhereInput[]
-  content?: Prisma.StringFilter<"Annotation"> | string
   imageUrl?: Prisma.StringNullableFilter<"Annotation"> | string | null
-  metadata?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  imageWidth?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  imageHeight?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  polygons?: Prisma.StringFilter<"Annotation"> | string
   createdAt?: Prisma.DateTimeFilter<"Annotation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Annotation"> | Date | string
   userId?: Prisma.StringFilter<"Annotation"> | string
@@ -228,9 +238,10 @@ export type AnnotationWhereUniqueInput = Prisma.AtLeast<{
 
 export type AnnotationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageWidth?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageHeight?: Prisma.SortOrderInput | Prisma.SortOrder
+  polygons?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -244,9 +255,10 @@ export type AnnotationScalarWhereWithAggregatesInput = {
   OR?: Prisma.AnnotationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AnnotationScalarWhereWithAggregatesInput | Prisma.AnnotationScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Annotation"> | string
-  content?: Prisma.StringWithAggregatesFilter<"Annotation"> | string
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Annotation"> | string | null
-  metadata?: Prisma.StringNullableWithAggregatesFilter<"Annotation"> | string | null
+  imageWidth?: Prisma.StringNullableWithAggregatesFilter<"Annotation"> | string | null
+  imageHeight?: Prisma.StringNullableWithAggregatesFilter<"Annotation"> | string | null
+  polygons?: Prisma.StringWithAggregatesFilter<"Annotation"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Annotation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Annotation"> | Date | string
   userId?: Prisma.StringWithAggregatesFilter<"Annotation"> | string
@@ -254,9 +266,10 @@ export type AnnotationScalarWhereWithAggregatesInput = {
 
 export type AnnotationCreateInput = {
   id?: string
-  content: string
   imageUrl?: string | null
-  metadata?: string | null
+  imageWidth?: string | null
+  imageHeight?: string | null
+  polygons: string
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutAnnotationsInput
@@ -264,9 +277,10 @@ export type AnnotationCreateInput = {
 
 export type AnnotationUncheckedCreateInput = {
   id?: string
-  content: string
   imageUrl?: string | null
-  metadata?: string | null
+  imageWidth?: string | null
+  imageHeight?: string | null
+  polygons: string
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -274,9 +288,10 @@ export type AnnotationUncheckedCreateInput = {
 
 export type AnnotationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutAnnotationsNestedInput
@@ -284,9 +299,10 @@ export type AnnotationUpdateInput = {
 
 export type AnnotationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -294,9 +310,10 @@ export type AnnotationUncheckedUpdateInput = {
 
 export type AnnotationCreateManyInput = {
   id?: string
-  content: string
   imageUrl?: string | null
-  metadata?: string | null
+  imageWidth?: string | null
+  imageHeight?: string | null
+  polygons: string
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -304,18 +321,20 @@ export type AnnotationCreateManyInput = {
 
 export type AnnotationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AnnotationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -333,9 +352,10 @@ export type AnnotationOrderByRelationAggregateInput = {
 
 export type AnnotationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  metadata?: Prisma.SortOrder
+  imageWidth?: Prisma.SortOrder
+  imageHeight?: Prisma.SortOrder
+  polygons?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -343,9 +363,10 @@ export type AnnotationCountOrderByAggregateInput = {
 
 export type AnnotationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  metadata?: Prisma.SortOrder
+  imageWidth?: Prisma.SortOrder
+  imageHeight?: Prisma.SortOrder
+  polygons?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -353,9 +374,10 @@ export type AnnotationMaxOrderByAggregateInput = {
 
 export type AnnotationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  metadata?: Prisma.SortOrder
+  imageWidth?: Prisma.SortOrder
+  imageHeight?: Prisma.SortOrder
+  polygons?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -405,18 +427,20 @@ export type AnnotationUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type AnnotationCreateWithoutUserInput = {
   id?: string
-  content: string
   imageUrl?: string | null
-  metadata?: string | null
+  imageWidth?: string | null
+  imageHeight?: string | null
+  polygons: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type AnnotationUncheckedCreateWithoutUserInput = {
   id?: string
-  content: string
   imageUrl?: string | null
-  metadata?: string | null
+  imageWidth?: string | null
+  imageHeight?: string | null
+  polygons: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -451,9 +475,10 @@ export type AnnotationScalarWhereInput = {
   OR?: Prisma.AnnotationScalarWhereInput[]
   NOT?: Prisma.AnnotationScalarWhereInput | Prisma.AnnotationScalarWhereInput[]
   id?: Prisma.StringFilter<"Annotation"> | string
-  content?: Prisma.StringFilter<"Annotation"> | string
   imageUrl?: Prisma.StringNullableFilter<"Annotation"> | string | null
-  metadata?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  imageWidth?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  imageHeight?: Prisma.StringNullableFilter<"Annotation"> | string | null
+  polygons?: Prisma.StringFilter<"Annotation"> | string
   createdAt?: Prisma.DateTimeFilter<"Annotation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Annotation"> | Date | string
   userId?: Prisma.StringFilter<"Annotation"> | string
@@ -461,36 +486,40 @@ export type AnnotationScalarWhereInput = {
 
 export type AnnotationCreateManyUserInput = {
   id?: string
-  content: string
   imageUrl?: string | null
-  metadata?: string | null
+  imageWidth?: string | null
+  imageHeight?: string | null
+  polygons: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type AnnotationUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AnnotationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AnnotationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  polygons?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -499,9 +528,10 @@ export type AnnotationUncheckedUpdateManyWithoutUserInput = {
 
 export type AnnotationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  content?: boolean
   imageUrl?: boolean
-  metadata?: boolean
+  imageWidth?: boolean
+  imageHeight?: boolean
+  polygons?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -510,9 +540,10 @@ export type AnnotationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type AnnotationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  content?: boolean
   imageUrl?: boolean
-  metadata?: boolean
+  imageWidth?: boolean
+  imageHeight?: boolean
+  polygons?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -521,9 +552,10 @@ export type AnnotationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 
 export type AnnotationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  content?: boolean
   imageUrl?: boolean
-  metadata?: boolean
+  imageWidth?: boolean
+  imageHeight?: boolean
+  polygons?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -532,15 +564,16 @@ export type AnnotationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 
 export type AnnotationSelectScalar = {
   id?: boolean
-  content?: boolean
   imageUrl?: boolean
-  metadata?: boolean
+  imageWidth?: boolean
+  imageHeight?: boolean
+  polygons?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
 }
 
-export type AnnotationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "imageUrl" | "metadata" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["annotation"]>
+export type AnnotationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "imageWidth" | "imageHeight" | "polygons" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["annotation"]>
 export type AnnotationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -558,9 +591,10 @@ export type $AnnotationPayload<ExtArgs extends runtime.Types.Extensions.Internal
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    content: string
     imageUrl: string | null
-    metadata: string | null
+    imageWidth: string | null
+    imageHeight: string | null
+    polygons: string
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -989,9 +1023,10 @@ export interface Prisma__AnnotationClient<T, Null = never, ExtArgs extends runti
  */
 export interface AnnotationFieldRefs {
   readonly id: Prisma.FieldRef<"Annotation", 'String'>
-  readonly content: Prisma.FieldRef<"Annotation", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Annotation", 'String'>
-  readonly metadata: Prisma.FieldRef<"Annotation", 'String'>
+  readonly imageWidth: Prisma.FieldRef<"Annotation", 'String'>
+  readonly imageHeight: Prisma.FieldRef<"Annotation", 'String'>
+  readonly polygons: Prisma.FieldRef<"Annotation", 'String'>
   readonly createdAt: Prisma.FieldRef<"Annotation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Annotation", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Annotation", 'String'>

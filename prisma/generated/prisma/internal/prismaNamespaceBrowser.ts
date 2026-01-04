@@ -91,9 +91,10 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const AnnotationScalarFieldEnum = {
   id: 'id',
-  content: 'content',
   imageUrl: 'imageUrl',
-  metadata: 'metadata',
+  imageWidth: 'imageWidth',
+  imageHeight: 'imageHeight',
+  polygons: 'polygons',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
