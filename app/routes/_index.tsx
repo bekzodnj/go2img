@@ -68,22 +68,6 @@ export default function Index({ actionData }: Route.ComponentProps) {
           <HeroSection />
         </div>
       </Container>
-
-      {/* <div>
-        <Flex px={"xl"} direction="column" align={"center"}>
-          <div className="w-[1100px]">
-            <ClientOnly>
-              <Canvas setPolygonsCopy={setPolygons} />
-            </ClientOnly>
-          </div>
-
-          <div className="w-[1100px]">
-            <ClientOnly>
-              <ImageMap polygonsCopy={polygons} />
-            </ClientOnly>
-          </div>
-        </Flex>
-      </div> */}
     </div>
   );
 }
