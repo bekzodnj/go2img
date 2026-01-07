@@ -10,6 +10,7 @@ import {
   Badge,
   Tooltip,
   Slider,
+  SegmentedControl,
 } from "@mantine/core";
 import useImage from "use-image";
 import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
@@ -17,6 +18,7 @@ import { useSelector } from "@xstate/store/react";
 import { type Polygon } from "~/lib/editorLogic";
 
 type Point = { x: number; y: number };
+type Tool = "pan" | "pen";
 
 const COLORS = [
   "#FF5E5B",
@@ -49,6 +51,7 @@ const COLORS = [
 const PenToolPolygon = () => {
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [activeTool, setActiveTool] = useState<Tool>("pan"); // Default to Pan
   const [mousePos, setMousePos] = useState<Point | null>(null);
   const [imageURL, setImageURL] = useState("");
   const [stageScale, setStageScale] = useState(1);
@@ -121,6 +124,17 @@ const PenToolPolygon = () => {
     LabelStore.trigger.setSelectedPolygon({
       id: null,
     });
+  };
+
+  // Helper to sync drawing state with tool selection
+  const handleToolChange = (tool: Tool) => {
+    setActiveTool(tool);
+    if (tool === "pan") {
+      setIsDrawing(false);
+      setCurrentPoints([]);
+    } else {
+      setIsDrawing(true);
+    }
   };
 
   const getLinePoints = (points: Point[], isClosed: boolean) =>
@@ -274,6 +288,16 @@ const PenToolPolygon = () => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
         e.preventDefault();
         handleUndo();
@@ -285,11 +309,7 @@ const PenToolPolygon = () => {
         setCurrentPoints([]);
       }
 
-      if (
-        e.key === "Backspace" ||
-        e.key === "Delete" ||
-        e.key.toLowerCase() === "p"
-      ) {
+      if (e.key === "Backspace" || e.key === "Delete" || e.key === "Del") {
         const el = e.target;
         if (
           el instanceof HTMLInputElement ||
@@ -311,6 +331,13 @@ const PenToolPolygon = () => {
       if (e.key.toLowerCase() === "p") {
         e.preventDefault();
         setIsDrawing(true);
+        handleToolChange("pen");
+      }
+
+      if (e.key.toLowerCase() === "v") {
+        e.preventDefault();
+        setIsDrawing(false);
+        handleToolChange("pan");
       }
     },
     [currentPoints, polygons, isDrawing, selectedPolygonId, setIsDrawing],
@@ -367,32 +394,18 @@ const PenToolPolygon = () => {
 
             <MantineGroup justify="space-between" align="center">
               <MantineGroup gap="xs">
-                <Tooltip label="Start drawing (P)" position="bottom">
-                  <Button
-                    onClick={startNewPolygon}
-                    disabled={isDrawing}
-                    size="sm"
-                    className="font-light"
-                    radius="md"
-                    variant={isDrawing ? "light" : "filled"}
-                    color={isDrawing ? "green" : "indigo"}
-                    style={{ fontWeight: 500 }}
-                  >
-                    {isDrawing ? (
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "6px",
-                        }}
-                      >
-                        Drawing...
-                      </span>
-                    ) : (
-                      "Start Polygon"
-                    )}
-                  </Button>
-                </Tooltip>
+                <SegmentedControl
+                  transitionDuration={100}
+                  value={activeTool}
+                  onChange={(value) => {
+                    setActiveTool(value as Tool);
+                    handleToolChange(value as Tool);
+                  }}
+                  data={[
+                    { label: <>&#9758; Pan</>, value: "pan" },
+                    { label: <>&#10000; Draw</>, value: "pen" },
+                  ]}
+                />
 
                 <Tooltip label="Undo last action (Ctrl+Z)" position="bottom">
                   <Button
@@ -400,16 +413,9 @@ const PenToolPolygon = () => {
                     disabled={
                       currentPoints.length === 0 && polygons.length === 0
                     }
-                    size="sm"
-                    radius="md"
-                    variant="subtle"
-                    color="gray"
-                    styles={{
-                      root: {
-                        fontWeight: 500,
-                        fontSize: "14px",
-                      },
-                    }}
+                    size="xs"
+                    variant="light"
+                    color="var(--mantine-color-gray-7)"
                   >
                     Undo
                   </Button>
@@ -510,8 +516,6 @@ const PenToolPolygon = () => {
 
               {polygons.map((polygon) => (
                 <Group
-                  scaleX={imgScale}
-                  scaleY={imgScale}
                   key={polygon.id}
                   draggable={true}
                   onDragEnd={(e) => handlePolygonDrag(e, polygon.id)}
