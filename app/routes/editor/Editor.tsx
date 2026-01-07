@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { lazy, use, useEffect, useState } from "react";
-import { Link, useFetcher } from "react-router";
+import { Link, useFetcher, useNavigate } from "react-router";
 import { BackgroundImageStore, type Polygon } from "~/lib/editorLogic";
 import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
@@ -26,8 +26,14 @@ import { OutputCodeBlock } from "~/components/editors/OutputCodeBlock";
 import { ImageScaleSlider } from "~/components/editors/ImageScaleSlider";
 import { ImageUpload } from "~/components/main/ImageUpload";
 import { Route } from "./+types/Editor";
-import { getAnnotationById } from "~/models/annotation.server";
+import {
+  createAnnotation,
+  getAnnotationById,
+  updateAnnotation,
+} from "~/models/annotation.server";
 import { requireUserIdWithRedirect } from "~/session.server";
+import { SaveAnnotationBtn } from "~/components/editors/SaveAnnotationBtn";
+import { RightSidePanel } from "~/components/editors/RightSidePanel";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 const ImageMap = lazy(() => import("~/components/ImageMap"));
@@ -36,7 +42,6 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   if (!params.projectId) {
     return {};
   }
-
   const user = await requireUserIdWithRedirect(request);
 
   const projectId = params.projectId;
@@ -52,18 +57,45 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   return { annotation };
 };
 
-export default function Editor({ loaderData }: Route.ComponentProps) {
-  const selectedPolygonId = useSelector(
-    LabelStore,
-    (state) => state.context.selectedPolygonId,
-  );
+export const action = async ({ request }: Route.ActionArgs) => {
+  console.log("Editor action called");
+
+  const formData = await request.formData();
+
+  const polygons = formData.get("polygons") as string;
+  const imageUrl = formData.get("imageUrl") as string | null;
+  const user = await requireUserIdWithRedirect(request);
+  const projectId = formData.get("projectId") as string | null;
+
+  if (projectId) {
+    return updateAnnotation({
+      id: projectId,
+      polygons: polygons,
+      imageUrl,
+      imageWidth: formData.get("imageWidth") as string | null,
+      imageHeight: formData.get("imageHeight") as string | null,
+      userId: user.id,
+    });
+  }
+
+  return createAnnotation({
+    polygons: polygons,
+    imageUrl,
+    imageWidth: formData.get("imageWidth") as string | null,
+    imageHeight: formData.get("imageHeight") as string | null,
+    userId: user.id,
+  });
+};
+
+export default function Editor({ loaderData, params }: Route.ComponentProps) {
   const fetcher = useFetcher();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("+++ loaderData changed:", loaderData.annotation);
     if (loaderData.annotation) {
       const annotation = loaderData.annotation;
-      // Load background image
+
       BackgroundImageStore.trigger.setImageUrl({
         imageUrl: annotation.imageUrl || "",
       });
@@ -72,30 +104,26 @@ export default function Editor({ loaderData }: Route.ComponentProps) {
         imageHeight: Number(annotation.imageHeight) || 0,
       });
 
-      // Load polygons
       const polygons: Polygon[] = JSON.parse(annotation.polygons);
       LabelStore.trigger.setPolygons({ polygons });
+    } else {
+      BackgroundImageStore.trigger.clearImageUrl();
+      LabelStore.trigger.reset();
     }
   }, [loaderData.annotation]);
 
-  const polygons2 = useSelector(LabelStore, (state) => state.context.polygons);
-  const selectedPolygon = polygons2.find((p) => p.id === selectedPolygonId);
+  useEffect(() => {
+    if (fetcher.data) {
+      console.log("+++ fetcher.data:", fetcher.data);
+      navigate(`/editor/${fetcher.data.id}`, { replace: true });
+    }
+  }, [fetcher.data]);
 
   const [opened, { toggle }] = useDisclosure();
-  const [polygons, setPolygons] = useState<Polygon[]>([]);
-
-  const imageUrl =
-    useSelector(BackgroundImageStore, (state) => state.context.imageUrl) || "";
-  const imageHeight =
-    useSelector(BackgroundImageStore, (state) => state.context.imageHeight) ||
-    0;
-  const imageWidth =
-    useSelector(BackgroundImageStore, (state) => state.context.imageWidth) || 0;
 
   return (
     <AppShell
       header={{ height: 60 }}
-      footer={{ height: 60 }}
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
       aside={{
         width: 300,
@@ -122,29 +150,12 @@ export default function Editor({ loaderData }: Route.ComponentProps) {
           <ImageUpload />
           <Space h="md" />
           <div>
-            <Button
-              variant="light"
-              onClick={() => {
-                const formData = new FormData();
-                formData.append("imageUrl", imageUrl);
-                formData.append("polygons", JSON.stringify(polygons2));
-                formData.append("imageWidth", imageWidth.toString());
-                formData.append("imageHeight", imageHeight.toString());
-
-                fetcher.submit(formData, {
-                  method: "post",
-                  action: "/api/annotation",
-                  encType: "multipart/form-data",
-                });
-              }}
-            >
-              Save progress
-            </Button>
+            <SaveAnnotationBtn projectId={params.projectId} />
           </div>
           <Flex direction="column">
             <div className="w-[820px]">
               <ClientOnly>
-                <Canvas setPolygonsCopy={setPolygons} />
+                <Canvas />
               </ClientOnly>
             </div>
 
@@ -160,34 +171,10 @@ export default function Editor({ loaderData }: Route.ComponentProps) {
       <AppShell.Aside p="xs" w={300}>
         <ScrollArea h={850} type="auto">
           Label Settings
-          <div>
-            {selectedPolygonId !== null && selectedPolygon ? (
-              <TextInput
-                label="Label name"
-                placeholder="Shape name"
-                value={
-                  selectedPolygon?.name !== undefined
-                    ? selectedPolygon.name
-                    : ""
-                }
-                onChange={(event) => {
-                  event.preventDefault();
-                  if (!selectedPolygonId) return;
-                  LabelStore.trigger.changeLabelName({
-                    id: selectedPolygonId!,
-                    newName: event.currentTarget.value,
-                  });
-                }}
-              />
-            ) : null}
-            <ColorPickerPanel />
-            <Space h="md" />
-            <Divider my="sm" />
-            <ImageScaleSlider />
-            <Space h="md" />
-            <Divider my="sm" />
-            <OutputCodeBlock />
-          </div>
+          <fetcher.Form method="post">
+            <button type="submit">test save </button>
+          </fetcher.Form>
+          <RightSidePanel />
         </ScrollArea>
       </AppShell.Aside>
     </AppShell>

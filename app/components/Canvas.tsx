@@ -44,11 +44,7 @@ const COLORS = [
   "#FF4D6D", // coral-pink punch
 ];
 
-const PenToolPolygon = ({
-  setPolygonsCopy,
-}: {
-  setPolygonsCopy: React.Dispatch<React.SetStateAction<Polygon[]>>;
-}) => {
+const PenToolPolygon = () => {
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
 

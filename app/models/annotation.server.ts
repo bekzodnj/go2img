@@ -23,6 +23,30 @@ export function createAnnotation({
   });
 }
 
+export function updateAnnotation({
+  id,
+  polygons,
+  imageUrl,
+  imageWidth,
+  imageHeight,
+  userId,
+}: Pick<
+  Annotation,
+  "id" | "polygons" | "imageUrl" | "imageWidth" | "imageHeight"
+> & {
+  userId: User["id"];
+}) {
+  return prisma.annotation.update({
+    where: { id, userId },
+    data: {
+      imageUrl,
+      imageWidth,
+      imageHeight,
+      polygons,
+    },
+  });
+}
+
 export function getAnnotationsByUser({ userId }: { userId: User["id"] }) {
   return prisma.annotation.findMany({
     where: { userId },
