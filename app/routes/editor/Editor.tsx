@@ -138,6 +138,9 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
           <h1 className="text-3xl font-bold">
             <Link to="/">Go2Img</Link>
           </h1>
+          <Link to="/app" className="block border-b p-5 text-xl">
+            Back to projects
+          </Link>
         </Group>
       </AppShell.Header>
 
