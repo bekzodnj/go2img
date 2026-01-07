@@ -12,7 +12,6 @@ import {
 import { verifyLogin } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import { safeRedirect, validateEmail } from "~/utils";
-import tiles from "../static/brain-bg.png";
 
 import type { Route } from "./+types/login";
 import { auth } from "~/lib/auth";
@@ -110,10 +109,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
   }
 
   return (
-    <div
-      className="flex min-h-full flex-col justify-center bg-[auto_300px] bg-right-top bg-no-repeat"
-      style={{ backgroundImage: `url(${tiles})` }}
-    >
+    <div className="flex min-h-full flex-col justify-center bg-[auto_300px] bg-right-top bg-no-repeat">
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
           <div>

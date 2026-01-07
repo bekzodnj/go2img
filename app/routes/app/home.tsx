@@ -15,8 +15,9 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const annotationId = formData.get("annotationId") as string;
+  const user = await requireUserIdWithRedirect(request);
 
-  await deleteAnnotation({ id: annotationId });
+  await deleteAnnotation({ id: annotationId, userId: user.id });
 
   return null;
 };
@@ -46,13 +47,6 @@ function getThumbnailColor(seed: string) {
   return THUMBNAIL_COLORS[idx];
 }
 
-const COLORS = [
-  "bg-indigo-50 border-indigo-200 text-indigo-700",
-  "bg-emerald-50 border-emerald-200 text-emerald-700",
-  "bg-amber-50 border-amber-200 text-amber-700",
-  "bg-rose-50 border-rose-200 text-rose-700",
-  "bg-sky-50 border-sky-200 text-sky-700",
-];
 const formatDate = (date: Date) => {
   const now = new Date();
   const diffInDays = Math.floor(
@@ -78,9 +72,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const { annotations } = loaderData;
 
   const fetcher = useFetcher();
-  const handleDelete = (annotationId: any) => {
+  const handleDelete = (annotationId: string) => {
     if (confirm("Delete this annotation?")) {
-      // setAnnotations(prev => prev.filter(a => a.id !== annotationId));
+      fetcher.submit({ annotationId: annotationId }, { method: "post" });
     }
   };
 
@@ -112,68 +106,69 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </Link>
 
           {annotations.map((annotation) => (
-            <Link to={`/editor/${annotation.id}`} key={annotation.id}>
-              <div
-                key={annotation.id}
-                className="group relative flex h-52 cursor-pointer flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition-all hover:border-neutral-300 hover:shadow-sm"
+            <div
+              key={annotation.id}
+              className="group relative flex h-52 flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition-all hover:border-neutral-300 hover:shadow-sm"
+            >
+              {/* ACTIONS (not inside Link) */}
+              <button
+                onClick={() => handleDelete(annotation.id)}
+                className="absolute right-2 top-2 z-10 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-neutral-400 opacity-0 shadow-sm transition-opacity hover:text-red-600 group-hover:opacity-100"
               >
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
+                Delete
+              </button>
 
-                    fetcher.submit(
-                      { annotationId: annotation.id },
-                      { method: "post" },
-                    );
-                    handleDelete(annotation.id);
-                  }}
-                  className="absolute right-2 top-2 z-10 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-neutral-400 opacity-0 shadow-sm transition-opacity hover:text-red-600 group-hover:opacity-100"
-                >
-                  Delete
-                </button>
-
-                {/* Single thumbnail color block */}
+              {/* LINKED CONTENT ONLY */}
+              <Link
+                to={`/editor/${annotation.id}`}
+                className="flex h-full cursor-pointer flex-col"
+              >
+                {/* Thumbnail */}
                 <div className="h-32 w-full overflow-hidden p-3">
                   <div
                     className={`h-full w-full rounded-md ${getThumbnailColor(annotation.id)}`}
                   />
                 </div>
 
+                {/* Meta */}
                 <div className="flex flex-1 flex-col justify-between p-4">
                   <div>
                     <h3 className="font-medium text-black">Annotation</h3>
+
                     <p className="mt-1 font-mono text-xs text-neutral-400">
                       {annotation.id.slice(0, 8)}
                     </p>
-                    {annotation.imageWidth && annotation.imageHeight && (
+
+                    {annotation.imageWidth && annotation.imageHeight ? (
                       <p className="mt-1 text-xs text-neutral-400">
                         {annotation.imageWidth} × {annotation.imageHeight}
                       </p>
-                    )}
+                    ) : null}
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-neutral-400">
                     <span>{formatDate(annotation.updatedAt)}</span>
-                    {getPolygonCount(annotation.polygons) > 0 && (
+
+                    {getPolygonCount(annotation.polygons) > 0 ? (
                       <span>
                         {getPolygonCount(annotation.polygons)} polygons
                       </span>
-                    )}
+                    ) : null}
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
 
-        {annotations.length === 0 && (
+        {annotations.length === 0 ? (
           <div className="mt-24 text-center">
             <p className="text-neutral-500">No annotations yet</p>
             <p className="mt-1 text-sm text-neutral-400">
               Create your first project to get started
             </p>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

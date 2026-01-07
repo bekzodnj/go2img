@@ -12,3 +12,4 @@ node_modules
 .react-router/
 .vscode/
 data.db
+.DS_Store
