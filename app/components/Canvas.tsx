@@ -372,15 +372,11 @@ const PenToolPolygon = () => {
                     onClick={startNewPolygon}
                     disabled={isDrawing}
                     size="sm"
+                    className="font-light"
                     radius="md"
                     variant={isDrawing ? "light" : "filled"}
-                    color={isDrawing ? "green" : "blue"}
-                    styles={{
-                      root: {
-                        fontWeight: 500,
-                        fontSize: "14px",
-                      },
-                    }}
+                    color={isDrawing ? "green" : "indigo"}
+                    style={{ fontWeight: 500 }}
                   >
                     {isDrawing ? (
                       <span
@@ -390,14 +386,6 @@ const PenToolPolygon = () => {
                           gap: "6px",
                         }}
                       >
-                        <div
-                          style={{
-                            width: "6px",
-                            height: "6px",
-                            borderRadius: "50%",
-                            background: "#10B981",
-                          }}
-                        />
                         Drawing...
                       </span>
                     ) : (
@@ -445,7 +433,7 @@ const PenToolPolygon = () => {
 
                 <MantineGroup gap="xs" align="center">
                   <Text size="xs" c="dimmed" fw={500}>
-                    Canvas:
+                    Image size:
                   </Text>
                   <Badge size="lg" radius="md" variant="light" color="gray">
                     {bgImgWidth} × {bgImgHeight}

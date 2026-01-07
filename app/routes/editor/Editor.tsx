@@ -131,19 +131,18 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       padding="md"
     >
       <AppShell.Header>
-        <Group h="100%" px="md">
+        <Group h="100%" px="md" align="center">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-xl font-bold">
             <Link to="/">Go2Img</Link>
           </h1>
-          <Link to="/app" className="block border-b p-5 text-xl">
-            Back to projects
+          <Link to="/app" className="text-base text-gray-600">
+            &larr; Go back to projects
           </Link>
         </Group>
       </AppShell.Header>
 
       <AppShell.Navbar p="sm" w={300}>
-        Polygons
         <LabelNav />
       </AppShell.Navbar>
       <AppShell.Main>

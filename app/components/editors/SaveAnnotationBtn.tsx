@@ -36,7 +36,7 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
         disabled={isSubmitting}
         onClick={handleSave}
         variant="filled"
-        color="blue"
+        color="indigo"
       >
         {isSubmitting ? "Saving..." : "Save Annotation"}
       </Button>

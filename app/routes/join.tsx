@@ -98,7 +98,7 @@ export default function Join() {
 
   useEffect(() => {
     if (session.data) {
-      navigate("/dashboard");
+      navigate("/app");
     }
   }, [session]);
 

@@ -37,7 +37,7 @@ export default function Index({ actionData }: Route.ComponentProps) {
                 to="/app"
                 className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
               >
-                Home
+                Dashboard
               </Link>
               <Link
                 to="/editor"

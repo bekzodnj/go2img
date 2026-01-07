@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
 import { LabelStore } from "~/lib/editorLogic";
 
@@ -9,8 +9,6 @@ export function LabelNav() {
     LabelStore,
     (state) => state.context.selectedPolygonId,
   );
-
-  const selectedPolygon = polygons.find((p) => p.id === selectedPolygonId);
 
   return (
     <div>
@@ -25,7 +23,6 @@ export function LabelNav() {
             paddingTop: "1rem",
           }}
         >
-          <h4>Polygons:</h4>
           {polygons.map((polygon, index) => (
             <div
               key={polygon.id}
@@ -75,7 +72,16 @@ export function LabelNav() {
             </div>
           ))}
         </div>
-      ) : null}
+      ) : (
+        <div style={{ margin: "1rem 0", padding: "1rem", textAlign: "center" }}>
+          <Text c="gray.6" mb="0">
+            No polygons added yet
+          </Text>
+          <Text c="gray.5" size="sm" mt="0.5rem">
+            Draw or upload an image to get started
+          </Text>
+        </div>
+      )}
     </div>
   );
 }

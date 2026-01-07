@@ -1,7 +1,9 @@
 import { Button, Container, Text } from "@mantine/core";
 import classes from "./HeroTitle.module.css";
+import { useNavigate } from "react-router";
 
 export function HeroSection() {
+  const navigate = useNavigate();
   return (
     <div className={classes.wrapper}>
       <Container size={700} className={classes.inner + " space-y-4"}>
@@ -24,6 +26,7 @@ export function HeroSection() {
         <Button
           className=""
           type="submit"
+          onClick={() => navigate("/editor")}
           size="xl"
           variant="gradient"
           gradient={{ from: "blue", to: "cyan" }}

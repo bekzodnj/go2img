@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
+import { authClient } from "~/lib/auth-client";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function Layout() {
 
         <nav className="flex flex-col gap-1 px-2">
           <NavLink
-            to="/projects"
+            to="/app"
             end
             className={({ isActive }) =>
               `rounded-md px-3 py-2 text-sm font-medium ${
@@ -25,6 +26,21 @@ export default function Layout() {
           >
             Projects
           </NavLink>
+
+          <button
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+            onClick={() =>
+              authClient.signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    navigate("/login");
+                  },
+                },
+              })
+            }
+          >
+            Log out
+          </button>
         </nav>
       </aside>
 

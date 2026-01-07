@@ -11,7 +11,7 @@ export function ImageScaleSlider() {
 
   return (
     <div className="w-6/12">
-      <h3>Image Scale</h3>
+      <h3>Image size</h3>
 
       <Slider
         min={1}
