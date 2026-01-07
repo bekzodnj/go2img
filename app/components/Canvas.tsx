@@ -9,12 +9,12 @@ import {
   Text,
   Badge,
   Tooltip,
+  Slider,
 } from "@mantine/core";
 import useImage from "use-image";
 import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
 import { useSelector } from "@xstate/store/react";
 import { type Polygon } from "~/lib/editorLogic";
-import { is } from "zod/v4/locales";
 
 type Point = { x: number; y: number };
 
@@ -54,6 +54,9 @@ const PenToolPolygon = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [mousePos, setMousePos] = useState<Point | null>(null);
   const [imageURL, setImageURL] = useState("");
+  const [stageScale, setStageScale] = useState(1);
+  const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
+  const stageRef = useRef<any>(null);
 
   const imageUrlFromStore = useSelector(
     BackgroundImageStore,
@@ -131,8 +134,15 @@ const PenToolPolygon = () => {
     }
     if (!isDrawing) return;
 
-    const pos = e.target.getStage().getPointerPosition();
-    if (!pos) return;
+    const stage = e.target.getStage();
+    const pointerPos = stage.getPointerPosition();
+    if (!pointerPos) return;
+
+    // Adjust for stage transformation
+    const pos = {
+      x: (pointerPos.x - stagePos.x) / stageScale,
+      y: (pointerPos.y - stagePos.y) / stageScale,
+    };
 
     if (currentPoints.length > 2) {
       const dx = currentPoints[0].x - pos.x;
@@ -163,8 +173,15 @@ const PenToolPolygon = () => {
 
   const handleMouseMove = (e: any) => {
     if (!isDrawing) return;
-    const pos = e.target.getStage().getPointerPosition();
-    if (!pos) return;
+    const stage = e.target.getStage();
+    const pointerPos = stage.getPointerPosition();
+    if (!pointerPos) return;
+
+    // Adjust for stage transformation
+    const pos = {
+      x: (pointerPos.x - stagePos.x) / stageScale,
+      y: (pointerPos.y - stagePos.y) / stageScale,
+    };
     setMousePos(pos);
   };
 
@@ -226,6 +243,29 @@ const PenToolPolygon = () => {
       id: null,
     });
     setMousePos(null);
+  };
+
+  const handleWheel = (e: any) => {
+    e.evt.preventDefault();
+
+    const scaleBy = 1.05;
+    const stage = e.target.getStage();
+    const oldScale = stageScale;
+    const pointer = stage.getPointerPosition();
+
+    const mousePointTo = {
+      x: (pointer.x - stagePos.x) / oldScale,
+      y: (pointer.y - stagePos.y) / oldScale,
+    };
+
+    const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+    const clampedScale = Math.max(0.1, Math.min(5, newScale));
+
+    setStageScale(clampedScale);
+    setStagePos({
+      x: pointer.x - mousePointTo.x * clampedScale,
+      y: pointer.y - mousePointTo.y * clampedScale,
+    });
   };
 
   const deletePolygon = (polygonId: string) => {
@@ -316,14 +356,7 @@ const PenToolPolygon = () => {
 
             <MantineGroup justify="space-between" align="center">
               <MantineGroup gap="xs">
-                <Tooltip
-                  label={
-                    isDrawing
-                      ? "Press ESC to Stop drawing"
-                      : "Start drawing (P)"
-                  }
-                  position="bottom"
-                >
+                <Tooltip label="Start drawing (P)" position="bottom">
                   <Button
                     onClick={startNewPolygon}
                     disabled={isDrawing}
@@ -354,7 +387,7 @@ const PenToolPolygon = () => {
                             background: "#10B981",
                           }}
                         />
-                        Drawing... {isDrawing ? "(ESC to exit)" : ""}
+                        Drawing...
                       </span>
                     ) : (
                       "Start Polygon"
@@ -407,6 +440,28 @@ const PenToolPolygon = () => {
                     {bgImgWidth} × {bgImgHeight}
                   </Badge>
                 </MantineGroup>
+
+                <MantineGroup
+                  gap="xs"
+                  align="center"
+                  style={{ width: "200px" }}
+                >
+                  <Text size="xs" c="dimmed" fw={500}>
+                    Zoom:
+                  </Text>
+                  <Slider
+                    value={stageScale}
+                    onChange={setStageScale}
+                    min={0.1}
+                    max={5}
+                    step={0.1}
+                    style={{ flex: 1 }}
+                    size="sm"
+                  />
+                  <Text size="xs" c="dimmed" fw={500}>
+                    {Math.round(stageScale * 100)}%
+                  </Text>
+                </MantineGroup>
               </MantineGroup>
             </MantineGroup>
           </Stack>
@@ -424,13 +479,26 @@ const PenToolPolygon = () => {
           }}
         >
           <Stage
+            ref={stageRef}
             width={bgImgWidth}
             height={bgImgHeight}
+            scaleX={stageScale}
+            scaleY={stageScale}
+            x={stagePos.x}
+            y={stagePos.y}
+            draggable={!isDrawing}
+            onWheel={handleWheel}
+            onDragEnd={(e) => {
+              setStagePos({
+                x: e.target.x(),
+                y: e.target.y(),
+              });
+            }}
             onClick={handleStageClick}
             onMouseMove={handleMouseMove}
             style={{
               background: "#F9FAFB",
-              cursor: isDrawing ? "crosshair" : "default",
+              cursor: isDrawing ? "crosshair" : "grab",
             }}
           >
             <Layer>
@@ -475,11 +543,29 @@ const PenToolPolygon = () => {
                           stroke="white"
                           strokeWidth={2}
                           draggable={true}
+                          onMouseEnter={(e) => {
+                            const container = e.target.getStage()?.container();
+                            if (container) container.style.cursor = "move";
+                          }}
+                          onMouseLeave={(e) => {
+                            const container = e.target.getStage()?.container();
+                            if (container)
+                              container.style.cursor = isDrawing
+                                ? "crosshair"
+                                : "grab";
+                          }}
+                          onDragStart={(e) => {
+                            e.cancelBubble = true;
+                          }}
                           onDragMove={(e) => {
                             const { x, y } = e.target.position();
                             updatePolygonPoint(polygon.id, i, { x, y });
 
                             e.evt.stopPropagation();
+                            e.cancelBubble = true;
+                          }}
+                          onDragEnd={(e) => {
+                            e.cancelBubble = true;
                           }}
                         />
                       ))
