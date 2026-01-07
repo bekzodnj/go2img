@@ -23,13 +23,22 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
     formData.append("imageWidth", imageWidth.toString());
     formData.append("imageHeight", imageHeight.toString());
     formData.append("projectId", projectId);
+
     fetcher.submit(formData, { method: "post" });
   };
 
+  const isSubmitting = fetcher.state !== "idle";
+  console.log("SaveAnnotationBtn render, isSubmitting:", isSubmitting);
+
   return (
     <fetcher.Form method="post">
-      <Button onClick={handleSave} variant="filled" color="blue">
-        Save Annotation
+      <Button
+        disabled={isSubmitting}
+        onClick={handleSave}
+        variant="filled"
+        color="blue"
+      >
+        {isSubmitting ? "Saving..." : "Save Annotation"}
       </Button>
     </fetcher.Form>
   );

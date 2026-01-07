@@ -58,8 +58,6 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
-  console.log("Editor action called");
-
   const formData = await request.formData();
 
   const polygons = formData.get("polygons") as string;
@@ -174,9 +172,6 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       <AppShell.Aside p="xs" w={300}>
         <ScrollArea h={850} type="auto">
           Label Settings
-          <fetcher.Form method="post">
-            <button type="submit">test save </button>
-          </fetcher.Form>
           <RightSidePanel />
         </ScrollArea>
       </AppShell.Aside>
