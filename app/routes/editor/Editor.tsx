@@ -154,7 +154,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
             <SaveAnnotationBtn projectId={params.projectId} />
           </div>
           <Flex direction="column">
-            <div className="w-[820px]">
+            <div>
               <ClientOnly>
                 <Canvas />
               </ClientOnly>

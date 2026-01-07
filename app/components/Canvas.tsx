@@ -18,9 +18,6 @@ import { type Polygon } from "~/lib/editorLogic";
 
 type Point = { x: number; y: number };
 
-const STAGE_WIDTH = 1000;
-const STAGE_HEIGHT = 750;
-
 const COLORS = [
   "#FF5E5B",
   "#00CECB",
@@ -57,6 +54,9 @@ const PenToolPolygon = () => {
   const [stageScale, setStageScale] = useState(1);
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const stageRef = useRef<any>(null);
+
+  const STAGE_WIDTH = stageRef.current?.container()?.offsetWidth || 1000;
+  const STAGE_HEIGHT = stageRef.current?.container()?.offsetHeight || 750;
 
   const imageUrlFromStore = useSelector(
     BackgroundImageStore,
@@ -321,6 +321,17 @@ const PenToolPolygon = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  // for resizing the stage on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (!stageRef.current) return;
+      stageRef.current.getStage().batchDraw();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div style={{ padding: "16px", background: "#FAFAFA", minHeight: "100vh" }}>
       <Stack gap="md">
@@ -472,16 +483,16 @@ const PenToolPolygon = () => {
           shadow="sm"
           radius="md"
           style={{
-            width: "fit-content",
-            overflow: "auto",
+            width: "100%",
+            height: "calc(100vh - 220px)",
+            overflow: "hidden",
             background: "white",
-            border: "1px solid #E5E7EB",
           }}
         >
           <Stage
             ref={stageRef}
-            width={bgImgWidth}
-            height={bgImgHeight}
+            width={STAGE_WIDTH}
+            height={STAGE_HEIGHT}
             scaleX={stageScale}
             scaleY={stageScale}
             x={stagePos.x}
