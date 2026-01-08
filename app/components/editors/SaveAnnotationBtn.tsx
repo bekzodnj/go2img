@@ -13,7 +13,7 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
   const imageWidth =
     useSelector(BackgroundImageStore, (state) => state.context.imageWidth) || 0;
 
-  const fetcher = useFetcher();
+  const fetcher = useFetcher({ key: "editor-action" });
 
   const handleSave = () => {
     const polygonData = JSON.stringify(polygons);
@@ -24,11 +24,14 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
     formData.append("imageHeight", imageHeight.toString());
     formData.append("projectId", projectId);
 
+    console.log(
+      "Submitting form data:",
+      Object.fromEntries(formData.entries()),
+    );
+
     fetcher.submit(formData, { method: "post" });
   };
-
   const isSubmitting = fetcher.state !== "idle";
-  console.log("SaveAnnotationBtn render, isSubmitting:", isSubmitting);
 
   return (
     <fetcher.Form method="post">

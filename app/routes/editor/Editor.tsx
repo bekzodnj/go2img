@@ -14,7 +14,12 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { lazy, use, useEffect, useState } from "react";
-import { Link, useFetcher, useNavigate } from "react-router";
+import {
+  Link,
+  type ShouldRevalidateFunctionArgs,
+  useFetcher,
+  useNavigate,
+} from "react-router";
 import { BackgroundImageStore, type Polygon } from "~/lib/editorLogic";
 import ClientOnly from "~/components/ClientOnly";
 import { useSelector } from "@xstate/store/react";
@@ -36,7 +41,6 @@ import { SaveAnnotationBtn } from "~/components/editors/SaveAnnotationBtn";
 import { RightSidePanel } from "~/components/editors/RightSidePanel";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
-const ImageMap = lazy(() => import("~/components/ImageMap"));
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   if (!params.projectId) {
@@ -58,6 +62,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
+  console.log("+++ Editor action called");
   const formData = await request.formData();
 
   const polygons = formData.get("polygons") as string;
@@ -86,9 +91,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
 };
 
 export default function Editor({ loaderData, params }: Route.ComponentProps) {
-  const fetcher = useFetcher();
+  const fetcher = useFetcher({ key: "editor-action" });
   const navigate = useNavigate();
 
+  // this works when /editor/:projectId is loaded with existing annotation
   useEffect(() => {
     console.log("+++ loaderData changed:", loaderData.annotation);
     if (loaderData.annotation) {
@@ -97,6 +103,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       BackgroundImageStore.trigger.setImageUrl({
         imageUrl: annotation.imageUrl || "",
       });
+
       BackgroundImageStore.trigger.setSizeImage({
         imageWidth: Number(annotation.imageWidth) || 0,
         imageHeight: Number(annotation.imageHeight) || 0,
@@ -110,6 +117,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
     }
   }, [loaderData.annotation]);
 
+  // this works when new annotation is created via action AND a new id is returned
   useEffect(() => {
     if (fetcher.data) {
       console.log("+++ fetcher.data:", fetcher.data);
@@ -158,22 +166,24 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
                 <Canvas />
               </ClientOnly>
             </div>
-
-            {/* todo SVG logic here */}
-            {/* <div className="w-[800px]">
-              <ClientOnly>
-                <ImageMap polygonsCopy={polygons} />
-              </ClientOnly>
-            </div> */}
           </Flex>
         </div>
       </AppShell.Main>
       <AppShell.Aside p="xs" w={300}>
         <ScrollArea h={850} type="auto">
-          Label Settings
           <RightSidePanel />
         </ScrollArea>
       </AppShell.Aside>
     </AppShell>
   );
+}
+
+export function shouldRevalidate({
+  currentParams,
+}: ShouldRevalidateFunctionArgs) {
+  if (currentParams.projectId) {
+    return false;
+  }
+
+  return true;
 }

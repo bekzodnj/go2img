@@ -34,7 +34,7 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
         name="fileUpload"
         onDrop={handleDrop}
         onReject={(files) => console.log("rejected files", files)}
-        maxSize={5 * 1024 ** 2}
+        maxSize={6 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
         {...props}
       >

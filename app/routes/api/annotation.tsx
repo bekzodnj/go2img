@@ -3,6 +3,8 @@ import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/annotation";
 
 export async function action({ request }: Route.ActionArgs) {
+  console.log("+++ API action called");
+
   const formData = await request.formData();
 
   const polygons = formData.get("polygons") as string;

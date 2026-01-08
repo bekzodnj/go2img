@@ -15,29 +15,39 @@ export function RightSidePanel() {
 
   return (
     <div>
-      {selectedPolygonId !== null && selectedPolygon ? (
-        <TextInput
-          label="Label name"
-          placeholder="Shape name"
-          value={
-            selectedPolygon?.name !== undefined ? selectedPolygon.name : ""
-          }
-          onChange={(event) => {
-            event.preventDefault();
-            if (!selectedPolygonId) return;
-            LabelStore.trigger.changeLabelName({
-              id: selectedPolygonId!,
-              newName: event.currentTarget.value,
-            });
-          }}
-        />
-      ) : null}
-      <ColorPickerPanel />
-      <Space h="md" />
-      <Divider my="sm" />
-      <ImageScaleSlider />
-      <Space h="md" />
-      <Divider my="sm" />
+      <h2>{selectedPolygonId ? "Label Settings" : "Background Settings"}</h2>
+      <Space h="sm" />
+      {selectedPolygonId !== null ? (
+        <>
+          {selectedPolygonId !== null && selectedPolygon ? (
+            <TextInput
+              label="Label name"
+              placeholder="Shape name"
+              value={
+                selectedPolygon?.name !== undefined ? selectedPolygon.name : ""
+              }
+              onChange={(event) => {
+                event.preventDefault();
+                if (!selectedPolygonId) return;
+                LabelStore.trigger.changeLabelName({
+                  id: selectedPolygonId!,
+                  newName: event.currentTarget.value,
+                });
+              }}
+            />
+          ) : null}
+          <Space h="md" />
+          <ColorPickerPanel />
+          <Space h="xl" />
+        </>
+      ) : (
+        <>
+          <Space h="md" />
+          <ImageScaleSlider />
+          <Space h="xl" />
+        </>
+      )}
+
       <OutputCodeBlock />
     </div>
   );

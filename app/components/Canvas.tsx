@@ -76,8 +76,6 @@ const PenToolPolygon = () => {
 
   useEffect(() => {
     if (status === "loaded" && bgImage) {
-      console.log("BG image loaded:", bgImage.width, bgImage.height);
-
       BackgroundImageStore.trigger.setOriginalSizeImage({
         originalImageWidth: bgImage.width,
         originalImageHeight: bgImage.height,
@@ -116,15 +114,6 @@ const PenToolPolygon = () => {
     BackgroundImageStore,
     (state) => state.context.imageWidth,
   );
-
-  const startNewPolygon = () => {
-    setCurrentPoints([]);
-    setIsDrawing(true);
-
-    LabelStore.trigger.setSelectedPolygon({
-      id: null,
-    });
-  };
 
   // Helper to sync drawing state with tool selection
   const handleToolChange = (tool: Tool) => {
@@ -248,17 +237,6 @@ const PenToolPolygon = () => {
     }
   };
 
-  const handleReset = () => {
-    LabelStore.trigger.setPolygons({ polygons: [] });
-    setCurrentPoints([]);
-    setIsDrawing(false);
-
-    LabelStore.trigger.setSelectedPolygon({
-      id: null,
-    });
-    setMousePos(null);
-  };
-
   const handleWheel = (e: any) => {
     e.evt.preventDefault();
 
@@ -307,6 +285,9 @@ const PenToolPolygon = () => {
         e.preventDefault();
         setIsDrawing(false);
         setCurrentPoints([]);
+        LabelStore.trigger.setSelectedPolygon({
+          id: null,
+        });
       }
 
       if (e.key === "Backspace" || e.key === "Delete" || e.key === "Del") {
@@ -352,6 +333,10 @@ const PenToolPolygon = () => {
   useEffect(() => {
     const handleResize = () => {
       if (!stageRef.current) return;
+      console.log(
+        "Window resized, updating stage",
+        stageRef.current.getStage().batchDraw(),
+      );
       stageRef.current.getStage().batchDraw();
     };
 
