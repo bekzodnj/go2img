@@ -4,6 +4,8 @@ import { LabelStore } from "~/lib/editorLogic";
 import { ColorPickerPanel } from "./ColorPickerPanel";
 import { ImageScaleSlider } from "./ImageScaleSlider";
 import { OutputCodeBlock } from "./OutputCodeBlock";
+import { ImageUpload } from "../main/ImageUpload";
+import { InlineImagePaste } from "./RightPanel/InlineImagePaste";
 
 export function RightSidePanel() {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
@@ -42,13 +44,20 @@ export function RightSidePanel() {
         </>
       ) : (
         <>
+          <ImageUpload />
           <Space h="md" />
+          <InlineImagePaste />
+          <Divider my="md" />
+          <Space h="sm" />
           <ImageScaleSlider />
-          <Space h="xl" />
+          <Space h="md" />
+          <Divider my="md" />
+          <Space h="md" />
         </>
       )}
 
       <OutputCodeBlock />
+      <Space h="lg" />
     </div>
   );
 }

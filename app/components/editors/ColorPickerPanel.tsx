@@ -47,7 +47,7 @@ export function ColorPickerPanel() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <Text size="md">Select </Text>
+      <Text size="md">Select Color </Text>
       <div
         style={{
           display: "grid",

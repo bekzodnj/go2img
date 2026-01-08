@@ -38,10 +38,10 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
       <Button
         disabled={isSubmitting}
         onClick={handleSave}
-        variant="filled"
-        color="indigo"
+        variant="light"
+        color="blue"
       >
-        {isSubmitting ? "Saving..." : "Save Annotation"}
+        {isSubmitting ? "Saving..." : "Save Progress"}
       </Button>
     </fetcher.Form>
   );

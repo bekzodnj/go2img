@@ -350,7 +350,7 @@ const PenToolPolygon = () => {
         {/* Top Toolbar */}
         <Paper
           shadow="xs"
-          p="md"
+          p="xs"
           radius="md"
           style={{
             background: "white",
@@ -358,25 +358,6 @@ const PenToolPolygon = () => {
           }}
         >
           <Stack gap="sm">
-            <TextInput
-              value={imageURL}
-              onChange={(e) => setImageURL(e.currentTarget.value)}
-              placeholder="Paste image URL here..."
-              size="sm"
-              radius="md"
-              styles={{
-                input: {
-                  border: "1px solid #E5E7EB",
-                  backgroundColor: "#F9FAFB",
-                  fontSize: "14px",
-                  "&:focus": {
-                    borderColor: "#3B82F6",
-                    backgroundColor: "white",
-                  },
-                },
-              }}
-            />
-
             <MantineGroup justify="space-between" align="center">
               <MantineGroup gap="xs">
                 <SegmentedControl

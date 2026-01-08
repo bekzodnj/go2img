@@ -155,7 +155,6 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       </AppShell.Navbar>
       <AppShell.Main>
         <div>
-          <ImageUpload />
           <Space h="md" />
           <div>
             <SaveAnnotationBtn projectId={params.projectId} />
