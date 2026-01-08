@@ -20,9 +20,9 @@ export default function Index({ actionData }: Route.ComponentProps) {
   return (
     <div className="min-h-screen bg-white pt-14">
       {/* Nav Bar */}
-      <nav className="fixed top-0 z-10 w-full border-b border-gray-200 bg-white/70 backdrop-blur-md">
+      <nav className="fixed top-0 z-10 w-full border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="flex h-20 items-center justify-between">
+          <div className="flex h-20 flex-col items-center gap-3 sm:h-auto sm:flex-row sm:justify-between sm:py-4">
             {/* Logo */}
             <h1
               className="select-none text-3xl font-semibold tracking-tight text-gray-900"
