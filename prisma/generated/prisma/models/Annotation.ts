@@ -452,6 +452,7 @@ export type AnnotationCreateOrConnectWithoutUserInput = {
 
 export type AnnotationCreateManyUserInputEnvelope = {
   data: Prisma.AnnotationCreateManyUserInput | Prisma.AnnotationCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type AnnotationUpsertWithWhereUniqueWithoutUserInput = {
@@ -1259,6 +1260,7 @@ export type AnnotationCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Annotations.
    */
   data: Prisma.AnnotationCreateManyInput | Prisma.AnnotationCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1277,6 +1279,7 @@ export type AnnotationCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many Annotations.
    */
   data: Prisma.AnnotationCreateManyInput | Prisma.AnnotationCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

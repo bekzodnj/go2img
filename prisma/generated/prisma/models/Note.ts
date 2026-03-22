@@ -404,6 +404,7 @@ export type NoteCreateOrConnectWithoutUserInput = {
 
 export type NoteCreateManyUserInputEnvelope = {
   data: Prisma.NoteCreateManyUserInput | Prisma.NoteCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type NoteUpsertWithWhereUniqueWithoutUserInput = {
@@ -1189,6 +1190,7 @@ export type NoteCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Notes.
    */
   data: Prisma.NoteCreateManyInput | Prisma.NoteCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1207,6 +1209,7 @@ export type NoteCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Notes.
    */
   data: Prisma.NoteCreateManyInput | Prisma.NoteCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -430,6 +430,7 @@ export type LibraryCreateOrConnectWithoutUserInput = {
 
 export type LibraryCreateManyUserInputEnvelope = {
   data: Prisma.LibraryCreateManyUserInput | Prisma.LibraryCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type LibraryUpsertWithWhereUniqueWithoutUserInput = {
@@ -480,6 +481,7 @@ export type LibraryCreateOrConnectWithoutMaterialInput = {
 
 export type LibraryCreateManyMaterialInputEnvelope = {
   data: Prisma.LibraryCreateManyMaterialInput | Prisma.LibraryCreateManyMaterialInput[]
+  skipDuplicates?: boolean
 }
 
 export type LibraryUpsertWithWhereUniqueWithoutMaterialInput = {
@@ -1279,6 +1281,7 @@ export type LibraryCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Libraries.
    */
   data: Prisma.LibraryCreateManyInput | Prisma.LibraryCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1297,6 +1300,7 @@ export type LibraryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many Libraries.
    */
   data: Prisma.LibraryCreateManyInput | Prisma.LibraryCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

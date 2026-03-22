@@ -1,7 +1,4 @@
-import { PrismaClient } from "./generated/prisma/client";
 import bcrypt from "bcryptjs";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { env } from "prisma/config";
 import { prisma } from "~/db.server";
 
 async function seed() {
