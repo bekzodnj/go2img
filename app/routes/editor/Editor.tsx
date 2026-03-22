@@ -113,6 +113,11 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       LabelStore.trigger.setPolygons({ polygons });
     } else {
       BackgroundImageStore.trigger.clearImageUrl();
+      BackgroundImageStore.trigger.setSizeImage({
+        imageWidth: 0,
+        imageHeight: 0,
+      });
+      LabelStore.trigger.setSelectedPolygon({ id: null });
       LabelStore.trigger.reset();
     }
   }, [loaderData.annotation]);

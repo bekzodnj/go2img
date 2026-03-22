@@ -11,6 +11,10 @@ export function InlineImagePaste() {
 
   const [imageURL, setImageURL] = useState(imgUrl || "");
 
+  useEffect(() => {
+    setImageURL(imgUrl || ""); // TODO - check later with @xstate/store
+  }, [imgUrl]);
+
   return (
     <TextInput
       value={imageURL}
