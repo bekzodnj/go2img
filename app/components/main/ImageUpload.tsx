@@ -2,6 +2,7 @@ import { Group, Text, Stack } from "@mantine/core";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useEffect } from "react";
 import { useFetcher } from "react-router";
+import { useSelector } from "@xstate/store/react";
 import { BackgroundImageStore } from "~/lib/editorLogic";
 
 /* ---------- Minimal SVG Icon ---------- */
@@ -48,8 +49,6 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
       });
     }
   }, [fetcher.data]);
-
-  if (fetcher.data) return null;
 
   return (
     <>
