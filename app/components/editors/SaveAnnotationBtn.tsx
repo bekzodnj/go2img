@@ -1,7 +1,11 @@
 import { Button } from "@mantine/core";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { useSelector } from "@xstate/store/react";
+import { useRef, useCallback } from "react";
 import { useFetcher } from "react-router";
 import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
+
+const AUTOSAVE_DELAY_MS = 2000;
 
 export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
@@ -14,23 +18,44 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
     useSelector(BackgroundImageStore, (state) => state.context.imageWidth) || 0;
 
   const fetcher = useFetcher({ key: "editor-action" });
+  const prevSnapshotRef = useRef<string>("");
 
-  const handleSave = () => {
-    const polygonData = JSON.stringify(polygons);
+  const buildFormData = useCallback(() => {
     const formData = new FormData();
-    formData.append("polygons", polygonData);
+    formData.append("polygons", JSON.stringify(polygons));
     formData.append("imageUrl", imageUrl);
     formData.append("imageWidth", imageWidth.toString());
     formData.append("imageHeight", imageHeight.toString());
     formData.append("projectId", projectId);
+    return formData;
+  }, [polygons, imageUrl, imageWidth, imageHeight, projectId]);
 
-    console.log(
-      "Submitting form data:",
-      Object.fromEntries(formData.entries()),
-    );
+  const debouncedSave = useDebouncedCallback(() => {
+    fetcher.submit(buildFormData(), { method: "post" });
+  }, AUTOSAVE_DELAY_MS);
 
-    fetcher.submit(formData, { method: "post" });
+  // Snapshot comparison during render — triggers debounced autosave on change
+  const currentSnapshot = JSON.stringify({
+    polygons,
+    imageUrl,
+    imageWidth,
+    imageHeight,
+  });
+
+  if (currentSnapshot !== prevSnapshotRef.current) {
+    prevSnapshotRef.current = currentSnapshot;
+
+    const hasContent = polygons.length > 0 || imageUrl;
+    if (hasContent) {
+      debouncedSave();
+    }
+  }
+
+  const handleSave = () => {
+    debouncedSave.cancel();
+    fetcher.submit(buildFormData(), { method: "post" });
   };
+
   const isSubmitting = fetcher.state !== "idle";
 
   return (
