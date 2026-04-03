@@ -163,6 +163,7 @@ const PenToolPolygon = () => {
 
         setCurrentPoints([]);
         setIsDrawing(false);
+        setActiveTool("pan");
         setMousePos(null);
         LabelStore.trigger.setSelectedPolygon({
           id: newPolygon.id,
