@@ -7,26 +7,19 @@ export function HeroSection() {
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
 
   const points = [
-    { x: 30, y: 30, color: "blue" },
-    { x: 70, y: 30, color: "cyan" },
-    { x: 85, y: 60, color: "blue" },
-    { x: 50, y: 85, color: "cyan" },
-    { x: 15, y: 60, color: "blue" },
+    { x: 30, y: 25, color: "#06b6d4" },
+    { x: 72, y: 22, color: "#3b82f6" },
+    { x: 88, y: 58, color: "#06b6d4" },
+    { x: 50, y: 82, color: "#3b82f6" },
+    { x: 12, y: 58, color: "#06b6d4" },
   ];
 
-  const pointConnections = [
-    [0, 1],
-    [1, 2],
-    [2, 3],
-    [3, 4],
-    [4, 0],
-  ];
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50/50">
       <Container size={1200} py={120}>
-        <div className="grid grid-cols-1 items-center gap-16 md:grid-cols-2">
-          {/* Left: Copy (keeping your excellent typography) */}
+        <div className="grid grid-cols-1 gap-32 md:grid-cols-2 ">
+          {/* Left: Copy */}
           <div className="z-1 relative">
             <h1 className="text-5xl font-bold leading-tight md:text-6xl">
               Create{" "}
@@ -128,10 +121,10 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right: Super simple polygon on grid */}
-          <div className="relative hidden md:block">
-            <div className="relative aspect-[4/3] rounded-2xl border border-gray-100 bg-white p-4 shadow-lg">
-              {/* Simple grid background */}
+          {/* Right: Animated polygon drawing demo */}
+          <div className="relative hidden md:block ">
+            <div className="relative h-[400px] rounded-2xl border border-gray-100 bg-white p-4 shadow-lg">
+              {/* Grid background */}
               <div className="absolute inset-4">
                 <svg
                   className="h-full w-full"
@@ -156,62 +149,94 @@ export function HeroSection() {
                 </svg>
               </div>
 
-              {/* Main polygon */}
+              {/* Animated polygon */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <svg
                   className="h-64 w-64"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 100 100"
                 >
-                  {/* Polygon connecting lines */}
-                  {pointConnections.map(([start, end], index) => (
-                    <line
-                      key={index}
-                      x1={points[start].x}
-                      y1={points[start].y}
-                      x2={points[end].x}
-                      y2={points[end].y}
-                      stroke="#3b82f6"
-                      strokeWidth="1.5"
-                      strokeOpacity="0.4"
-                    />
-                  ))}
+                  <style>{`
+                    @keyframes draw {
+                      0%   { stroke-dashoffset: 220; }
+                      60%  { stroke-dashoffset: 0; }
+                      100% { stroke-dashoffset: 0; }
+                    }
+                    @keyframes fillIn {
+                      0%   { fill-opacity: 0; }
+                      60%  { fill-opacity: 0; }
+                      100% { fill-opacity: 0.1; }
+                    }
+                    @keyframes labelAppear {
+                      0%, 65%  { opacity: 0; transform: translateY(4px); }
+                      75%      { opacity: 1; transform: translateY(0); }
+                      100%     { opacity: 1; transform: translateY(0); }
+                    }
+                    .hero-path {
+                      stroke-dasharray: 220;
+                      animation: draw 3s ease-in-out forwards, fillIn 3s ease-in-out forwards;
+                    }
+                  `}</style>
 
-                  {/* Interactive points */}
-                  {points.map((point, index) => (
+                  {/* The polygon outline + fill */}
+                  <path
+                    className="hero-path"
+                    d="M 30 25 L 72 22 L 88 58 L 50 82 L 12 58 Z"
+                    fill="#3b82f6"
+                    fillOpacity="0"
+                    stroke="#3b82f6"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Interactive vertex points */}
+                  {points.map((point, i) => (
                     <circle
-                      key={index}
+                      key={i}
                       cx={point.x}
                       cy={point.y}
-                      r={hoveredPoint === index ? 5 : 3}
-                      fill={
-                        hoveredPoint === index
-                          ? "#ef4444"
-                          : point.color === "blue"
-                            ? "#3b82f6"
-                            : "#06b6d4"
-                      }
-                      className="cursor-pointer transition-all duration-200"
-                      onMouseEnter={() => setHoveredPoint(index)}
+                      r={hoveredPoint === i ? 6 : 3}
+                      fill={hoveredPoint === i ? "#f59e0b" : point.color}
+                      stroke={hoveredPoint === i ? "white" : "none"}
+                      strokeWidth={hoveredPoint === i ? 1.5 : 0}
+                      style={{
+                        cursor: "pointer",
+                        transition: "r 0.2s ease, fill 0.2s ease, stroke-width 0.2s ease",
+                      }}
+                      onMouseEnter={() => setHoveredPoint(i)}
                       onMouseLeave={() => setHoveredPoint(null)}
                     />
                   ))}
                 </svg>
               </div>
 
-              {/* Simple label (only shows on hover) */}
-              {hoveredPoint !== null && (
+              {/* Floating label — appears after draw, stays */}
+              {hoveredPoint !== null ? (
                 <div
-                  className="absolute rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm"
+                  className="pointer-events-none absolute rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm"
                   style={{
-                    left: `${points[hoveredPoint].x * 0.8}%`,
-                    top: `${points[hoveredPoint].y * 0.8}%`,
+                    left: `${points[hoveredPoint].x * 0.8 + 10}%`,
+                    top: `${points[hoveredPoint].y * 0.75 + 8}%`,
                     transform: "translate(-50%, -100%)",
                   }}
                 >
                   <span className="text-sm font-medium text-gray-700">
                     Point {String.fromCharCode(65 + hoveredPoint)}
                   </span>
+                </div>
+              ) : (
+                <div
+                  className="pointer-events-none absolute rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm"
+                  style={{
+                    left: "50%",
+                    top: "24%",
+                    transform: "translate(-50%, -100%)",
+                    opacity: 0,
+                    animation: "labelAppear 3s ease-out forwards",
+                  }}
+                >
+                  <span className="text-sm font-medium text-gray-700">
+                    Custom label                  </span>
                 </div>
               )}
             </div>
