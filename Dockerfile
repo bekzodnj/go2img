@@ -56,4 +56,4 @@ COPY prisma ./prisma
 COPY package.json ./
 
 # Run migrations only at startup (NOT generate)
-CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm run start"]
+CMD ["sh", "-c", "npm run db:deploy && npm run start"]
