@@ -11,6 +11,6 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: "postgresql://postgres@localhost:5432/go2img",
+    url: env("DATABASE_URL"),
   },
 });
