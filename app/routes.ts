@@ -1,32 +1,19 @@
-import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import {
+  type RouteConfig,
+  index,
+  layout,
+  route,
+} from "@react-router/dev/routes";
 
 export default [
   index("routes/_index.tsx"),
   route("editor/:projectId?", "routes/editor/Editor.tsx"),
 
   // new sign-in
-  route("join", "routes/join.tsx"),
-  route("signin", "routes/auth/signin.tsx"),
-  route("protected", "routes/auth/protected.tsx"),
-  route("login", "routes/login.tsx"),
-
-  // route("notes", "routes/notes.tsx", [
-  //   index("./routes/notes.home.tsx"),
-  //   route("new", "routes/notes.new.tsx"),
-  //   route(":noteId", "routes/notes.$noteId.tsx"),
-  //   route("test", "routes/test.tsx"),
-  // ]),
-
-  // //dashboard
-  // route("dashboard", "routes/dashboard/layout.tsx", [
-  //   index("./routes/dashboard/home.tsx"),
-  //   route("new", "routes/dashboard/new.tsx"),
-  //   route(":materialId", "routes/dashboard/$materialId.tsx", [
-  //     route(":fileKey", "api/material.tsx"),
-  //   ]),
-  //   route("created", "routes/dashboard/created.tsx"),
-  //   route("saved", "routes/dashboard/saved.tsx"),
-  // ]),
+  layout("routes/authlayout.tsx", [
+    route("login", "routes/login.tsx"),
+    route("join", "routes/join.tsx"),
+  ]),
 
   // dash
   route("app", "routes/app/layout.tsx", [index("./routes/app/home.tsx")]),

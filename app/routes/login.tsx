@@ -86,7 +86,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 
   useEffect(() => {
     if (session.data) {
-      navigate("/protected");
+      navigate("/app");
     }
   }, [session]);
 
