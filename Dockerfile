@@ -54,6 +54,7 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/build ./build
 COPY prisma ./prisma
 COPY package.json ./
+COPY prisma.config.ts ./prisma.config.ts
 
 # Run migrations only at startup (NOT generate)
 CMD ["sh", "-c", "npm run db:deploy && npm run start"]

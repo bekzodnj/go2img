@@ -30,7 +30,7 @@ services:
       postgres_db: 
         condition: service_healthy
     env_file: 
-      - .env
+      - .env.prod
     networks: 
       - prisma-network
 networks: 
