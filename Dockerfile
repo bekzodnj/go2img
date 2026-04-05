@@ -1,61 +1,59 @@
 # -------------------------------
-# Development dependencies
+# Base image (shared)
 # -------------------------------
-FROM node:24-bullseye AS development-dependencies-env
+FROM node:lts-alpine AS base
 
 WORKDIR /app
 
-# Copy only what npm install needs
-COPY package.json package-lock.json ./
+# -------------------------------
+# Dependencies (dev + build)
+# -------------------------------
+FROM base AS dev-deps
 
-# Prisma schema must exist BEFORE npm ci
-COPY prisma.config.ts .
+COPY package.json package-lock.json ./
 COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
 
 RUN npm ci
-
-
-# -------------------------------
-# Production dependencies
-# -------------------------------
-FROM node:24-bullseye AS production-dependencies-env
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-COPY prisma.config.ts .
-COPY prisma ./prisma
-
-RUN npm ci --omit=dev
-
 
 # -------------------------------
 # Build stage
 # -------------------------------
-FROM node:24-bullseye AS build-env
-
-WORKDIR /app
+FROM base AS build
 
 COPY . .
-COPY --from=development-dependencies-env /app/node_modules ./node_modules
+COPY --from=dev-deps /app/node_modules ./node_modules
 
+# Generate Prisma client at build time
+RUN echo "Skipping prisma generate at build"
+
+# Build your app (React Router / server build)
 RUN npm run build
 
-
 # -------------------------------
-# Runtime
+# Production dependencies only
 # -------------------------------
-FROM node:24-bullseye
-
-WORKDIR /app
-
-ENV NODE_ENV=production
+FROM base AS prod-deps
 
 COPY package.json package-lock.json ./
-COPY prisma.config.ts .
 COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
 
-COPY --from=production-dependencies-env /app/node_modules ./node_modules
-COPY --from=build-env /app/build ./build
+RUN npm ci --omit=dev
 
+# -------------------------------
+# Runtime (final image)
+# -------------------------------
+FROM node:lts-alpine
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Only copy what is needed
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=build /app/build ./build
+COPY prisma ./prisma
+COPY package.json ./
+
+# Run migrations only at startup (NOT generate)
 CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm run start"]
