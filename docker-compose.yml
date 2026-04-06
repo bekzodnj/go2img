@@ -42,6 +42,9 @@ services:
     #   - .env.prod
     networks: 
       - prisma-network
-networks: 
-  prisma-network: 
-    name: prisma-network
+      - dokploy-network
+networks:
+  prisma-network:
+    external: true
+  dokploy-network:
+    external: true
