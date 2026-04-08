@@ -39,7 +39,7 @@ export default function Layout() {
               })
             }
           >
-            Log out
+            Sign out
           </button>
         </nav>
       </aside>
