@@ -1,14 +1,11 @@
 
-
 .wrapper {
- 
   position: relative;
   box-sizing: border-box;
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-8));
 }
 
 .inner {
-  
   position: relative;
   padding-top: 150px;
   padding-bottom: 120px;
@@ -62,4 +59,98 @@
     padding-right: 18px;
     flex: 1;
   }
+}
+
+/* ─── Hero Heading ─────────────────────────────────── */
+
+.heroHeading {
+  font-family: Outfit, var(--mantine-font-family);
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding: 0;
+  color: #1a1a2e;
+
+  @media (max-width: 640px) {
+    font-size: 2.5rem;
+  }
+}
+
+/* "Label" — single outline border that expands on hover, with grid fill */
+.outlinedWord {
+  color: #1e293b;
+  display: inline-block;
+  border-radius: 2px;
+  padding: 2px 8px;
+  cursor: default;
+  outline: 2px solid #94a3b8;
+  outline-offset: 0px;
+  background-color: transparent;
+  background-image:
+    linear-gradient(to right, transparent 0%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, transparent 100%);
+  transition:
+    outline-color 0.15s ease,
+    outline-offset 0.15s ease,
+    background-color 0.2s ease,
+    background-image 0.2s ease;
+}
+
+.outlinedWord:hover {
+  outline-color: #1e293b;
+  outline-offset: 4px;
+  background-color: rgba(241, 245, 249, 0.7);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 9px,
+      #cbd5e1 9px,
+      #cbd5e1 10px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 9px,
+      #cbd5e1 9px,
+      #cbd5e1 10px
+    );
+}
+
+/* "annotate" — animated warm sunset gradient text */
+.annotateWord {
+  background: linear-gradient(135deg, #f97316, #ef4444, #ec4899, #f97316);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease infinite;
+  position: relative;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* "images" — blue-cyan gradient text */
+.imagesGradient {
+  background: linear-gradient(to right, #2563eb, #3b82f6, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* underline beneath "images" */
+.imagesUnderline {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(to right, #3b82f6, #06b6d4, transparent);
 }

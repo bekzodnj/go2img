@@ -1,6 +1,7 @@
 import { Button, Container, Text, Group } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import styles from "./HeroTitle.module.css";
 
 export function HeroSection() {
   const navigate = useNavigate();
@@ -14,27 +15,26 @@ export function HeroSection() {
     { x: 12, y: 58, color: "#06b6d4" },
   ];
 
-
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50/50">
+    <section className="relative bg-gradient-to-b from-white to-gray-50/50">
       <Container size={1200} py={120}>
-        <div className="grid grid-cols-1 gap-32 md:grid-cols-2 ">
-          {/* Left: Copy */}
+        <div className="grid grid-cols-1 gap-32 md:grid-cols-2">
           <div className="z-1 relative">
-            <h1 className="text-5xl font-bold leading-tight md:text-6xl">
-              Create{" "}
+            <h1 className={styles.heroHeading}>
+              <span className={styles.outlinedWord}>Label</span>
+              <span className={styles.annotateWord}>annotate</span>{" "}
               <span className="relative">
-                <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
-                  interactive labels
+                <span className={styles.imagesGradient}>
+                  images
                 </span>
-                <span className="absolute -bottom-2 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-cyan-400/50" />
+                <span className={styles.imagesUnderline} />
               </span>{" "}
-              in seconds
+              easily
             </h1>
 
             <Text mt="lg" size="lg" className="max-w-lg text-gray-600">
-              Pin, annotate, and export clean JSON — perfect for any project. No
-              coding required.
+              Pin, annotate images and export metadata as clean JSON. No coding
+              required.
             </Text>
 
             <Group mt="xl" className="gap-4">
@@ -90,39 +90,10 @@ export function HeroSection() {
               </Button>
             </Group>
 
-            {/* Feature badges */}
-            <div className="mt-10 flex flex-wrap gap-3">
-              {[
-                "Export to JSON",
-                "Image Uploads",
-                "Interactive editor",
-                "Save into account",
-              ].map((feature) => (
-                <div
-                  key={feature}
-                  className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2 shadow-sm"
-                >
-                  <svg
-                    className="h-4 w-4 text-green-500"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-sm font-medium text-gray-700">
-                    {feature}
-                  </span>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Right: Animated polygon drawing demo */}
-          <div className="relative hidden md:block ">
+          <div className="relative hidden md:block">
             <div className="relative h-[400px] rounded-2xl border border-gray-100 bg-white p-4 shadow-lg">
               {/* Grid background */}
               <div className="absolute inset-4">
@@ -201,7 +172,8 @@ export function HeroSection() {
                       strokeWidth={hoveredPoint === i ? 1.5 : 0}
                       style={{
                         cursor: "pointer",
-                        transition: "r 0.2s ease, fill 0.2s ease, stroke-width 0.2s ease",
+                        transition:
+                          "r 0.2s ease, fill 0.2s ease, stroke-width 0.2s ease",
                       }}
                       onMouseEnter={() => setHoveredPoint(i)}
                       onMouseLeave={() => setHoveredPoint(null)}
@@ -236,12 +208,43 @@ export function HeroSection() {
                   }}
                 >
                   <span className="text-sm font-medium text-gray-700">
-                    Custom label                  </span>
+                    Custom label{" "}
+                  </span>
                 </div>
               )}
             </div>
           </div>
         </div>
+
+          {/* Feature badges — full width, centered */}
+          <div className="mt-12 flex w-full flex-wrap justify-center gap-3">
+            {[
+              "Export to JSON",
+              "Image Uploads",
+              "Interactive editor",
+              "Save into account",
+            ].map((feature) => (
+              <div
+                key={feature}
+                className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2 shadow-sm"
+              >
+                <svg
+                  className="h-4 w-4 text-green-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-sm font-medium text-gray-700">
+                  {feature}
+                </span>
+              </div>
+            ))}
+          </div>
       </Container>
     </section>
   );
