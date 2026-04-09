@@ -16,37 +16,10 @@ import useImage from "use-image";
 import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
 import { useSelector } from "@xstate/store/react";
 import { type Polygon } from "~/lib/editorLogic";
+import { COLORS } from "~/lib/constants";
 
 type Point = { x: number; y: number };
 type Tool = "pan" | "pen";
-
-const COLORS = [
-  "#FF5E5B",
-  "#00CECB",
-  "#FFB400",
-  "#9D4EDD",
-  "#4CC9F0",
-  "#6A994E",
-  "#F15BB5",
-  "#2EC4B6",
-  "#F77F00",
-  "#7209B7",
-  "#3A86FF",
-  "#70E000",
-  "#FF006E",
-  "#5A189A",
-  "#3F88C5",
-  "#16DB93",
-  "#FDC500",
-  "#9E2A2B",
-  "#43AA8B",
-  "#577590",
-  "#FF8500",
-  "#4895EF",
-  "#B5179E",
-  "#38B000",
-  "#FF4D6D",
-];
 
 const PenToolPolygon = () => {
   const [currentPoints, setCurrentPoints] = useState<Point[]>([]);

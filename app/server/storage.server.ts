@@ -8,18 +8,3 @@ export const getStorageKey = (userId: string, materialTitle: string) => {
 export const getStorageKeyForDownload = (fileKey: string) => {
   return fileKey;
 };
-
-// export const pdfUploadHandler = (
-//   fileUpload: FileUpload,
-//   userId: string,
-//   materialTitle = "",
-// ) => {
-//   if (
-//     fileUpload.fieldName === "file" &&
-//     fileUpload.type === "application/pdf"
-//   ) {
-//     const storageKey = getStorageKey(userId, materialTitle);
-//     fileStorage.set(storageKey, fileUpload);
-//     return fileStorage.get(storageKey);
-//   }
-// };
