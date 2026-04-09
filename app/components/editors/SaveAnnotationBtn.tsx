@@ -46,7 +46,7 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
     prevSnapshotRef.current = currentSnapshot;
 
     const hasContent = polygons.length > 0 || imageUrl;
-    if (hasContent) {
+    if (hasContent && !!projectId) {
       debouncedSave();
     }
   }
