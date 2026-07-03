@@ -1,5 +1,5 @@
 import { Button, Container, Text, Group } from "@mantine/core";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import styles from "./HeroTitle.module.css";
 
@@ -24,9 +24,7 @@ export function HeroSection() {
               <span className={styles.outlinedWord}>Label</span>
               <span className={styles.annotateWord}>annotate</span>{" "}
               <span className="relative">
-                <span className={styles.imagesGradient}>
-                  images
-                </span>
+                <span className={styles.imagesGradient}>images</span>
                 <span className={styles.imagesUnderline} />
               </span>{" "}
               easily
@@ -88,8 +86,14 @@ export function HeroSection() {
                   View Dashboard
                 </div>
               </Button>
-            </Group>
 
+              <Link
+                to="/checkout?products=bd1bc624-564d-4cef-8f8e-290222c94e44"
+                className="transition-colors duration-300 hover:bg-gray-100"
+              >
+                <div className="flex items-center gap-2">Checkout</div>
+              </Link>
+            </Group>
           </div>
 
           {/* Right: Animated polygon drawing demo */}
@@ -216,35 +220,35 @@ export function HeroSection() {
           </div>
         </div>
 
-          {/* Feature badges — full width, centered */}
-          <div className="mt-12 flex w-full flex-wrap justify-center gap-3">
-            {[
-              "Export to JSON",
-              "Image Uploads",
-              "Interactive editor",
-              "Save into account",
-            ].map((feature) => (
-              <div
-                key={feature}
-                className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2 shadow-sm"
+        {/* Feature badges — full width, centered */}
+        <div className="mt-12 flex w-full flex-wrap justify-center gap-3">
+          {[
+            "Export to JSON",
+            "Image Uploads",
+            "Interactive editor",
+            "Save into account",
+          ].map((feature) => (
+            <div
+              key={feature}
+              className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2 shadow-sm"
+            >
+              <svg
+                className="h-4 w-4 text-green-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
               >
-                <svg
-                  className="h-4 w-4 text-green-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-sm font-medium text-gray-700">
-                  {feature}
-                </span>
-              </div>
-            ))}
-          </div>
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="text-sm font-medium text-gray-700">
+                {feature}
+              </span>
+            </div>
+          ))}
+        </div>
       </Container>
     </section>
   );

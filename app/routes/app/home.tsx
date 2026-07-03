@@ -5,6 +5,7 @@ import {
 import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/home";
 import { Link, useFetcher } from "react-router";
+import { authClient } from "~/lib/auth-client";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const user = await requireUserIdWithRedirect(request);
@@ -102,8 +103,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   New project
                 </span>
               </div>
+             
             </div>
           </Link>
+           {/* <button onClick={() => authClient.customer.portal()}>
+  Manage Billing
+</button> */}
 
           {annotations.map((annotation) => (
             <div
