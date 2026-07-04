@@ -38,13 +38,7 @@ async function seed() {
       },
     });
 
-    // Seed some notes for this user
-    await prisma.note.createMany({
-      data: [
-        { title: "My first note", body: "Hello, world!", userId: user.id },
-        { title: "My second note", body: "Hello, world!", userId: user.id },
-      ],
-    });
+
   }
 
   console.log("Database has been seeded. 🌱");

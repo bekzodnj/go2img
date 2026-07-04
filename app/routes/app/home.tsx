@@ -5,8 +5,6 @@ import {
 import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/home";
 import { Link, useFetcher } from "react-router";
-import { authClient } from "~/lib/auth-client";
-import { BillingState } from "~/components/BillingState";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const user = await requireUserIdWithRedirect(request);
@@ -106,17 +104,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               </div>
             </div>
           </Link>
-
-          <BillingState />
-          <button
-            onClick={() =>
-              authClient.checkout({
-                products: ["234888b5-f3b3-489c-814d-c3ad22e1538b"],
-              })
-            }
-          >
-            Upgrade to Pro
-          </button>
 
           {annotations.map((annotation) => (
             <div

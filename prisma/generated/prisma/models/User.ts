@@ -199,11 +199,8 @@ export type UserWhereInput = {
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   image?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.XOR<Prisma.PasswordNullableScalarRelationFilter, Prisma.PasswordWhereInput> | null
-  notes?: Prisma.NoteListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
-  materials?: Prisma.MaterialListRelationFilter
-  library?: Prisma.LibraryListRelationFilter
   annotations?: Prisma.AnnotationListRelationFilter
 }
 
@@ -216,11 +213,8 @@ export type UserOrderByWithRelationInput = {
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.PasswordOrderByWithRelationInput
-  notes?: Prisma.NoteOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
-  materials?: Prisma.MaterialOrderByRelationAggregateInput
-  library?: Prisma.LibraryOrderByRelationAggregateInput
   annotations?: Prisma.AnnotationOrderByRelationAggregateInput
 }
 
@@ -236,11 +230,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   image?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.XOR<Prisma.PasswordNullableScalarRelationFilter, Prisma.PasswordWhereInput> | null
-  notes?: Prisma.NoteListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
-  materials?: Prisma.MaterialListRelationFilter
-  library?: Prisma.LibraryListRelationFilter
   annotations?: Prisma.AnnotationListRelationFilter
 }, "id" | "email">
 
@@ -279,11 +270,8 @@ export type UserCreateInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
 }
 
@@ -296,11 +284,8 @@ export type UserUncheckedCreateInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -313,11 +298,8 @@ export type UserUpdateInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
 }
 
@@ -330,11 +312,8 @@ export type UserUncheckedUpdateInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -433,34 +412,6 @@ export type UserUpdateOneRequiredWithoutAnnotationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAnnotationsInput, Prisma.UserUpdateWithoutAnnotationsInput>, Prisma.UserUncheckedUpdateWithoutAnnotationsInput>
 }
 
-export type UserCreateNestedOneWithoutMaterialsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutMaterialsInput, Prisma.UserUncheckedCreateWithoutMaterialsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMaterialsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutMaterialsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutMaterialsInput, Prisma.UserUncheckedCreateWithoutMaterialsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMaterialsInput
-  upsert?: Prisma.UserUpsertWithoutMaterialsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMaterialsInput, Prisma.UserUpdateWithoutMaterialsInput>, Prisma.UserUncheckedUpdateWithoutMaterialsInput>
-}
-
-export type UserCreateNestedOneWithoutLibraryInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutLibraryInput, Prisma.UserUncheckedCreateWithoutLibraryInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLibraryInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutLibraryNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutLibraryInput, Prisma.UserUncheckedCreateWithoutLibraryInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLibraryInput
-  upsert?: Prisma.UserUpsertWithoutLibraryInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLibraryInput, Prisma.UserUpdateWithoutLibraryInput>, Prisma.UserUncheckedUpdateWithoutLibraryInput>
-}
-
 export type UserCreateNestedOneWithoutPasswordInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPasswordInput, Prisma.UserUncheckedCreateWithoutPasswordInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPasswordInput
@@ -473,20 +424,6 @@ export type UserUpdateOneRequiredWithoutPasswordNestedInput = {
   upsert?: Prisma.UserUpsertWithoutPasswordInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPasswordInput, Prisma.UserUpdateWithoutPasswordInput>, Prisma.UserUncheckedUpdateWithoutPasswordInput>
-}
-
-export type UserCreateNestedOneWithoutNotesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutNotesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotesInput
-  upsert?: Prisma.UserUpsertWithoutNotesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotesInput, Prisma.UserUpdateWithoutNotesInput>, Prisma.UserUncheckedUpdateWithoutNotesInput>
 }
 
 export type UserCreateNestedOneWithoutSessionsInput = {
@@ -526,11 +463,8 @@ export type UserCreateWithoutAnnotationsInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAnnotationsInput = {
@@ -542,11 +476,8 @@ export type UserUncheckedCreateWithoutAnnotationsInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAnnotationsInput = {
@@ -574,11 +505,8 @@ export type UserUpdateWithoutAnnotationsInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAnnotationsInput = {
@@ -590,171 +518,8 @@ export type UserUncheckedUpdateWithoutAnnotationsInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutMaterialsInput = {
-  id?: string
-  email: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  emailVerified: boolean
-  image?: string | null
-  password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
-  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
-  annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutMaterialsInput = {
-  id?: string
-  email: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  emailVerified: boolean
-  image?: string | null
-  password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
-  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
-  annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutMaterialsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutMaterialsInput, Prisma.UserUncheckedCreateWithoutMaterialsInput>
-}
-
-export type UserUpsertWithoutMaterialsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutMaterialsInput, Prisma.UserUncheckedUpdateWithoutMaterialsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutMaterialsInput, Prisma.UserUncheckedCreateWithoutMaterialsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutMaterialsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutMaterialsInput, Prisma.UserUncheckedUpdateWithoutMaterialsInput>
-}
-
-export type UserUpdateWithoutMaterialsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
-  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
-  annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutMaterialsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
-  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
-  annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutLibraryInput = {
-  id?: string
-  email: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  emailVerified: boolean
-  image?: string | null
-  password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
-  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutLibraryInput = {
-  id?: string
-  email: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  emailVerified: boolean
-  image?: string | null
-  password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
-  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutLibraryInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutLibraryInput, Prisma.UserUncheckedCreateWithoutLibraryInput>
-}
-
-export type UserUpsertWithoutLibraryInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutLibraryInput, Prisma.UserUncheckedUpdateWithoutLibraryInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutLibraryInput, Prisma.UserUncheckedCreateWithoutLibraryInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutLibraryInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutLibraryInput, Prisma.UserUncheckedUpdateWithoutLibraryInput>
-}
-
-export type UserUpdateWithoutLibraryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
-  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutLibraryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
-  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPasswordInput = {
@@ -765,11 +530,8 @@ export type UserCreateWithoutPasswordInput = {
   name: string
   emailVerified: boolean
   image?: string | null
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
 }
 
@@ -781,11 +543,8 @@ export type UserUncheckedCreateWithoutPasswordInput = {
   name: string
   emailVerified: boolean
   image?: string | null
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -813,11 +572,8 @@ export type UserUpdateWithoutPasswordInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
 }
 
@@ -829,91 +585,8 @@ export type UserUncheckedUpdateWithoutPasswordInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
-  annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutNotesInput = {
-  id?: string
-  email: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  emailVerified: boolean
-  image?: string | null
-  password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
-  annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutNotesInput = {
-  id?: string
-  email: string
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  name: string
-  emailVerified: boolean
-  image?: string | null
-  password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
-  annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutNotesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-}
-
-export type UserUpsertWithoutNotesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutNotesInput, Prisma.UserUncheckedUpdateWithoutNotesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutNotesInput, Prisma.UserUncheckedCreateWithoutNotesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutNotesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutNotesInput, Prisma.UserUncheckedUpdateWithoutNotesInput>
-}
-
-export type UserUpdateWithoutNotesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
-  annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutNotesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -926,10 +599,7 @@ export type UserCreateWithoutSessionsInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
 }
 
@@ -942,10 +612,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -974,10 +641,7 @@ export type UserUpdateWithoutSessionsInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
 }
 
@@ -990,10 +654,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1006,10 +667,7 @@ export type UserCreateWithoutAccountsInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationCreateNestedManyWithoutUserInput
 }
 
@@ -1022,10 +680,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   emailVerified: boolean
   image?: string | null
   password?: Prisma.PasswordUncheckedCreateNestedOneWithoutUserInput
-  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  materials?: Prisma.MaterialUncheckedCreateNestedManyWithoutAuthorInput
-  library?: Prisma.LibraryUncheckedCreateNestedManyWithoutUserInput
   annotations?: Prisma.AnnotationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1054,10 +709,7 @@ export type UserUpdateWithoutAccountsInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUpdateManyWithoutUserNestedInput
 }
 
@@ -1070,10 +722,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.PasswordUncheckedUpdateOneWithoutUserNestedInput
-  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  materials?: Prisma.MaterialUncheckedUpdateManyWithoutAuthorNestedInput
-  library?: Prisma.LibraryUncheckedUpdateManyWithoutUserNestedInput
   annotations?: Prisma.AnnotationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1083,20 +732,14 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
  */
 
 export type UserCountOutputType = {
-  notes: number
   sessions: number
   accounts: number
-  materials: number
-  library: number
   annotations: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  notes?: boolean | UserCountOutputTypeCountNotesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
-  materials?: boolean | UserCountOutputTypeCountMaterialsArgs
-  library?: boolean | UserCountOutputTypeCountLibraryArgs
   annotations?: boolean | UserCountOutputTypeCountAnnotationsArgs
 }
 
@@ -1108,13 +751,6 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.NoteWhereInput
 }
 
 /**
@@ -1134,20 +770,6 @@ export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MaterialWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountLibraryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.LibraryWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountAnnotationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AnnotationWhereInput
 }
@@ -1162,11 +784,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   emailVerified?: boolean
   image?: boolean
   password?: boolean | Prisma.User$passwordArgs<ExtArgs>
-  notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
-  materials?: boolean | Prisma.User$materialsArgs<ExtArgs>
-  library?: boolean | Prisma.User$libraryArgs<ExtArgs>
   annotations?: boolean | Prisma.User$annotationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1204,11 +823,8 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "createdAt" | "updatedAt" | "name" | "emailVerified" | "image", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   password?: boolean | Prisma.User$passwordArgs<ExtArgs>
-  notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
-  materials?: boolean | Prisma.User$materialsArgs<ExtArgs>
-  library?: boolean | Prisma.User$libraryArgs<ExtArgs>
   annotations?: boolean | Prisma.User$annotationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1219,11 +835,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     password: Prisma.$PasswordPayload<ExtArgs> | null
-    notes: Prisma.$NotePayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     accounts: Prisma.$AccountPayload<ExtArgs>[]
-    materials: Prisma.$MaterialPayload<ExtArgs>[]
-    library: Prisma.$LibraryPayload<ExtArgs>[]
     annotations: Prisma.$AnnotationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1629,11 +1242,8 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   password<T extends Prisma.User$passwordArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordArgs<ExtArgs>>): Prisma.Prisma__PasswordClient<runtime.Types.Result.GetResult<Prisma.$PasswordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  notes<T extends Prisma.User$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  materials<T extends Prisma.User$materialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  library<T extends Prisma.User$libraryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$libraryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LibraryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   annotations<T extends Prisma.User$annotationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$annotationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnnotationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2083,30 +1693,6 @@ export type User$passwordArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.notes
- */
-export type User$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Note
-   */
-  select?: Prisma.NoteSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Note
-   */
-  omit?: Prisma.NoteOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.NoteInclude<ExtArgs> | null
-  where?: Prisma.NoteWhereInput
-  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[]
-  cursor?: Prisma.NoteWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
-}
-
-/**
  * User.sessions
  */
 export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2152,54 +1738,6 @@ export type User$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.AccountScalarFieldEnum | Prisma.AccountScalarFieldEnum[]
-}
-
-/**
- * User.materials
- */
-export type User$materialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Material
-   */
-  select?: Prisma.MaterialSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Material
-   */
-  omit?: Prisma.MaterialOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MaterialInclude<ExtArgs> | null
-  where?: Prisma.MaterialWhereInput
-  orderBy?: Prisma.MaterialOrderByWithRelationInput | Prisma.MaterialOrderByWithRelationInput[]
-  cursor?: Prisma.MaterialWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.MaterialScalarFieldEnum | Prisma.MaterialScalarFieldEnum[]
-}
-
-/**
- * User.library
- */
-export type User$libraryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Library
-   */
-  select?: Prisma.LibrarySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Library
-   */
-  omit?: Prisma.LibraryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.LibraryInclude<ExtArgs> | null
-  where?: Prisma.LibraryWhereInput
-  orderBy?: Prisma.LibraryOrderByWithRelationInput | Prisma.LibraryOrderByWithRelationInput[]
-  cursor?: Prisma.LibraryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.LibraryScalarFieldEnum | Prisma.LibraryScalarFieldEnum[]
 }
 
 /**

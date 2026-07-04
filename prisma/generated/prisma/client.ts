@@ -52,30 +52,10 @@ export type User = Prisma.UserModel
  */
 export type Annotation = Prisma.AnnotationModel
 /**
- * Model Material
- * 
- */
-export type Material = Prisma.MaterialModel
-/**
- * Model Library
- * 
- */
-export type Library = Prisma.LibraryModel
-/**
- * Model Category
- * 
- */
-export type Category = Prisma.CategoryModel
-/**
  * Model Password
  * 
  */
 export type Password = Prisma.PasswordModel
-/**
- * Model Note
- * 
- */
-export type Note = Prisma.NoteModel
 /**
  * Model Session
  * 

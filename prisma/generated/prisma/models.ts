@@ -10,11 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/Annotation'
-export type * from './models/Material'
-export type * from './models/Library'
-export type * from './models/Category'
 export type * from './models/Password'
-export type * from './models/Note'
 export type * from './models/Session'
 export type * from './models/Account'
 export type * from './models/Verification'

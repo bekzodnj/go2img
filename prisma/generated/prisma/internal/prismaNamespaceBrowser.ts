@@ -53,11 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Annotation: 'Annotation',
-  Material: 'Material',
-  Library: 'Library',
-  Category: 'Category',
   Password: 'Password',
-  Note: 'Note',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification'
@@ -106,66 +102,12 @@ export const AnnotationScalarFieldEnum = {
 export type AnnotationScalarFieldEnum = (typeof AnnotationScalarFieldEnum)[keyof typeof AnnotationScalarFieldEnum]
 
 
-export const MaterialScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  description: 'description',
-  categoryId: 'categoryId',
-  url: 'url',
-  thumbnailFilePath: 'thumbnailFilePath',
-  filePath: 'filePath',
-  fileType: 'fileType',
-  fileSize: 'fileSize',
-  price: 'price',
-  isFree: 'isFree',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  authorId: 'authorId'
-} as const
-
-export type MaterialScalarFieldEnum = (typeof MaterialScalarFieldEnum)[keyof typeof MaterialScalarFieldEnum]
-
-
-export const LibraryScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  materialId: 'materialId',
-  createdAt: 'createdAt',
-  notes: 'notes'
-} as const
-
-export type LibraryScalarFieldEnum = (typeof LibraryScalarFieldEnum)[keyof typeof LibraryScalarFieldEnum]
-
-
-export const CategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
-
-
 export const PasswordScalarFieldEnum = {
   hash: 'hash',
   userId: 'userId'
 } as const
 
 export type PasswordScalarFieldEnum = (typeof PasswordScalarFieldEnum)[keyof typeof PasswordScalarFieldEnum]
-
-
-export const NoteScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  body: 'body',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  userId: 'userId'
-} as const
-
-export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
