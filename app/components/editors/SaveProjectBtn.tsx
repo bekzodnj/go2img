@@ -7,7 +7,7 @@ import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
 
 const AUTOSAVE_DELAY_MS = 2000;
 
-export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
+export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
   const imageUrl =
     useSelector(BackgroundImageStore, (state) => state.context.imageUrl) || "";
@@ -34,7 +34,6 @@ export function SaveAnnotationBtn({ projectId = "" }: { projectId?: string }) {
     fetcher.submit(buildFormData(), { method: "post" });
   }, AUTOSAVE_DELAY_MS);
 
-  // Snapshot comparison during render — triggers debounced autosave on change
   const currentSnapshot = JSON.stringify({
     polygons,
     imageUrl,

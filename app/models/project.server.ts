@@ -1,16 +1,16 @@
 import { prisma } from "~/db.server";
-import type { User, Annotation } from "../../prisma/generated/prisma/client";
+import type { User, Project } from "../../prisma/generated/prisma/client";
 
-export function createAnnotation({
+export function createProject({
   polygons,
   imageUrl,
   imageWidth,
   imageHeight,
   userId,
-}: Pick<Annotation, "polygons" | "imageUrl" | "imageWidth" | "imageHeight"> & {
+}: Pick<Project, "polygons" | "imageUrl" | "imageWidth" | "imageHeight"> & {
   userId: User["id"];
 }) {
-  return prisma.annotation.create({
+  return prisma.project.create({
     data: {
       imageUrl,
       imageWidth,
@@ -23,7 +23,7 @@ export function createAnnotation({
   });
 }
 
-export function updateAnnotation({
+export function updateProject({
   id,
   polygons,
   imageUrl,
@@ -31,12 +31,12 @@ export function updateAnnotation({
   imageHeight,
   userId,
 }: Pick<
-  Annotation,
+  Project,
   "id" | "polygons" | "imageUrl" | "imageWidth" | "imageHeight"
 > & {
   userId: User["id"];
 }) {
-  return prisma.annotation.update({
+  return prisma.project.update({
     where: { id, userId },
     data: {
       imageUrl,
@@ -47,27 +47,27 @@ export function updateAnnotation({
   });
 }
 
-export function getAnnotationsByUser({ userId }: { userId: User["id"] }) {
-  return prisma.annotation.findMany({
+export function getProjectsByUser({ userId }: { userId: User["id"] }) {
+  return prisma.project.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
   });
 }
 
-export function getAnnotationById({
+export function getProjectById({
   id,
   userId,
-}: Pick<Annotation, "id"> & { userId: User["id"] }) {
-  return prisma.annotation.findFirst({
+}: Pick<Project, "id"> & { userId: User["id"] }) {
+  return prisma.project.findFirst({
     where: { id, userId },
   });
 }
 
-export function deleteAnnotation({
+export function deleteProject({
   id,
   userId,
-}: Pick<Annotation, "id"> & { userId: User["id"] }) {
-  return prisma.annotation.deleteMany({
+}: Pick<Project, "id"> & { userId: User["id"] }) {
+  return prisma.project.deleteMany({
     where: { id, userId },
   });
 }

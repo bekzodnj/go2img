@@ -1,23 +1,23 @@
 import {
-  deleteAnnotation,
-  getAnnotationsByUser,
-} from "~/models/annotation.server";
+  deleteProject,
+  getProjectsByUser,
+} from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/home";
 import { Link, useFetcher } from "react-router";
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const user = await requireUserIdWithRedirect(request);
-  const annotations = await getAnnotationsByUser({ userId: user.id });
-  return { annotations };
+  const projects = await getProjectsByUser({ userId: user.id });
+  return { projects };
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  const annotationId = formData.get("annotationId") as string;
+  const projectId = formData.get("projectId") as string;
   const user = await requireUserIdWithRedirect(request);
 
-  await deleteAnnotation({ id: annotationId, userId: user.id });
+  await deleteProject({ id: projectId, userId: user.id });
 
   return null;
 };
@@ -69,12 +69,12 @@ const getPolygonCount = (polygonsJson: string) => {
 };
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { annotations } = loaderData;
+  const { projects } = loaderData;
 
   const fetcher = useFetcher();
-  const handleDelete = (annotationId: string) => {
-    if (confirm("Delete this annotation?")) {
-      fetcher.submit({ annotationId: annotationId }, { method: "post" });
+  const handleDelete = (projectId: string) => {
+    if (confirm("Delete this project?")) {
+      fetcher.submit({ projectId: projectId }, { method: "post" });
     }
   };
 
@@ -83,11 +83,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       <div className="mx-auto max-w-6xl px-8 py-16">
         <div className="mb-12">
           <h1 className="text-4xl font-normal tracking-tight text-black">
-            Annotations
+            Projects
           </h1>
           <p className="mt-3 text-neutral-500">
-            {annotations.length}{" "}
-            {annotations.length === 1 ? "project" : "projects"}
+            {projects.length}{" "}
+            {projects.length === 1 ? "project" : "projects"}
           </p>
         </div>
 
@@ -105,14 +105,14 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </div>
           </Link>
 
-          {annotations.map((annotation) => (
+          {projects.map((project) => (
             <div
-              key={annotation.id}
+              key={project.id}
               className="group relative flex h-52 flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition-all hover:border-neutral-300 hover:shadow-sm"
             >
               {/* ACTIONS (not inside Link) */}
               <button
-                onClick={() => handleDelete(annotation.id)}
+                onClick={() => handleDelete(project.id)}
                 className="absolute right-2 top-2 z-10 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-neutral-400 opacity-0 shadow-sm transition-opacity hover:text-red-600 group-hover:opacity-100"
               >
                 Delete
@@ -120,38 +120,38 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
               {/* LINKED CONTENT ONLY */}
               <Link
-                to={`/editor/${annotation.id}`}
+                to={`/editor/${project.id}`}
                 className="flex h-full cursor-pointer flex-col"
               >
                 {/* Thumbnail */}
                 <div className="h-32 w-full overflow-hidden p-3">
                   <div
-                    className={`h-full w-full rounded-md ${getThumbnailColor(annotation.id)}`}
+                    className={`h-full w-full rounded-md ${getThumbnailColor(project.id)}`}
                   />
                 </div>
 
                 {/* Meta */}
                 <div className="flex flex-1 flex-col justify-between p-4">
                   <div>
-                    <h3 className="font-medium text-black">Annotation</h3>
+                    <h3 className="font-medium text-black">Project</h3>
 
                     <p className="mt-1 font-mono text-xs text-neutral-400">
-                      {annotation.id.slice(0, 8)}
+                      {project.id.slice(0, 8)}
                     </p>
 
-                    {annotation.imageWidth && annotation.imageHeight ? (
+                    {project.imageWidth && project.imageHeight ? (
                       <p className="mt-1 text-xs text-neutral-400">
-                        {annotation.imageWidth} × {annotation.imageHeight}
+                        {project.imageWidth} × {project.imageHeight}
                       </p>
                     ) : null}
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-neutral-400">
-                    <span>{formatDate(annotation.updatedAt)}</span>
+                    <span>{formatDate(project.updatedAt)}</span>
 
-                    {getPolygonCount(annotation.polygons) > 0 ? (
+                    {getPolygonCount(project.polygons) > 0 ? (
                       <span>
-                        {getPolygonCount(annotation.polygons)} polygons
+                        {getPolygonCount(project.polygons)} polygons
                       </span>
                     ) : null}
                   </div>
@@ -161,9 +161,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           ))}
         </div>
 
-        {annotations.length === 0 ? (
+        {projects.length === 0 ? (
           <div className="mt-24 text-center">
-            <p className="text-neutral-500">No annotations yet</p>
+            <p className="text-neutral-500">No projects yet</p>
             <p className="mt-1 text-sm text-neutral-400">
               Create your first project to get started
             </p>

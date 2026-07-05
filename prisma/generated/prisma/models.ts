@@ -9,7 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
-export type * from './models/Annotation'
+export type * from './models/Project'
 export type * from './models/Password'
 export type * from './models/Session'
 export type * from './models/Account'

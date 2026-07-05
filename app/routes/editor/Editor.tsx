@@ -32,12 +32,12 @@ import { ImageScaleSlider } from "~/components/editors/ImageScaleSlider";
 import { ImageUpload } from "~/components/main/ImageUpload";
 import { Route } from "./+types/Editor";
 import {
-  createAnnotation,
-  getAnnotationById,
-  updateAnnotation,
-} from "~/models/annotation.server";
+  createProject,
+  getProjectById,
+  updateProject,
+} from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
-import { SaveAnnotationBtn } from "~/components/editors/SaveAnnotationBtn";
+import { SaveProjectBtn } from "~/components/editors/SaveProjectBtn";
 import { RightSidePanel } from "~/components/editors/RightSidePanel";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
@@ -49,16 +49,16 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const user = await requireUserIdWithRedirect(request);
 
   const projectId = params.projectId;
-  const annotation = await getAnnotationById({
+  const project = await getProjectById({
     id: projectId,
     userId: user.id,
   });
 
-  if (!annotation) {
+  if (!project) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { annotation };
+  return { project };
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
@@ -71,7 +71,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
   const projectId = formData.get("projectId") as string | null;
 
   if (projectId) {
-    return updateAnnotation({
+    return updateProject({
       id: projectId,
       polygons: polygons,
       imageUrl,
@@ -81,7 +81,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     });
   }
 
-  return createAnnotation({
+  return createProject({
     polygons: polygons,
     imageUrl,
     imageWidth: formData.get("imageWidth") as string | null,
@@ -94,22 +94,22 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
   const fetcher = useFetcher({ key: "editor-action" });
   const navigate = useNavigate();
 
-  // this works when /editor/:projectId is loaded with existing annotation
+  // this works when /editor/:projectId is loaded with existing project
   useEffect(() => {
-    console.log("+++ loaderData changed:", loaderData.annotation);
-    if (loaderData.annotation) {
-      const annotation = loaderData.annotation;
+    console.log("+++ loaderData changed:", loaderData.project);
+    if (loaderData.project) {
+      const project = loaderData.project;
 
       BackgroundImageStore.trigger.setImageUrl({
-        imageUrl: annotation.imageUrl || "",
+        imageUrl: project.imageUrl || "",
       });
 
       BackgroundImageStore.trigger.setSizeImage({
-        imageWidth: Number(annotation.imageWidth) || 0,
-        imageHeight: Number(annotation.imageHeight) || 0,
+        imageWidth: Number(project.imageWidth) || 0,
+        imageHeight: Number(project.imageHeight) || 0,
       });
 
-      const polygons: Polygon[] = JSON.parse(annotation.polygons);
+      const polygons: Polygon[] = JSON.parse(project.polygons);
       LabelStore.trigger.setPolygons({ polygons });
     } else {
       BackgroundImageStore.trigger.clearImageUrl();
@@ -120,9 +120,9 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       LabelStore.trigger.setSelectedPolygon({ id: null });
       LabelStore.trigger.reset();
     }
-  }, [loaderData.annotation]);
+  }, [loaderData.project]);
 
-  // this works when new annotation is created via action AND a new id is returned
+  // this works when new project is created via action AND a new id is returned
   useEffect(() => {
     if (fetcher.data) {
       console.log("+++ fetcher.data:", fetcher.data);
@@ -162,7 +162,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
         <div>
           <Space h="md" />
           <div>
-            <SaveAnnotationBtn projectId={params.projectId} />
+            <SaveProjectBtn projectId={params.projectId} />
           </div>
           <Flex direction="column">
             <div>

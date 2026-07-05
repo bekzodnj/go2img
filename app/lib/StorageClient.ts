@@ -1,4 +1,3 @@
-import { ok } from "assert";
 import { AwsClient } from "aws4fetch";
 import { err, ResultAsync } from "neverthrow";
 

@@ -23,10 +23,10 @@ export * from './enums';
  */
 export type User = Prisma.UserModel
 /**
- * Model Annotation
+ * Model Project
  * 
  */
-export type Annotation = Prisma.AnnotationModel
+export type Project = Prisma.ProjectModel
 /**
  * Model Password
  * 

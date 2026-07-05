@@ -1,6 +1,6 @@
-import { createAnnotation, updateAnnotation } from "~/models/annotation.server";
+import { createProject, updateProject } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
-import { Route } from "./+types/annotation";
+import { Route } from "./+types/project";
 
 export async function action({ request }: Route.ActionArgs) {
   console.log("+++ API action called");
@@ -13,7 +13,7 @@ export async function action({ request }: Route.ActionArgs) {
   const projectId = formData.get("projectId") as string | null;
 
   if (projectId) {
-    updateAnnotation({
+    updateProject({
       id: projectId,
       polygons: polygons,
       imageUrl,
@@ -24,7 +24,7 @@ export async function action({ request }: Route.ActionArgs) {
     return;
   }
 
-  return createAnnotation({
+  return createProject({
     polygons: polygons,
     imageUrl,
     imageWidth: formData.get("imageWidth") as string | null,

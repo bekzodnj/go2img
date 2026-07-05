@@ -52,7 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Annotation: 'Annotation',
+  Project: 'Project',
   Password: 'Password',
   Session: 'Session',
   Account: 'Account',
@@ -88,7 +88,7 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const AnnotationScalarFieldEnum = {
+export const ProjectScalarFieldEnum = {
   id: 'id',
   imageUrl: 'imageUrl',
   imageWidth: 'imageWidth',
@@ -99,7 +99,7 @@ export const AnnotationScalarFieldEnum = {
   userId: 'userId'
 } as const
 
-export type AnnotationScalarFieldEnum = (typeof AnnotationScalarFieldEnum)[keyof typeof AnnotationScalarFieldEnum]
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
 export const PasswordScalarFieldEnum = {
