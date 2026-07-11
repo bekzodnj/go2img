@@ -30,10 +30,10 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
   const fetcher = useFetcher();
 
   async function handleDrop(files: File[]) {
-    const [file] = files;
-
     const formData = new FormData();
-    formData.append("fileUpload", file);
+    for (const file of files) {
+      formData.append("fileUpload", file);
+    }
 
     fetcher.submit(formData, {
       method: "post",
@@ -44,11 +44,18 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
 
   useEffect(() => {
     if (fetcher.data) {
-      BackgroundImageStore.trigger.setImageUrl({
-        imageUrl: fetcher.data.devUrl,
-      });
+      const [first] = Array.isArray(fetcher.data)
+        ? fetcher.data
+        : [fetcher.data];
+      if (first) {
+        BackgroundImageStore.trigger.setImageUrl({
+          imageUrl: first.devUrl,
+        });
+      }
     }
   }, [fetcher.data]);
+
+  console.log("fetcher.data imgs", fetcher.data);
 
   return (
     <>
@@ -59,7 +66,7 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
         name="fileUpload"
         onDrop={handleDrop}
         onReject={(files) => console.log("rejected files", files)}
-        maxSize={6 * 1024 ** 2}
+        maxSize={15 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
         radius="md"
         p="xl"
@@ -80,7 +87,7 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
           </Text>
 
           <Text size="xs" c="dimmed">
-            Image file · Max 6 MB
+            Image file · Max 15 MB
           </Text>
         </Stack>
       </Dropzone>

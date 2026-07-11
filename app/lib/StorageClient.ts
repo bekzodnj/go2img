@@ -51,6 +51,17 @@ class StorageClient {
     };
   }
 
+  async uploadMany(
+    files: { key: string; body: Buffer; contentType?: string }[],
+  ) {
+    const results = await Promise.all(
+      files.map((file) =>
+        this.upload(file.key, file.body, { contentType: file.contentType }),
+      ),
+    );
+    return results;
+  }
+
   async delete(key: string) {
     const res = await ResultAsync.fromPromise(
       this.client.fetch(`${process.env.R2_STORAGE_BASE_URL}/${key}`, {

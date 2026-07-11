@@ -3,16 +3,20 @@ import { storage } from "~/lib/StorageClient";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const file = formData.get("fileUpload") as File;
+  const files = formData.getAll("fileUpload") as File[];
 
-  const buffer = Buffer.from(await file.arrayBuffer());
+  const uploads = await Promise.all(
+    files.map(async (file) => {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const key = `${Date.now()}-${file.name}`;
 
-  // upload to R2
-  const result = await storage.upload(file.name, buffer, {
-    contentType: file.type,
-  });
+      return storage.upload(key, buffer, {
+        contentType: file.type,
+      });
+    }),
+  );
 
-  return new Response(JSON.stringify(result), {
+  return new Response(JSON.stringify(uploads), {
     status: 200,
     headers: {
       "Content-Type": "application/json",
