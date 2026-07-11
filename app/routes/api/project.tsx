@@ -2,6 +2,7 @@ import {
   createProject,
   upsertPolygons,
   addImageToProject,
+  updateImage,
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/project";
@@ -43,6 +44,12 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   if (imageId) {
+    const imageUrl = formData.get("imageUrl") as string;
+    const imageWidth = Number(formData.get("imageWidth"));
+    const imageHeight = Number(formData.get("imageHeight"));
+    if (imageUrl || imageWidth || imageHeight) {
+      await updateImage({ id: imageId, imageUrl, imageWidth, imageHeight });
+    }
     await upsertPolygons({ imageId, polygons });
     return { projectId, imageId };
   }

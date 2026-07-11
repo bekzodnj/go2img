@@ -1,6 +1,7 @@
 export {
   createProject,
   addImageToProject,
+  updateImage,
   upsertPolygons,
   getProjectsByUser,
   getProjectById,

@@ -36,6 +36,7 @@ import {
   getProjectById,
   upsertPolygons,
   addImageToProject,
+  updateImage,
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
 import { SaveProjectBtn } from "~/components/editors/SaveProjectBtn";
@@ -99,6 +100,12 @@ export const action = async ({ request }: Route.ActionArgs) => {
   }
 
   if (imageId) {
+    const imageUrl = formData.get("imageUrl") as string;
+    const imageWidth = Number(formData.get("imageWidth"));
+    const imageHeight = Number(formData.get("imageHeight"));
+    if (imageUrl || imageWidth || imageHeight) {
+      await updateImage({ id: imageId, imageUrl, imageWidth, imageHeight });
+    }
     await upsertPolygons({ imageId, polygons });
     return { projectId, imageId };
   }

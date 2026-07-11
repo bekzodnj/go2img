@@ -49,6 +49,27 @@ export async function addImageToProject({
   });
 }
 
+export async function updateImage({
+  id,
+  imageUrl,
+  imageWidth,
+  imageHeight,
+}: {
+  id: string;
+  imageUrl: string;
+  imageWidth: number;
+  imageHeight: number;
+}) {
+  return prisma.image.update({
+    where: { id },
+    data: {
+      url: imageUrl,
+      width: imageWidth,
+      height: imageHeight,
+    },
+  });
+}
+
 export async function upsertPolygons({
   imageId,
   polygons,
