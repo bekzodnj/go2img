@@ -59,13 +59,15 @@ const formatDate = (date: Date) => {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-const getPolygonCount = (polygonsJson: string) => {
-  if (!polygonsJson) return 0;
-  try {
-    return JSON.parse(polygonsJson).length;
-  } catch {
-    return 0;
-  }
+const getPolygonCount = (project: {
+  images?: { polygons?: unknown[] }[];
+}) => {
+  if (!project.images) return 0;
+  return project.images.reduce(
+    (sum: number, img: { polygons?: unknown[] }) =>
+      sum + (img.polygons?.length ?? 0),
+    0,
+  );
 };
 
 export default function Home({ loaderData }: Route.ComponentProps) {
@@ -139,9 +141,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                       {project.id.slice(0, 8)}
                     </p>
 
-                    {project.imageWidth && project.imageHeight ? (
+                    {project.images?.[0]?.width &&
+                    project.images?.[0]?.height ? (
                       <p className="mt-1 text-xs text-neutral-400">
-                        {project.imageWidth} × {project.imageHeight}
+                        {project.images[0].width} ×{" "}
+                        {project.images[0].height}
                       </p>
                     ) : null}
                   </div>
@@ -149,9 +153,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                   <div className="flex items-center justify-between text-xs text-neutral-400">
                     <span>{formatDate(project.updatedAt)}</span>
 
-                    {getPolygonCount(project.polygons) > 0 ? (
+                    {getPolygonCount(project) > 0 ? (
                       <span>
-                        {getPolygonCount(project.polygons)} polygons
+                        {getPolygonCount(project)} polygons
                       </span>
                     ) : null}
                   </div>

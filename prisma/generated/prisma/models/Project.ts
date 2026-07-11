@@ -26,10 +26,7 @@ export type AggregateProject = {
 
 export type ProjectMinAggregateOutputType = {
   id: string | null
-  imageUrl: string | null
-  imageWidth: string | null
-  imageHeight: string | null
-  polygons: string | null
+  name: string | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -37,10 +34,7 @@ export type ProjectMinAggregateOutputType = {
 
 export type ProjectMaxAggregateOutputType = {
   id: string | null
-  imageUrl: string | null
-  imageWidth: string | null
-  imageHeight: string | null
-  polygons: string | null
+  name: string | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -48,10 +42,7 @@ export type ProjectMaxAggregateOutputType = {
 
 export type ProjectCountAggregateOutputType = {
   id: number
-  imageUrl: number
-  imageWidth: number
-  imageHeight: number
-  polygons: number
+  name: number
   createdAt: number
   updatedAt: number
   userId: number
@@ -61,10 +52,7 @@ export type ProjectCountAggregateOutputType = {
 
 export type ProjectMinAggregateInputType = {
   id?: true
-  imageUrl?: true
-  imageWidth?: true
-  imageHeight?: true
-  polygons?: true
+  name?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -72,10 +60,7 @@ export type ProjectMinAggregateInputType = {
 
 export type ProjectMaxAggregateInputType = {
   id?: true
-  imageUrl?: true
-  imageWidth?: true
-  imageHeight?: true
-  polygons?: true
+  name?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -83,10 +68,7 @@ export type ProjectMaxAggregateInputType = {
 
 export type ProjectCountAggregateInputType = {
   id?: true
-  imageUrl?: true
-  imageWidth?: true
-  imageHeight?: true
-  polygons?: true
+  name?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -167,10 +149,7 @@ export type ProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type ProjectGroupByOutputType = {
   id: string
-  imageUrl: string | null
-  imageWidth: string | null
-  imageHeight: string | null
-  polygons: string
+  name: string
   createdAt: Date
   updatedAt: Date
   userId: string
@@ -199,26 +178,22 @@ export type ProjectWhereInput = {
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   id?: Prisma.StringFilter<"Project"> | string
-  imageUrl?: Prisma.StringNullableFilter<"Project"> | string | null
-  imageWidth?: Prisma.StringNullableFilter<"Project"> | string | null
-  imageHeight?: Prisma.StringNullableFilter<"Project"> | string | null
-  polygons?: Prisma.StringFilter<"Project"> | string
+  name?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   userId?: Prisma.StringFilter<"Project"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  images?: Prisma.ImageListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  imageWidth?: Prisma.SortOrderInput | Prisma.SortOrder
-  imageHeight?: Prisma.SortOrderInput | Prisma.SortOrder
-  polygons?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  images?: Prisma.ImageOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -226,22 +201,17 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
   OR?: Prisma.ProjectWhereInput[]
   NOT?: Prisma.ProjectWhereInput | Prisma.ProjectWhereInput[]
-  imageUrl?: Prisma.StringNullableFilter<"Project"> | string | null
-  imageWidth?: Prisma.StringNullableFilter<"Project"> | string | null
-  imageHeight?: Prisma.StringNullableFilter<"Project"> | string | null
-  polygons?: Prisma.StringFilter<"Project"> | string
+  name?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   userId?: Prisma.StringFilter<"Project"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  images?: Prisma.ImageListRelationFilter
 }, "id">
 
 export type ProjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  imageWidth?: Prisma.SortOrderInput | Prisma.SortOrder
-  imageHeight?: Prisma.SortOrderInput | Prisma.SortOrder
-  polygons?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -255,10 +225,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   OR?: Prisma.ProjectScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProjectScalarWhereWithAggregatesInput | Prisma.ProjectScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Project"> | string
-  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
-  imageWidth?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
-  imageHeight?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
-  polygons?: Prisma.StringWithAggregatesFilter<"Project"> | string
+  name?: Prisma.StringWithAggregatesFilter<"Project"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   userId?: Prisma.StringWithAggregatesFilter<"Project"> | string
@@ -266,54 +233,43 @@ export type ProjectScalarWhereWithAggregatesInput = {
 
 export type ProjectCreateInput = {
   id?: string
-  imageUrl?: string | null
-  imageWidth?: string | null
-  imageHeight?: string | null
-  polygons: string
+  name?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProjectsInput
+  images?: Prisma.ImageCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
   id?: string
-  imageUrl?: string | null
-  imageWidth?: string | null
-  imageHeight?: string | null
-  polygons: string
+  name?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  images?: Prisma.ImageUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
+  images?: Prisma.ImageUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.ImageUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
   id?: string
-  imageUrl?: string | null
-  imageWidth?: string | null
-  imageHeight?: string | null
-  polygons: string
+  name?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -321,20 +277,14 @@ export type ProjectCreateManyInput = {
 
 export type ProjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProjectUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -352,10 +302,7 @@ export type ProjectOrderByRelationAggregateInput = {
 
 export type ProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrder
-  imageWidth?: Prisma.SortOrder
-  imageHeight?: Prisma.SortOrder
-  polygons?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -363,10 +310,7 @@ export type ProjectCountOrderByAggregateInput = {
 
 export type ProjectMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrder
-  imageWidth?: Prisma.SortOrder
-  imageHeight?: Prisma.SortOrder
-  polygons?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -374,13 +318,15 @@ export type ProjectMaxOrderByAggregateInput = {
 
 export type ProjectMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  imageUrl?: Prisma.SortOrder
-  imageWidth?: Prisma.SortOrder
-  imageHeight?: Prisma.SortOrder
-  polygons?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+}
+
+export type ProjectScalarRelationFilter = {
+  is?: Prisma.ProjectWhereInput
+  isNot?: Prisma.ProjectWhereInput
 }
 
 export type ProjectCreateNestedManyWithoutUserInput = {
@@ -425,24 +371,34 @@ export type ProjectUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
+export type ProjectCreateNestedOneWithoutImagesInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutImagesInput, Prisma.ProjectUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutImagesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutImagesInput, Prisma.ProjectUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutImagesInput
+  upsert?: Prisma.ProjectUpsertWithoutImagesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutImagesInput, Prisma.ProjectUpdateWithoutImagesInput>, Prisma.ProjectUncheckedUpdateWithoutImagesInput>
+}
+
 export type ProjectCreateWithoutUserInput = {
   id?: string
-  imageUrl?: string | null
-  imageWidth?: string | null
-  imageHeight?: string | null
-  polygons: string
+  name?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  images?: Prisma.ImageCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutUserInput = {
   id?: string
-  imageUrl?: string | null
-  imageWidth?: string | null
-  imageHeight?: string | null
-  polygons: string
+  name?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  images?: Prisma.ImageUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutUserInput = {
@@ -476,75 +432,135 @@ export type ProjectScalarWhereInput = {
   OR?: Prisma.ProjectScalarWhereInput[]
   NOT?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
   id?: Prisma.StringFilter<"Project"> | string
-  imageUrl?: Prisma.StringNullableFilter<"Project"> | string | null
-  imageWidth?: Prisma.StringNullableFilter<"Project"> | string | null
-  imageHeight?: Prisma.StringNullableFilter<"Project"> | string | null
-  polygons?: Prisma.StringFilter<"Project"> | string
+  name?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   userId?: Prisma.StringFilter<"Project"> | string
 }
 
+export type ProjectCreateWithoutImagesInput = {
+  id?: string
+  name?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutProjectsInput
+}
+
+export type ProjectUncheckedCreateWithoutImagesInput = {
+  id?: string
+  name?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+}
+
+export type ProjectCreateOrConnectWithoutImagesInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutImagesInput, Prisma.ProjectUncheckedCreateWithoutImagesInput>
+}
+
+export type ProjectUpsertWithoutImagesInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutImagesInput, Prisma.ProjectUncheckedUpdateWithoutImagesInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutImagesInput, Prisma.ProjectUncheckedCreateWithoutImagesInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutImagesInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutImagesInput, Prisma.ProjectUncheckedUpdateWithoutImagesInput>
+}
+
+export type ProjectUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type ProjectCreateManyUserInput = {
   id?: string
-  imageUrl?: string | null
-  imageWidth?: string | null
-  imageHeight?: string | null
-  polygons: string
+  name?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type ProjectUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ImageUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.ImageUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageWidth?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imageHeight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  polygons?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
+/**
+ * Count Type ProjectCountOutputType
+ */
+
+export type ProjectCountOutputType = {
+  images: number
+}
+
+export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  images?: boolean | ProjectCountOutputTypeCountImagesArgs
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectCountOutputType
+   */
+  select?: Prisma.ProjectCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImageWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  imageUrl?: boolean
-  imageWidth?: boolean
-  imageHeight?: boolean
-  polygons?: boolean
+  name?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.Project$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
 export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  imageUrl?: boolean
-  imageWidth?: boolean
-  imageHeight?: boolean
-  polygons?: boolean
+  name?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -553,10 +569,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  imageUrl?: boolean
-  imageWidth?: boolean
-  imageHeight?: boolean
-  polygons?: boolean
+  name?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -565,18 +578,17 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ProjectSelectScalar = {
   id?: boolean
-  imageUrl?: boolean
-  imageWidth?: boolean
-  imageHeight?: boolean
-  polygons?: boolean
+  name?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "imageUrl" | "imageWidth" | "imageHeight" | "polygons" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.Project$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -589,13 +601,11 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Project"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    images: Prisma.$ImagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    imageUrl: string | null
-    imageWidth: string | null
-    imageHeight: string | null
-    polygons: string
+    name: string
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -994,6 +1004,7 @@ readonly fields: ProjectFieldRefs;
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  images<T extends Prisma.Project$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1024,10 +1035,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface ProjectFieldRefs {
   readonly id: Prisma.FieldRef<"Project", 'String'>
-  readonly imageUrl: Prisma.FieldRef<"Project", 'String'>
-  readonly imageWidth: Prisma.FieldRef<"Project", 'String'>
-  readonly imageHeight: Prisma.FieldRef<"Project", 'String'>
-  readonly polygons: Prisma.FieldRef<"Project", 'String'>
+  readonly name: Prisma.FieldRef<"Project", 'String'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Project", 'String'>
@@ -1429,6 +1437,30 @@ export type ProjectDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Projects to delete.
    */
   limit?: number
+}
+
+/**
+ * Project.images
+ */
+export type Project$imagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Image
+   */
+  select?: Prisma.ImageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Image
+   */
+  omit?: Prisma.ImageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImageInclude<ExtArgs> | null
+  where?: Prisma.ImageWhereInput
+  orderBy?: Prisma.ImageOrderByWithRelationInput | Prisma.ImageOrderByWithRelationInput[]
+  cursor?: Prisma.ImageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImageScalarFieldEnum | Prisma.ImageScalarFieldEnum[]
 }
 
 /**

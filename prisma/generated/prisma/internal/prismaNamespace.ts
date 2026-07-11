@@ -386,6 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Project: 'Project',
+  Image: 'Image',
+  Polygon: 'Polygon',
   Password: 'Password',
   Session: 'Session',
   Account: 'Account',
@@ -405,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project" | "password" | "session" | "account" | "verification"
+    modelProps: "user" | "project" | "image" | "polygon" | "password" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -554,6 +556,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProjectCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProjectCountAggregateOutputType> | number
+        }
+      }
+    }
+    Image: {
+      payload: Prisma.$ImagePayload<ExtArgs>
+      fields: Prisma.ImageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
+        }
+        findFirst: {
+          args: Prisma.ImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
+        }
+        findMany: {
+          args: Prisma.ImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>[]
+        }
+        create: {
+          args: Prisma.ImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
+        }
+        createMany: {
+          args: Prisma.ImageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>[]
+        }
+        delete: {
+          args: Prisma.ImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
+        }
+        update: {
+          args: Prisma.ImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ImageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImagePayload>
+        }
+        aggregate: {
+          args: Prisma.ImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImage>
+        }
+        groupBy: {
+          args: Prisma.ImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImageCountAggregateOutputType> | number
+        }
+      }
+    }
+    Polygon: {
+      payload: Prisma.$PolygonPayload<ExtArgs>
+      fields: Prisma.PolygonFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PolygonFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PolygonFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>
+        }
+        findFirst: {
+          args: Prisma.PolygonFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PolygonFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>
+        }
+        findMany: {
+          args: Prisma.PolygonFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>[]
+        }
+        create: {
+          args: Prisma.PolygonCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>
+        }
+        createMany: {
+          args: Prisma.PolygonCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PolygonCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>[]
+        }
+        delete: {
+          args: Prisma.PolygonDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>
+        }
+        update: {
+          args: Prisma.PolygonUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>
+        }
+        deleteMany: {
+          args: Prisma.PolygonDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PolygonUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PolygonUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>[]
+        }
+        upsert: {
+          args: Prisma.PolygonUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PolygonPayload>
+        }
+        aggregate: {
+          args: Prisma.PolygonAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePolygon>
+        }
+        groupBy: {
+          args: Prisma.PolygonGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PolygonGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PolygonCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PolygonCountAggregateOutputType> | number
         }
       }
     }
@@ -907,16 +1057,41 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
-  imageUrl: 'imageUrl',
-  imageWidth: 'imageWidth',
-  imageHeight: 'imageHeight',
-  polygons: 'polygons',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ImageScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  width: 'width',
+  height: 'height',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  projectId: 'projectId'
+} as const
+
+export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
+
+
+export const PolygonScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  color: 'color',
+  points: 'points',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  imageId: 'imageId'
+} as const
+
+export type PolygonScalarFieldEnum = (typeof PolygonScalarFieldEnum)[keyof typeof PolygonScalarFieldEnum]
 
 
 export const PasswordScalarFieldEnum = {
@@ -980,6 +1155,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -994,6 +1176,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1048,6 +1239,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1147,6 +1366,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   project?: Prisma.ProjectOmit
+  image?: Prisma.ImageOmit
+  polygon?: Prisma.PolygonOmit
   password?: Prisma.PasswordOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit

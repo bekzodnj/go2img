@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Project: 'Project',
+  Image: 'Image',
+  Polygon: 'Polygon',
   Password: 'Password',
   Session: 'Session',
   Account: 'Account',
@@ -90,16 +92,41 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const ProjectScalarFieldEnum = {
   id: 'id',
-  imageUrl: 'imageUrl',
-  imageWidth: 'imageWidth',
-  imageHeight: 'imageHeight',
-  polygons: 'polygons',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ImageScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  width: 'width',
+  height: 'height',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  projectId: 'projectId'
+} as const
+
+export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
+
+
+export const PolygonScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  color: 'color',
+  points: 'points',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  imageId: 'imageId'
+} as const
+
+export type PolygonScalarFieldEnum = (typeof PolygonScalarFieldEnum)[keyof typeof PolygonScalarFieldEnum]
 
 
 export const PasswordScalarFieldEnum = {
@@ -163,6 +190,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -177,4 +211,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

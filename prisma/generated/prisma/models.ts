@@ -10,6 +10,8 @@
  */
 export type * from './models/User'
 export type * from './models/Project'
+export type * from './models/Image'
+export type * from './models/Polygon'
 export type * from './models/Password'
 export type * from './models/Session'
 export type * from './models/Account'

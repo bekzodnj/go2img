@@ -7,7 +7,13 @@ import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
 
 const AUTOSAVE_DELAY_MS = 2000;
 
-export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
+export function SaveProjectBtn({
+  projectId = "",
+  imageId = "",
+}: {
+  projectId?: string;
+  imageId?: string | null;
+}) {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
   const imageUrl =
     useSelector(BackgroundImageStore, (state) => state.context.imageUrl) || "";
@@ -27,8 +33,9 @@ export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
     formData.append("imageWidth", imageWidth.toString());
     formData.append("imageHeight", imageHeight.toString());
     formData.append("projectId", projectId);
+    formData.append("imageId", imageId ?? "");
     return formData;
-  }, [polygons, imageUrl, imageWidth, imageHeight, projectId]);
+  }, [polygons, imageUrl, imageWidth, imageHeight, projectId, imageId]);
 
   const debouncedSave = useDebouncedCallback(() => {
     fetcher.submit(buildFormData(), { method: "post" });
@@ -45,7 +52,7 @@ export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
     prevSnapshotRef.current = currentSnapshot;
 
     const hasContent = polygons.length > 0 || imageUrl;
-    if (hasContent && !!projectId) {
+    if (hasContent && !!projectId && !!imageId) {
       debouncedSave();
     }
   }

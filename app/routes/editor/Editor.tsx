@@ -34,7 +34,8 @@ import { Route } from "./+types/Editor";
 import {
   createProject,
   getProjectById,
-  updateProject,
+  upsertPolygons,
+  addImageToProject,
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
 import { SaveProjectBtn } from "~/components/editors/SaveProjectBtn";
@@ -58,60 +59,96 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { project };
+  return {
+    project,
+    imageId: project.images[0]?.id ?? null,
+  };
 };
 
 export const action = async ({ request }: Route.ActionArgs) => {
   console.log("+++ Editor action called");
   const formData = await request.formData();
 
-  const polygons = formData.get("polygons") as string;
-  const imageUrl = formData.get("imageUrl") as string | null;
   const user = await requireUserIdWithRedirect(request);
   const projectId = formData.get("projectId") as string | null;
+  const imageId = formData.get("imageId") as string | null;
 
-  if (projectId) {
-    return updateProject({
-      id: projectId,
-      polygons: polygons,
-      imageUrl,
-      imageWidth: formData.get("imageWidth") as string | null,
-      imageHeight: formData.get("imageHeight") as string | null,
+  const polygonsRaw = formData.get("polygons") as string;
+  const polygons: {
+    label: string;
+    color: string;
+    points: unknown;
+    order: number;
+  }[] = polygonsRaw ? JSON.parse(polygonsRaw).map((p: Polygon, i: number) => ({
+    label: p.label || p.name || "",
+    color: p.color,
+    points: p.points,
+    order: i,
+  })) : [];
+
+  if (!projectId) {
+    const project = await createProject({
       userId: user.id,
+      imageUrl: formData.get("imageUrl") as string,
+      imageWidth: Number(formData.get("imageWidth")),
+      imageHeight: Number(formData.get("imageHeight")),
     });
+    const newImageId = project.images[0].id;
+    await upsertPolygons({ imageId: newImageId, polygons });
+    return { projectId: project.id, imageId: newImageId };
   }
 
-  return createProject({
-    polygons: polygons,
-    imageUrl,
-    imageWidth: formData.get("imageWidth") as string | null,
-    imageHeight: formData.get("imageHeight") as string | null,
-    userId: user.id,
+  if (imageId) {
+    await upsertPolygons({ imageId, polygons });
+    return { projectId, imageId };
+  }
+
+  const image = await addImageToProject({
+    projectId,
+    imageUrl: formData.get("imageUrl") as string,
+    imageWidth: Number(formData.get("imageWidth")),
+    imageHeight: Number(formData.get("imageHeight")),
   });
+  await upsertPolygons({ imageId: image.id, polygons });
+  return { projectId, imageId: image.id };
 };
 
 export default function Editor({ loaderData, params }: Route.ComponentProps) {
   const fetcher = useFetcher({ key: "editor-action" });
   const navigate = useNavigate();
 
-  // this works when /editor/:projectId is loaded with existing project
+  const [imageId, setImageId] = useState<string | null>(loaderData.imageId ?? null);
+
   useEffect(() => {
     console.log("+++ loaderData changed:", loaderData.project);
     if (loaderData.project) {
       const project = loaderData.project;
+      const firstImage = project.images[0];
 
-      BackgroundImageStore.trigger.setImageUrl({
-        imageUrl: project.imageUrl || "",
-      });
+      if (firstImage) {
+        setImageId(firstImage.id);
 
-      BackgroundImageStore.trigger.setSizeImage({
-        imageWidth: Number(project.imageWidth) || 0,
-        imageHeight: Number(project.imageHeight) || 0,
-      });
+        BackgroundImageStore.trigger.setImageUrl({
+          imageUrl: firstImage.url || "",
+        });
 
-      const polygons: Polygon[] = JSON.parse(project.polygons);
-      LabelStore.trigger.setPolygons({ polygons });
+        BackgroundImageStore.trigger.setSizeImage({
+          imageWidth: firstImage.width || 0,
+          imageHeight: firstImage.height || 0,
+        });
+
+        const polygons: Polygon[] = firstImage.polygons.map((p) => ({
+          id: p.id,
+          points: p.points as Polygon["points"],
+          isClosed: true,
+          color: p.color,
+          label: p.label,
+          name: p.label,
+        }));
+        LabelStore.trigger.setPolygons({ polygons });
+      }
     } else {
+      setImageId(null);
       BackgroundImageStore.trigger.clearImageUrl();
       BackgroundImageStore.trigger.setSizeImage({
         imageWidth: 0,
@@ -122,11 +159,13 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
     }
   }, [loaderData.project]);
 
-  // this works when new project is created via action AND a new id is returned
   useEffect(() => {
     if (fetcher.data) {
       console.log("+++ fetcher.data:", fetcher.data);
-      navigate(`/editor/${fetcher.data.id}`, { replace: true });
+      if (fetcher.data?.projectId) {
+        setImageId(fetcher.data.imageId ?? null);
+        navigate(`/editor/${fetcher.data.projectId}`, { replace: true });
+      }
     }
   }, [fetcher.data]);
 
@@ -162,7 +201,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
         <div>
           <Space h="md" />
           <div>
-            <SaveProjectBtn projectId={params.projectId} />
+            <SaveProjectBtn projectId={params.projectId} imageId={imageId} />
           </div>
           <Flex direction="column">
             <div>

@@ -52,6 +52,16 @@ export type User = Prisma.UserModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model Image
+ * 
+ */
+export type Image = Prisma.ImageModel
+/**
+ * Model Polygon
+ * 
+ */
+export type Polygon = Prisma.PolygonModel
+/**
  * Model Password
  * 
  */
