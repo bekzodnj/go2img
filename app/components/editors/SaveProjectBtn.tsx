@@ -1,20 +1,19 @@
 import { Button } from "@mantine/core";
-import { useDebouncedCallback } from "@mantine/hooks";
 import { useSelector } from "@xstate/store/react";
-import { useRef, useCallback } from "react";
+import { useCallback } from "react";
 import { useFetcher } from "react-router";
-import { BackgroundImageStore, LabelStore } from "~/lib/editorLogic";
+import {
+  BackgroundImageStore,
+  ImageListStore,
+  LabelStore,
+} from "~/lib/editorLogic";
 
-const AUTOSAVE_DELAY_MS = 2000;
-
-export function SaveProjectBtn({
-  projectId = "",
-  imageId = "",
-}: {
-  projectId?: string;
-  imageId?: string | null;
-}) {
+export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
+  const imageId = useSelector(
+    ImageListStore,
+    (state) => state.context.currentImageId,
+  );
   const imageUrl =
     useSelector(BackgroundImageStore, (state) => state.context.imageUrl) || "";
   const imageHeight =
@@ -24,7 +23,6 @@ export function SaveProjectBtn({
     useSelector(BackgroundImageStore, (state) => state.context.imageWidth) || 0;
 
   const fetcher = useFetcher({ key: "editor-action" });
-  const prevSnapshotRef = useRef<string>("");
 
   const buildFormData = useCallback(() => {
     const formData = new FormData();
@@ -37,28 +35,7 @@ export function SaveProjectBtn({
     return formData;
   }, [polygons, imageUrl, imageWidth, imageHeight, projectId, imageId]);
 
-  const debouncedSave = useDebouncedCallback(() => {
-    fetcher.submit(buildFormData(), { method: "post" });
-  }, AUTOSAVE_DELAY_MS);
-
-  const currentSnapshot = JSON.stringify({
-    polygons,
-    imageUrl,
-    imageWidth,
-    imageHeight,
-  });
-
-  if (currentSnapshot !== prevSnapshotRef.current) {
-    prevSnapshotRef.current = currentSnapshot;
-
-    const hasContent = polygons.length > 0 || imageUrl;
-    if (hasContent && !!projectId && !!imageId) {
-      debouncedSave();
-    }
-  }
-
   const handleSave = () => {
-    debouncedSave.cancel();
     fetcher.submit(buildFormData(), { method: "post" });
   };
 

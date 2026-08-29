@@ -25,6 +25,13 @@ export async function createProject({
   });
 }
 
+export async function createEmptyProject({ userId }: { userId: string }) {
+  return prisma.project.create({
+    data: { userId },
+    include: { images: true },
+  });
+}
+
 export async function addImageToProject({
   projectId,
   imageUrl,
@@ -38,13 +45,15 @@ export async function addImageToProject({
   imageHeight: number;
   order?: number;
 }) {
+  const nextOrder = order ?? (await prisma.image.count({ where: { projectId } }));
+
   return prisma.image.create({
     data: {
       projectId,
       url: imageUrl,
       width: imageWidth,
       height: imageHeight,
-      order: order ?? 0,
+      order: nextOrder,
     },
   });
 }
@@ -98,7 +107,12 @@ export async function upsertPolygons({
 export async function getProjectsByUser({ userId }: { userId: string }) {
   return prisma.project.findMany({
     where: { userId },
-    include: { images: { include: { polygons: true } } },
+    include: {
+      images: {
+        include: { polygons: true },
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -112,7 +126,12 @@ export async function getProjectById({
 }) {
   return prisma.project.findFirst({
     where: { id, userId },
-    include: { images: { include: { polygons: true } } },
+    include: {
+      images: {
+        include: { polygons: true },
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      },
+    },
   });
 }
 

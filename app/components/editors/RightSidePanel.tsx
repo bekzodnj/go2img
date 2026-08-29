@@ -7,7 +7,11 @@ import { OutputCodeBlock } from "./OutputCodeBlock";
 import { ImageUpload } from "../main/ImageUpload";
 import { InlineImagePaste } from "./RightPanel/InlineImagePaste";
 
-export function RightSidePanel() {
+export function RightSidePanel({
+  onFiles,
+}: {
+  onFiles: (files: File[]) => void;
+}) {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
   const selectedPolygonId = useSelector(
     LabelStore,
@@ -44,7 +48,7 @@ export function RightSidePanel() {
         </>
       ) : (
         <>
-          <ImageUpload />
+          <ImageUpload onFiles={onFiles} multiple />
           <Space h="md" />
           <InlineImagePaste />
           <Divider my="md" />

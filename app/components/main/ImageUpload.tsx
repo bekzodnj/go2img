@@ -1,9 +1,5 @@
-import { Group, Text, Stack } from "@mantine/core";
+import { Text, Stack } from "@mantine/core";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { useEffect } from "react";
-import { useFetcher } from "react-router";
-import { useSelector } from "@xstate/store/react";
-import { BackgroundImageStore } from "~/lib/editorLogic";
 
 /* ---------- Minimal SVG Icon ---------- */
 function ImageIcon() {
@@ -26,45 +22,23 @@ function ImageIcon() {
   );
 }
 
-export function ImageUpload(props: Partial<DropzoneProps>) {
-  const fetcher = useFetcher();
-
-  async function handleDrop(files: File[]) {
-    const formData = new FormData();
-    for (const file of files) {
-      formData.append("fileUpload", file);
-    }
-
-    fetcher.submit(formData, {
-      method: "post",
-      action: "/api/upload/image",
-      encType: "multipart/form-data",
-    });
-  }
-
-  useEffect(() => {
-    if (fetcher.data) {
-      const [first] = Array.isArray(fetcher.data)
-        ? fetcher.data
-        : [fetcher.data];
-      if (first) {
-        BackgroundImageStore.trigger.setImageUrl({
-          imageUrl: first.devUrl,
-        });
-      }
-    }
-  }, [fetcher.data]);
-
-  console.log("fetcher.data imgs", fetcher.data);
-
+export function ImageUpload({
+  onFiles,
+  multiple = false,
+  ...props
+}: {
+  onFiles: (files: File[]) => void;
+  multiple?: boolean;
+} & Partial<DropzoneProps>) {
   return (
     <>
       <Text size="sm" c="dimmed">
-        Upload another image
+        Upload {multiple ? "images" : "another image"}
       </Text>
       <Dropzone
         name="fileUpload"
-        onDrop={handleDrop}
+        multiple={multiple}
+        onDrop={onFiles}
         onReject={(files) => console.log("rejected files", files)}
         maxSize={15 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}

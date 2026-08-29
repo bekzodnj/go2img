@@ -1,35 +1,22 @@
-import {
-  AppShell,
-  Burger,
-  Button,
-  ButtonGroup,
-  Divider,
-  Flex,
-  Group,
-  Input,
-  ScrollArea,
-  Space,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { AppShell, Burger, Flex, Group, ScrollArea, Space } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { lazy, use, useEffect, useState } from "react";
+import { lazy, useCallback, useEffect, useRef } from "react";
 import {
   Link,
   type ShouldRevalidateFunctionArgs,
   useFetcher,
   useNavigate,
 } from "react-router";
-import { BackgroundImageStore, type Polygon } from "~/lib/editorLogic";
+import {
+  BackgroundImageStore,
+  ImageListStore,
+  type ImageItem,
+  type Polygon,
+} from "~/lib/editorLogic";
 import ClientOnly from "~/components/ClientOnly";
-import { useSelector } from "@xstate/store/react";
 import { LabelStore } from "~/lib/editorLogic";
 
 import { LabelNav } from "../../components/editors/LabelNav";
-import { ColorPickerPanel } from "~/components/editors/ColorPickerPanel";
-import { OutputCodeBlock } from "~/components/editors/OutputCodeBlock";
-import { ImageScaleSlider } from "~/components/editors/ImageScaleSlider";
-import { ImageUpload } from "~/components/main/ImageUpload";
 import { Route } from "./+types/Editor";
 import {
   createProject,
@@ -41,6 +28,7 @@ import {
 import { requireUserIdWithRedirect } from "~/session.server";
 import { SaveProjectBtn } from "~/components/editors/SaveProjectBtn";
 import { RightSidePanel } from "~/components/editors/RightSidePanel";
+import { ImageThumbnailStrip } from "~/components/editors/ImageThumbnailStrip";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 
@@ -122,40 +110,121 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 export default function Editor({ loaderData, params }: Route.ComponentProps) {
   const fetcher = useFetcher({ key: "editor-action" });
+  const flushFetcher = useFetcher();
+  const uploadFetcher = useFetcher();
   const navigate = useNavigate();
 
-  const [imageId, setImageId] = useState<string | null>(loaderData.imageId ?? null);
+  const flushSubmitRef = useRef(flushFetcher.submit);
+  flushSubmitRef.current = flushFetcher.submit;
+  const processedUploadRef = useRef<unknown>(null);
+
+  const polygonsCacheRef = useRef<Map<string, Polygon[]>>(new Map());
+
+  const loadImageIntoStores = useCallback((image: ImageItem) => {
+    ImageListStore.trigger.setCurrentImage({ id: image.id });
+    BackgroundImageStore.trigger.setImageUrl({ imageUrl: image.url || "" });
+    BackgroundImageStore.trigger.setSizeImage({
+      imageWidth: image.width || 0,
+      imageHeight: image.height || 0,
+    });
+    const polygons = polygonsCacheRef.current.get(image.id) ?? [];
+    LabelStore.trigger.setPolygons({ polygons });
+    LabelStore.trigger.setSelectedPolygon({ id: null });
+  }, []);
+
+  const flushCurrentImage = useCallback(() => {
+    const currentId = ImageListStore.getSnapshot().context.currentImageId;
+    if (!currentId || !params.projectId) return;
+
+    const polygons = LabelStore.getSnapshot().context.polygons;
+    polygonsCacheRef.current.set(currentId, polygons);
+
+    const bg = BackgroundImageStore.getSnapshot().context;
+    const formData = new FormData();
+    formData.append("projectId", params.projectId);
+    formData.append("imageId", currentId);
+    formData.append("polygons", JSON.stringify(polygons));
+    formData.append("imageUrl", bg.imageUrl ?? "");
+    formData.append("imageWidth", String(bg.imageWidth));
+    formData.append("imageHeight", String(bg.imageHeight));
+    flushSubmitRef.current(formData, { method: "post" });
+  }, [params.projectId]);
+
+  const handleSelectImage = useCallback(
+    (imageId: string) => {
+      const currentId = ImageListStore.getSnapshot().context.currentImageId;
+      if (currentId === imageId) return;
+
+      flushCurrentImage();
+
+      const image = ImageListStore
+        .getSnapshot()
+        .context.images.find((i) => i.id === imageId);
+      if (image) {
+        loadImageIntoStores(image);
+      }
+    },
+    [flushCurrentImage, loadImageIntoStores],
+  );
+
+  const handleFiles = (files: File[]) => {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append("fileUpload", file);
+    }
+    if (params.projectId) {
+      formData.append("projectId", params.projectId);
+    }
+    uploadFetcher.submit(formData, {
+      method: "post",
+      action: "/api/upload/image",
+      encType: "multipart/form-data",
+    });
+  };
 
   useEffect(() => {
-    console.log("+++ loaderData changed:", loaderData.project);
     if (loaderData.project) {
       const project = loaderData.project;
-      const firstImage = project.images[0];
 
-      if (firstImage) {
-        setImageId(firstImage.id);
+      const images: ImageItem[] = project.images.map((img) => ({
+        id: img.id,
+        url: img.url,
+        width: img.width,
+        height: img.height,
+        order: img.order,
+      }));
+      ImageListStore.trigger.setImages({ images });
 
-        BackgroundImageStore.trigger.setImageUrl({
-          imageUrl: firstImage.url || "",
+      project.images.forEach((img) => {
+        polygonsCacheRef.current.set(
+          img.id,
+          img.polygons.map((p) => ({
+            id: p.id,
+            points: p.points as Polygon["points"],
+            isClosed: true,
+            color: p.color,
+            label: p.label,
+            name: p.label,
+          })),
+        );
+      });
+
+      const currentId = ImageListStore.getSnapshot().context.currentImageId;
+      const target =
+        project.images.find((img) => img.id === currentId) ?? project.images[0];
+      if (target) {
+        loadImageIntoStores({
+          id: target.id,
+          url: target.url,
+          width: target.width,
+          height: target.height,
+          order: target.order,
         });
-
-        BackgroundImageStore.trigger.setSizeImage({
-          imageWidth: firstImage.width || 0,
-          imageHeight: firstImage.height || 0,
-        });
-
-        const polygons: Polygon[] = firstImage.polygons.map((p) => ({
-          id: p.id,
-          points: p.points as Polygon["points"],
-          isClosed: true,
-          color: p.color,
-          label: p.label,
-          name: p.label,
-        }));
-        LabelStore.trigger.setPolygons({ polygons });
       }
     } else {
-      setImageId(null);
+      ImageListStore.trigger.setImages({ images: [] });
+      ImageListStore.trigger.setCurrentImage({ id: null });
+      polygonsCacheRef.current.clear();
       BackgroundImageStore.trigger.clearImageUrl();
       BackgroundImageStore.trigger.setSizeImage({
         imageWidth: 0,
@@ -164,17 +233,46 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       LabelStore.trigger.setSelectedPolygon({ id: null });
       LabelStore.trigger.reset();
     }
-  }, [loaderData.project]);
+  }, [loaderData.project, loadImageIntoStores]);
 
   useEffect(() => {
     if (fetcher.data) {
       console.log("+++ fetcher.data:", fetcher.data);
       if (fetcher.data?.projectId) {
-        setImageId(fetcher.data.imageId ?? null);
         navigate(`/editor/${fetcher.data.projectId}`, { replace: true });
       }
     }
-  }, [fetcher.data]);
+  }, [fetcher.data, navigate]);
+
+  useEffect(() => {
+    const data = uploadFetcher.data as
+      | {
+          projectId?: string;
+          uploads?: { devUrl: string }[];
+          images?: ImageItem[];
+        }
+      | undefined;
+    if (!data || data === processedUploadRef.current) return;
+    processedUploadRef.current = data;
+
+    if (data.images && data.images.length > 0) {
+      flushCurrentImage();
+      data.images.forEach((image) => {
+        ImageListStore.trigger.addImage({ image });
+      });
+      loadImageIntoStores(data.images[data.images.length - 1]);
+
+      if (data.projectId && data.projectId !== params.projectId) {
+        navigate(`/editor/${data.projectId}`, { replace: true });
+      }
+    }
+  }, [
+    uploadFetcher.data,
+    flushCurrentImage,
+    loadImageIntoStores,
+    params.projectId,
+    navigate,
+  ]);
 
   const [opened, { toggle }] = useDisclosure();
 
@@ -208,7 +306,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
         <div>
           <Space h="md" />
           <div>
-            <SaveProjectBtn projectId={params.projectId} imageId={imageId} />
+            <SaveProjectBtn projectId={params.projectId} />
           </div>
           <Flex direction="column">
             <div>
@@ -216,12 +314,17 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
                 <Canvas />
               </ClientOnly>
             </div>
+            <Space h="md" />
+            <ImageThumbnailStrip
+              onSelect={handleSelectImage}
+              onFiles={handleFiles}
+            />
           </Flex>
         </div>
       </AppShell.Main>
       <AppShell.Aside p="xs" w={300}>
         <ScrollArea h={850} type="auto">
-          <RightSidePanel />
+          <RightSidePanel onFiles={handleFiles} />
         </ScrollArea>
       </AppShell.Aside>
     </AppShell>

@@ -1,5 +1,6 @@
 export {
   createProject,
+  createEmptyProject,
   addImageToProject,
   updateImage,
   upsertPolygons,

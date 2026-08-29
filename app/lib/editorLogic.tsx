@@ -80,6 +80,36 @@ export const LabelStore = createStore({
   },
 });
 
+export type ImageItem = {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
+  order: number;
+};
+
+export const ImageListStore = createStore({
+  context: {
+    images: [] as ImageItem[],
+    currentImageId: null as string | null,
+  },
+  on: {
+    setImages: (context, event: { images: ImageItem[] }) => ({
+      ...context,
+      images: event.images,
+    }),
+    addImage: (context, event: { image: ImageItem }) => ({
+      ...context,
+      images: [...context.images, event.image],
+      currentImageId: event.image.id,
+    }),
+    setCurrentImage: (context, event: { id: string | null }) => ({
+      ...context,
+      currentImageId: event.id,
+    }),
+  },
+});
+
 export const BackgroundImageStore = createStore({
   context: {
     imageUrl: null as string | null,
