@@ -1,4 +1,11 @@
-import { AppShell, Burger, Flex, Group, ScrollArea, Space } from "@mantine/core";
+import {
+  AppShell,
+  Burger,
+  Flex,
+  Group,
+  ScrollArea,
+  Space,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { lazy, useCallback, useEffect, useRef } from "react";
 import {
@@ -68,12 +75,14 @@ export const action = async ({ request }: Route.ActionArgs) => {
     color: string;
     points: unknown;
     order: number;
-  }[] = polygonsRaw ? JSON.parse(polygonsRaw).map((p: Polygon, i: number) => ({
-    label: p.label || p.name || "",
-    color: p.color,
-    points: p.points,
-    order: i,
-  })) : [];
+  }[] = polygonsRaw
+    ? JSON.parse(polygonsRaw).map((p: Polygon, i: number) => ({
+        label: p.label || p.name || "",
+        color: p.color,
+        points: p.points,
+        order: i,
+      }))
+    : [];
 
   if (!projectId) {
     const project = await createProject({
@@ -157,9 +166,9 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
 
       flushCurrentImage();
 
-      const image = ImageListStore
-        .getSnapshot()
-        .context.images.find((i) => i.id === imageId);
+      const image = ImageListStore.getSnapshot().context.images.find(
+        (i) => i.id === imageId,
+      );
       if (image) {
         loadImageIntoStores(image);
       }
@@ -300,7 +309,23 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       </AppShell.Header>
 
       <AppShell.Navbar p="sm" w={300}>
-        <LabelNav />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            gap: 12,
+            background: "#F3F4F6",
+            padding: 12,
+            borderRadius: 8,
+          }}
+        >
+          <ImageThumbnailStrip
+            onSelect={handleSelectImage}
+            onFiles={handleFiles}
+          />
+          <LabelNav />
+        </div>
       </AppShell.Navbar>
       <AppShell.Main>
         <div>
@@ -314,11 +339,6 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
                 <Canvas />
               </ClientOnly>
             </div>
-            <Space h="md" />
-            <ImageThumbnailStrip
-              onSelect={handleSelectImage}
-              onFiles={handleFiles}
-            />
           </Flex>
         </div>
       </AppShell.Main>

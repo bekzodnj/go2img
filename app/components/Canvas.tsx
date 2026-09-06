@@ -39,10 +39,13 @@ const PenToolPolygon = () => {
     (state) => state.context.imageUrl,
   );
 
+  // No crossOrigin here on purpose: the thumbnails load the same R2 urls with a
+  // plain <img>, and requesting them again in cors mode either gets blocked
+  // (bucket allowlist) or reuses the cached no-cors response and fails. Nothing
+  // exports the stage to a bitmap, so a tainted canvas costs us nothing.
   const [bgImage, status] = useImage(
     imageUrlFromStore ||
       "https://images.unsplash.com/photo-1615873968403-89e068629265",
-    "anonymous",
   );
 
   const imgScale = useSelector(LabelStore, (state) => state.context.imgScale);
@@ -409,6 +412,13 @@ const PenToolPolygon = () => {
                 </MantineGroup>
               </MantineGroup>
             </MantineGroup>
+
+            {status === "failed" ? (
+              <Text size="xs" c="red">
+                Could not load the image ({imageUrlFromStore}). Check the url and
+                its CORS settings.
+              </Text>
+            ) : null}
           </Stack>
         </Paper>
 

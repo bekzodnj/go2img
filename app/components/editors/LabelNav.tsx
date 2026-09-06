@@ -11,19 +11,30 @@ export function LabelNav() {
   );
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        minHeight: 0,
+        background: "white",
+        border: "1px solid #E5E7EB",
+        borderRadius: 8,
+        padding: 12,
+      }}
+    >
+      <Text
+        size="xs"
+        c="dimmed"
+        fw={500}
+        style={{ flexShrink: 0, marginBottom: 8 }}
+      >
+        Polygons ({polygons.length})
+      </Text>
+
       {polygons.length > 0 ? (
-        <div
-          style={{
-            margin: "1rem 0",
-            borderTop: "1px solid #ccc",
-            overflowY: "auto",
-            overflowX: "auto",
-            maxHeight: "500px",
-            paddingTop: "1rem",
-          }}
-        >
-          {polygons.map((polygon, index) => (
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
+          {polygons.map((polygon) => (
             <div
               key={polygon.id}
               style={{
@@ -73,7 +84,7 @@ export function LabelNav() {
           ))}
         </div>
       ) : (
-        <div style={{ margin: "1rem 0", padding: "1rem", textAlign: "center" }}>
+        <div style={{ padding: "1rem 0", textAlign: "center" }}>
           <Text c="gray.6" mb="0">
             No polygons added yet
           </Text>

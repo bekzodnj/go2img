@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Group, Paper, Text } from "@mantine/core";
+import { Button, Paper, Text } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
 import { ImageListStore } from "~/lib/editorLogic";
 
@@ -19,85 +19,114 @@ export function ImageThumbnailStrip({
 
   return (
     <Paper
-      shadow="xs"
       p="xs"
       radius="md"
-      style={{ border: "1px solid #E5E7EB", background: "white" }}
+      style={{
+        border: "1px solid #E5E7EB",
+        background: "white",
+        flexShrink: 0,
+      }}
     >
-      <Group gap="xs" align="center" wrap="nowrap">
-        <Text size="xs" c="dimmed" fw={500} style={{ flexShrink: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 8,
+        }}
+      >
+        <Text size="xs" c="dimmed" fw={500}>
           Images ({images.length})
         </Text>
+        <Button
+          size="compact-xs"
+          variant="light"
+          color="gray"
+          onClick={() => inputRef.current?.click()}
+        >
+          + Add
+        </Button>
+      </div>
 
-        <Group gap="xs" wrap="nowrap" style={{ overflowX: "auto", flex: 1 }}>
-          {images.map((image, index) => (
-            <button
-              key={image.id}
-              onClick={() => onSelect(image.id)}
-              title={`Image ${index + 1}`}
-              style={{
-                width: 56,
-                height: 56,
-                padding: 0,
-                border:
-                  currentImageId === image.id
-                    ? "2px solid #3B82F6"
-                    : "1px solid #E5E7EB",
-                borderRadius: 8,
-                overflow: "hidden",
-                cursor: "pointer",
-                background: "#F9FAFB",
-                flexShrink: 0,
-              }}
-            >
-              <img
-                src={image.url}
-                alt={`Slide ${index + 1}`}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
-            </button>
-          ))}
-
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          overflowY: "auto",
+          maxHeight: 260,
+        }}
+      >
+        {images.map((image, index) => (
           <button
-            onClick={() => inputRef.current?.click()}
-            title="Add images"
+            key={image.id}
+            onClick={() => onSelect(image.id)}
+            title={`Image ${index + 1}`}
             style={{
-              width: 56,
-              height: 56,
+              position: "relative",
+              width: "100%",
+              height: 64,
               padding: 0,
-              border: "1px dashed #CBD5E1",
+              border:
+                currentImageId === image.id
+                  ? "2px solid #3B82F6"
+                  : "1px solid #E5E7EB",
               borderRadius: 8,
+              overflow: "hidden",
               cursor: "pointer",
               background: "#F9FAFB",
-              fontSize: 24,
-              color: "#94A3B8",
               flexShrink: 0,
             }}
           >
-            +
+            <img
+              src={image.url}
+              alt={`Slide ${index + 1}`}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                left: 6,
+                top: 6,
+                background: "rgba(0,0,0,0.55)",
+                color: "white",
+                fontSize: 11,
+                lineHeight: 1,
+                padding: "3px 6px",
+                borderRadius: 4,
+              }}
+            >
+              {index + 1}
+            </span>
           </button>
-        </Group>
+        ))}
 
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          hidden
-          onChange={(e) => {
-            const files = Array.from(e.currentTarget.files ?? []);
-            if (files.length > 0) {
-              onFiles(files);
-            }
-            e.currentTarget.value = "";
-          }}
-        />
-      </Group>
+        {images.length === 0 ? (
+          <Text size="xs" c="gray.5" style={{ textAlign: "center", padding: "0.5rem 0" }}>
+            No images yet
+          </Text>
+        ) : null}
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        hidden
+        onChange={(e) => {
+          const files = Array.from(e.currentTarget.files ?? []);
+          if (files.length > 0) {
+            onFiles(files);
+          }
+          e.currentTarget.value = "";
+        }}
+      />
     </Paper>
   );
 }
