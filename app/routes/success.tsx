@@ -7,8 +7,7 @@ const polarClient = new Polar({
   server: "sandbox",
 });
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
+export async function loader({ url }: LoaderFunctionArgs) {
   // Polar sends either checkoutId or checkout_id depending on the flow
   const checkoutId =
     url.searchParams.get("checkoutId") ||

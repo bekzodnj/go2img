@@ -6,16 +6,16 @@ import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/home";
 import { Link, useFetcher } from "react-router";
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const user = await requireUserIdWithRedirect(request);
+export const loader = async ({ request, url }: Route.LoaderArgs) => {
+  const user = await requireUserIdWithRedirect(request, url);
   const projects = await getProjectsByUser({ userId: user.id });
   return { projects };
 };
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const action = async ({ request, url }: Route.ActionArgs) => {
   const formData = await request.formData();
   const projectId = formData.get("projectId") as string;
-  const user = await requireUserIdWithRedirect(request);
+  const user = await requireUserIdWithRedirect(request, url);
 
   await deleteProject({ id: projectId, userId: user.id });
 

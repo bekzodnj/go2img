@@ -8,12 +8,12 @@ import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/project";
 import { type Polygon } from "~/lib/editorLogic";
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request, url }: Route.ActionArgs) {
   console.log("+++ API action called");
 
   const formData = await request.formData();
 
-  const user = await requireUserIdWithRedirect(request);
+  const user = await requireUserIdWithRedirect(request, url);
   const projectId = formData.get("projectId") as string | null;
   const imageId = formData.get("imageId") as string | null;
 

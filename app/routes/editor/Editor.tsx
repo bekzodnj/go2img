@@ -39,11 +39,11 @@ import { ImageThumbnailStrip } from "~/components/editors/ImageThumbnailStrip";
 
 const Canvas = lazy(() => import("~/components/Canvas"));
 
-export const loader = async ({ request, params }: Route.LoaderArgs) => {
+export const loader = async ({ request, url, params }: Route.LoaderArgs) => {
   if (!params.projectId) {
     return {};
   }
-  const user = await requireUserIdWithRedirect(request);
+  const user = await requireUserIdWithRedirect(request, url);
 
   const projectId = params.projectId;
   const project = await getProjectById({
@@ -61,11 +61,11 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   };
 };
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const action = async ({ request, url }: Route.ActionArgs) => {
   console.log("+++ Editor action called");
   const formData = await request.formData();
 
-  const user = await requireUserIdWithRedirect(request);
+  const user = await requireUserIdWithRedirect(request, url);
   const projectId = formData.get("projectId") as string | null;
   const imageId = formData.get("imageId") as string | null;
 

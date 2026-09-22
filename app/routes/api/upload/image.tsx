@@ -7,11 +7,11 @@ import {
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, url }: ActionFunctionArgs) {
   const formData = await request.formData();
   const files = formData.getAll("fileUpload") as File[];
 
-  const user = await requireUserIdWithRedirect(request);
+  const user = await requireUserIdWithRedirect(request, url);
 
   const uploads = await Promise.all(
     files.map(async (file) => {
