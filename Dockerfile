@@ -24,7 +24,20 @@ FROM base AS build
 COPY . .
 COPY --from=dev-deps /app/node_modules ./node_modules
 
-# Generate Prisma client at build time
+# TODO(prisma-generate): stop committing prisma/generated/ to git.
+# Prisma recommends generating on install/build instead -- a committed client
+# can silently drift from schema.prisma and from the @prisma/client runtime.
+# Handover:
+#   1. gitignore + untrack prisma/generated/
+#   2. add "postinstall": "prisma generate" to package.json (the dev-deps stage
+#      already copies prisma/ before npm ci, so it has the schema)
+#   3. prod-deps stage MUST become `npm ci --omit=dev --ignore-scripts`, else
+#      postinstall runs there without the prisma CLI (devDep) and the build fails
+#   4. drop `prisma generate` from the runtime CMD below -- it cannot help, the
+#      client is already inlined into build/server at build time
+# Open decision: CMD's `migrate deploy` still needs the prisma CLI at runtime,
+# but prisma is a devDependency, so npx fetches it over the network on boot.
+# Either move prisma to dependencies, or run migrations as a separate release step.
 RUN echo "Skipping prisma generate at build"
 
 # Build your app (React Router / server build)
