@@ -26,7 +26,6 @@
     "/public/build"
   ],
   "dependencies": {
-    "@better-auth/cli": "^1.2.4",
     "@mantine/core": "^8.2.1",
     "@mantine/dropzone": "^8.3.10",
     "@mantine/hooks": "^8.2.1",
@@ -67,6 +66,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.2.4",
     "@faker-js/faker": "^9.2.0",
     "@flydotio/dockerfile": "^0.7.10",
     "@react-router/dev": "^8.4.0",
@@ -114,6 +114,11 @@
     "vite": "^8.0.3",
     "vite-tsconfig-paths": "^5.1.3",
     "vitest": "^4.0.16"
+  },
+  "overrides": {
+    "@polar-sh/better-auth": {
+      "@polar-sh/sdk": "$@polar-sh/sdk"
+    }
   },
   "engines": {
     "node": ">=22.22.0"
