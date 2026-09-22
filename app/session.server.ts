@@ -45,7 +45,8 @@ export async function getUser(request: Request) {
 
 export async function requireUserId(
   request: Request,
-  redirectTo: string = new URL(request.url).pathname,
+  url: URL,
+  redirectTo: string = url.pathname,
 ) {
   const userId = await getUserId(request);
   if (!userId) {
@@ -57,7 +58,8 @@ export async function requireUserId(
 
 export async function requireUserIdWithRedirect(
   request: Request,
-  redirectTo: string = new URL(request.url).pathname,
+  url: URL,
+  redirectTo: string = url.pathname,
 ) {
   const session = await auth.api.getSession({
     headers: request.headers, //some endpoint might require headers
