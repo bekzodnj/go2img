@@ -48,7 +48,7 @@ export function RightSidePanel({
         </>
       ) : (
         <>
-          <ImageUpload onFiles={onFiles} multiple />
+          <ImageUpload onFiles={onFiles} />
           <Space h="md" />
           <InlineImagePaste />
           <Divider my="md" />

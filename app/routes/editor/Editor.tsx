@@ -191,6 +191,25 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
     });
   };
 
+  // Swap the file behind the active image; with no active image, add a new one
+  const handleReplaceFile = (files: File[]) => {
+    const currentId = ImageListStore.getSnapshot().context.currentImageId;
+    if (!currentId || !params.projectId) {
+      handleFiles(files.slice(0, 1));
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("fileUpload", files[0]);
+    formData.append("projectId", params.projectId);
+    formData.append("imageId", currentId);
+    uploadFetcher.submit(formData, {
+      method: "post",
+      action: "/api/upload/image",
+      encType: "multipart/form-data",
+    });
+  };
+
   useEffect(() => {
     if (loaderData.project) {
       const project = loaderData.project;
@@ -259,10 +278,21 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
           projectId?: string;
           uploads?: { devUrl: string }[];
           images?: ImageItem[];
+          replacedImage?: ImageItem;
         }
       | undefined;
     if (!data || data === processedUploadRef.current) return;
     processedUploadRef.current = data;
+
+    if (data.replacedImage) {
+      const image = data.replacedImage;
+      ImageListStore.trigger.replaceImage({ image });
+      // Keep the polygons on screen; only the background file changes
+      if (ImageListStore.getSnapshot().context.currentImageId === image.id) {
+        BackgroundImageStore.trigger.setImageUrl({ imageUrl: image.url || "" });
+      }
+      return;
+    }
 
     if (data.images && data.images.length > 0) {
       flushCurrentImage();
@@ -344,7 +374,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       </AppShell.Main>
       <AppShell.Aside p="xs" w={300}>
         <ScrollArea h={850} type="auto">
-          <RightSidePanel onFiles={handleFiles} />
+          <RightSidePanel onFiles={handleReplaceFile} />
         </ScrollArea>
       </AppShell.Aside>
     </AppShell>

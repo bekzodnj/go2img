@@ -33,7 +33,7 @@ export function ImageUpload({
   return (
     <>
       <Text size="sm" c="dimmed">
-        Upload {multiple ? "images" : "another image"}
+        {multiple ? "Upload images" : "Replace this image"}
       </Text>
       <Dropzone
         name="fileUpload"
