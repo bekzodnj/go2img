@@ -1,14 +1,18 @@
-import { useRef } from "react";
-import { Button, Text } from "@mantine/core";
+import { useRef, useState } from "react";
+import { ActionIcon, Button, Group, Popover, Text } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
 import { ImageListStore } from "~/lib/editorLogic";
+import { Icon, icons } from "./icons";
+import { SectionTitle } from "./SectionTitle";
 
 export function ImageThumbnailStrip({
   onSelect,
   onFiles,
+  onDelete,
 }: {
   onSelect: (imageId: string) => void;
   onFiles: (files: File[]) => void;
+  onDelete: (imageId: string) => void;
 }) {
   const images = useSelector(ImageListStore, (state) => state.context.images);
   const currentImageId = useSelector(
@@ -16,6 +20,8 @@ export function ImageThumbnailStrip({
     (state) => state.context.currentImageId,
   );
   const inputRef = useRef<HTMLInputElement>(null);
+  // Which thumbnail's delete confirmation is open
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   return (
     <div
@@ -24,95 +30,137 @@ export function ImageThumbnailStrip({
         borderBottom: "1px solid var(--mantine-color-gray-3)",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 8,
-        }}
+      <SectionTitle count={images.length}>Images</SectionTitle>
+
+      <Button
+        fullWidth
+        variant="light"
+        leftSection={<Icon d={icons.upload} />}
+        onClick={() => inputRef.current?.click()}
       >
-        <Text size="xs" c="dimmed" fw={500}>
-          Images ({images.length})
-        </Text>
-        <Button
-          size="compact-xs"
-          variant="light"
-          color="gray"
-          onClick={() => inputRef.current?.click()}
+        Upload images
+      </Button>
+
+      {images.length > 0 ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 8,
+            marginTop: 12,
+            overflowY: "auto",
+            maxHeight: 240,
+          }}
         >
-          + Add
-        </Button>
-      </div>
+          {images.map((image, index) => {
+            const isCurrent = currentImageId === image.id;
+            return (
+              <div key={image.id} className="group relative">
+                <button
+                  type="button"
+                  onClick={() => onSelect(image.id)}
+                  aria-label={`Open image ${index + 1}`}
+                  aria-current={isCurrent}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    aspectRatio: "4 / 3",
+                    padding: 0,
+                    borderRadius: 6,
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    background: "var(--mantine-color-gray-1)",
+                    border: "1px solid var(--mantine-color-gray-3)",
+                    outline: isCurrent
+                      ? "2px solid var(--mantine-color-blue-6)"
+                      : "none",
+                    outlineOffset: 1,
+                  }}
+                >
+                  <img
+                    src={image.url}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                </button>
+                <span
+                  style={{
+                    position: "absolute",
+                    left: 4,
+                    top: 4,
+                    background: "rgba(0,0,0,0.55)",
+                    color: "white",
+                    fontSize: 10,
+                    lineHeight: 1,
+                    padding: "2px 5px",
+                    borderRadius: 4,
+                    pointerEvents: "none",
+                  }}
+                >
+                  {index + 1}
+                </span>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          overflowY: "auto",
-          maxHeight: 260,
-        }}
-      >
-        {images.map((image, index) => (
-          <button
-            key={image.id}
-            onClick={() => onSelect(image.id)}
-            title={`Image ${index + 1}`}
-            style={{
-              position: "relative",
-              width: "100%",
-              height: 64,
-              padding: 0,
-              border:
-                currentImageId === image.id
-                  ? "2px solid #3B82F6"
-                  : "1px solid #E5E7EB",
-              borderRadius: 8,
-              overflow: "hidden",
-              cursor: "pointer",
-              background: "#F9FAFB",
-              flexShrink: 0,
-            }}
-          >
-            <img
-              src={image.url}
-              alt={`Slide ${index + 1}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                left: 6,
-                top: 6,
-                background: "rgba(0,0,0,0.55)",
-                color: "white",
-                fontSize: 11,
-                lineHeight: 1,
-                padding: "3px 6px",
-                borderRadius: 4,
-              }}
-            >
-              {index + 1}
-            </span>
-          </button>
-        ))}
-
-        {images.length === 0 ? (
-          <Text
-            size="xs"
-            c="gray.5"
-            style={{ textAlign: "center", padding: "0.5rem 0" }}
-          >
-            No images yet
-          </Text>
-        ) : null}
-      </div>
+                <Popover
+                  opened={confirmingId === image.id}
+                  onChange={(opened) => !opened && setConfirmingId(null)}
+                  position="bottom"
+                  withArrow
+                  shadow="md"
+                >
+                  <Popover.Target>
+                    {/* Shown on hover, and always on the open image (touch has no hover) */}
+                    <ActionIcon
+                      size="sm"
+                      variant="white"
+                      color="red"
+                      aria-label={`Delete image ${index + 1}`}
+                      onClick={() => setConfirmingId(image.id)}
+                      // inline: Mantine's own styles win over a Tailwind `absolute`
+                      style={{ position: "absolute", top: 4, right: 4 }}
+                      className={`transition-opacity focus:opacity-100 group-hover:opacity-100 ${
+                        isCurrent || confirmingId === image.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      }`}
+                    >
+                      <Icon d={icons.trash} size={14} />
+                    </ActionIcon>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm" mb="xs">
+                      Delete image {index + 1} and its polygons?
+                    </Text>
+                    <Group gap="xs" justify="flex-end">
+                      <Button
+                        size="xs"
+                        variant="default"
+                        onClick={() => setConfirmingId(null)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="xs"
+                        color="red"
+                        onClick={() => {
+                          setConfirmingId(null);
+                          onDelete(image.id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Group>
+                  </Popover.Dropdown>
+                </Popover>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
 
       <input
         ref={inputRef}

@@ -1,6 +1,8 @@
-import { Button, Text } from "@mantine/core";
+import { ActionIcon, ScrollArea, Text, UnstyledButton } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
 import { LabelStore } from "~/lib/editorLogic";
+import { Icon, icons } from "./icons";
+import { SectionTitle } from "./SectionTitle";
 
 export function LabelNav() {
   const polygons = useSelector(LabelStore, (state) => state.context.polygons);
@@ -20,75 +22,84 @@ export function LabelNav() {
         padding: 12,
       }}
     >
-      <Text
-        size="xs"
-        c="dimmed"
-        fw={500}
-        style={{ flexShrink: 0, marginBottom: 8 }}
-      >
-        Polygons ({polygons.length})
-      </Text>
+      <SectionTitle count={polygons.length}>Polygons</SectionTitle>
 
       {polygons.length > 0 ? (
-        <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
-          {polygons.map((polygon) => (
-            <div
-              key={polygon.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: "5px",
-                margin: "5px 0",
-              }}
-            >
-              <Button
-                size="compact-md"
-                variant={
-                  selectedPolygonId === polygon.id ? "outline" : "default"
-                }
-                onClick={() =>
-                  LabelStore.trigger.setSelectedPolygon({
-                    id: selectedPolygonId === polygon.id ? null : polygon.id,
-                  })
-                }
-                className="grow border"
+        <ScrollArea style={{ flex: 1, minHeight: 0 }} type="auto">
+          {polygons.map((polygon) => {
+            const isSelected = selectedPolygonId === polygon.id;
+            return (
+              <div
+                key={polygon.id}
+                className={`group ${isSelected ? "" : "hover:bg-gray-100"}`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: 6,
+                  background: isSelected
+                    ? "var(--mantine-color-blue-light)"
+                    : undefined,
+                }}
               >
-                <span className="flex items-center gap-1">
+                <UnstyledButton
+                  onClick={() =>
+                    LabelStore.trigger.setSelectedPolygon({
+                      id: isSelected ? null : polygon.id,
+                    })
+                  }
+                  aria-pressed={isSelected}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "6px 8px",
+                    borderRadius: 6,
+                  }}
+                >
                   <span
                     style={{
-                      width: "10px",
-                      height: "10px",
+                      width: 10,
+                      height: 10,
+                      flexShrink: 0,
+                      borderRadius: "50%",
                       backgroundColor: polygon.color,
-                      border: "1px solid black",
                     }}
-                  ></span>
-                  <span className="text-xs">
-                    {polygon.name || "Polygon"} ({polygon.points.length} dots)
-                  </span>
-                </span>
-              </Button>
-              <Button
-                size="compact-xs"
-                variant="subtle"
-                onClick={() =>
-                  LabelStore.trigger.removeLabel({ id: polygon.id })
-                }
-                style={{ color: "red" }}
-              >
-                Delete
-              </Button>
-            </div>
-          ))}
-        </div>
+                  />
+                  <Text
+                    size="sm"
+                    truncate
+                    c={isSelected ? "blue.7" : undefined}
+                    fw={isSelected ? 500 : 400}
+                  >
+                    {polygon.name || "Polygon"}
+                  </Text>
+                </UnstyledButton>
+                <ActionIcon
+                  variant="subtle"
+                  color="red"
+                  size="sm"
+                  mr={4}
+                  aria-label={`Delete ${polygon.name || "polygon"}`}
+                  onClick={() =>
+                    LabelStore.trigger.removeLabel({ id: polygon.id })
+                  }
+                  className={`transition-opacity focus:opacity-100 group-hover:opacity-100 ${
+                    isSelected ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <Icon d={icons.trash} size={14} />
+                </ActionIcon>
+              </div>
+            );
+          })}
+        </ScrollArea>
       ) : (
-        <div style={{ padding: "1rem 0", textAlign: "center" }}>
-          <Text c="gray.6" mb="0">
-            No polygons added yet
-          </Text>
-          <Text c="gray.5" size="sm" mt="0.5rem">
-            Draw or upload an image to get started
-          </Text>
-        </div>
+        <Text size="sm" c="dimmed" ta="center" py="md">
+          No polygons yet. Pick the pen tool (P) and click around a shape to
+          draw one.
+        </Text>
       )}
     </div>
   );

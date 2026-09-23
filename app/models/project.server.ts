@@ -3,6 +3,7 @@ export {
   createEmptyProject,
   addImageToProject,
   updateImage,
+  deleteImage,
   upsertPolygons,
   getProjectsByUser,
   getProjectById,

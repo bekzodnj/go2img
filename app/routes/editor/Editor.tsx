@@ -113,6 +113,7 @@ export const action = async ({ request, url }: Route.ActionArgs) => {
 export default function Editor({ loaderData, params }: Route.ComponentProps) {
   const flushFetcher = useFetcher();
   const uploadFetcher = useFetcher();
+  const deleteFetcher = useFetcher();
 
   const flushSubmitRef = useRef(flushFetcher.submit);
   flushSubmitRef.current = flushFetcher.submit;
@@ -165,6 +166,41 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
       }
     },
     [flushCurrentImage, loadImageIntoStores],
+  );
+
+  const handleDeleteImage = useCallback(
+    (imageId: string) => {
+      const { images, currentImageId } = ImageListStore.getSnapshot().context;
+      const index = images.findIndex((img) => img.id === imageId);
+      if (index === -1) return;
+
+      ImageListStore.trigger.removeImage({ id: imageId });
+      polygonsCacheRef.current.delete(imageId);
+
+      // Leaving the deleted image: no flush, it is about to stop existing.
+      // Open the next image, or the previous one when it was the last
+      if (currentImageId === imageId) {
+        const neighbour = images[index + 1] ?? images[index - 1];
+        if (neighbour) {
+          loadImageIntoStores(neighbour);
+        } else {
+          ImageListStore.trigger.setCurrentImage({ id: null });
+          BackgroundImageStore.trigger.clearImageUrl();
+          BackgroundImageStore.trigger.setSizeImage({
+            imageWidth: 0,
+            imageHeight: 0,
+          });
+          LabelStore.trigger.reset();
+          LabelStore.trigger.setSelectedPolygon({ id: null });
+        }
+      }
+
+      deleteFetcher.submit(null, {
+        method: "delete",
+        action: `/api/images/${imageId}`,
+      });
+    },
+    [deleteFetcher, loadImageIntoStores],
   );
 
   const handleFiles = (files: File[]) => {
@@ -329,6 +365,7 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
           <ImageThumbnailStrip
             onSelect={handleSelectImage}
             onFiles={handleFiles}
+            onDelete={handleDeleteImage}
           />
         </AppShell.Section>
         <AppShell.Section grow mih={0} display="flex">

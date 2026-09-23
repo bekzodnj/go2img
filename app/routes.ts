@@ -26,5 +26,6 @@ export default [
   route("api/auth/*", "routes/api/auth.tsx"),
   route("api/checkout/*", "api/checkout.tsx"),
   route("api/upload/image", "routes/api/upload/image.tsx"),
+  route("api/images/:id", "routes/api/images/$id/route.tsx"),
   route("api/project", "routes/api/project.tsx"),
 ] satisfies RouteConfig;

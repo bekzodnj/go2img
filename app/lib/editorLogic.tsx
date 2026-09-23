@@ -103,6 +103,10 @@ export const ImageListStore = createStore({
       images: [...context.images, event.image],
       currentImageId: event.image.id,
     }),
+    removeImage: (context, event: { id: string }) => ({
+      ...context,
+      images: context.images.filter((img) => img.id !== event.id),
+    }),
     replaceImage: (context, event: { image: ImageItem }) => ({
       ...context,
       images: context.images.map((img) =>

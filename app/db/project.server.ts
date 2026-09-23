@@ -45,7 +45,12 @@ export async function addImageToProject({
   imageHeight: number;
   order?: number;
 }) {
-  const nextOrder = order ?? (await prisma.image.count({ where: { projectId } }));
+  // max + 1 rather than a count, which would repeat an order after a delete
+  const last = await prisma.image.aggregate({
+    where: { projectId },
+    _max: { order: true },
+  });
+  const nextOrder = order ?? (last._max.order ?? -1) + 1;
 
   return prisma.image.create({
     data: {
@@ -76,6 +81,20 @@ export async function updateImage({
       width: imageWidth,
       height: imageHeight,
     },
+  });
+}
+
+// Scoped through the project's owner, so one user can't delete another's image;
+// its polygons go with it (onDelete: Cascade)
+export async function deleteImage({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) {
+  return prisma.image.deleteMany({
+    where: { id, project: { userId } },
   });
 }
 
