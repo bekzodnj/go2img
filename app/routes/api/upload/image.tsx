@@ -1,4 +1,4 @@
-import { ActionFunctionArgs } from "react-router";
+import { ActionFunctionArgs, replace } from "react-router";
 import { storage } from "~/lib/StorageClient";
 import {
   addImageToProject,
@@ -24,6 +24,7 @@ export async function action({ request, url }: ActionFunctionArgs) {
   };
 
   let projectId = formData.get("projectId") as string | null;
+  const isNewProject = !projectId;
 
   // Replace mode: swap the file behind an existing image, keeping its slide
   const replaceImageId = formData.get("imageId") as string | null;
@@ -77,6 +78,11 @@ export async function action({ request, url }: ActionFunctionArgs) {
       }),
     ),
   );
+
+  // A new project lives at its own URL; its loader then brings in the images
+  if (isNewProject) {
+    return replace(`/editor/${projectId}`);
+  }
 
   return new Response(JSON.stringify({ projectId, uploads, images }), {
     status: 200,

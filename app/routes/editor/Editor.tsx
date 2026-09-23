@@ -10,9 +10,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { lazy, useCallback, useEffect, useRef } from "react";
 import {
   Link,
+  replace,
   type ShouldRevalidateFunctionArgs,
   useFetcher,
-  useNavigate,
 } from "react-router";
 import {
   BackgroundImageStore,
@@ -91,9 +91,9 @@ export const action = async ({ request, url }: Route.ActionArgs) => {
       imageWidth: Number(formData.get("imageWidth")),
       imageHeight: Number(formData.get("imageHeight")),
     });
-    const newImageId = project.images[0].id;
-    await upsertPolygons({ imageId: newImageId, polygons });
-    return { projectId: project.id, imageId: newImageId };
+    await upsertPolygons({ imageId: project.images[0].id, polygons });
+    // replace, not push: going Back shouldn't land on the unsaved editor
+    return replace(`/editor/${project.id}`);
   }
 
   if (imageId) {
@@ -118,10 +118,8 @@ export const action = async ({ request, url }: Route.ActionArgs) => {
 };
 
 export default function Editor({ loaderData, params }: Route.ComponentProps) {
-  const fetcher = useFetcher({ key: "editor-action" });
   const flushFetcher = useFetcher();
   const uploadFetcher = useFetcher();
-  const navigate = useNavigate();
 
   const flushSubmitRef = useRef(flushFetcher.submit);
   flushSubmitRef.current = flushFetcher.submit;
@@ -264,19 +262,8 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
   }, [loaderData.project, loadImageIntoStores]);
 
   useEffect(() => {
-    if (fetcher.data) {
-      console.log("+++ fetcher.data:", fetcher.data);
-      if (fetcher.data?.projectId) {
-        navigate(`/editor/${fetcher.data.projectId}`, { replace: true });
-      }
-    }
-  }, [fetcher.data, navigate]);
-
-  useEffect(() => {
     const data = uploadFetcher.data as
       | {
-          projectId?: string;
-          uploads?: { devUrl: string }[];
           images?: ImageItem[];
           replacedImage?: ImageItem;
         }
@@ -300,18 +287,8 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
         ImageListStore.trigger.addImage({ image });
       });
       loadImageIntoStores(data.images[data.images.length - 1]);
-
-      if (data.projectId && data.projectId !== params.projectId) {
-        navigate(`/editor/${data.projectId}`, { replace: true });
-      }
     }
-  }, [
-    uploadFetcher.data,
-    flushCurrentImage,
-    loadImageIntoStores,
-    params.projectId,
-    navigate,
-  ]);
+  }, [uploadFetcher.data, flushCurrentImage, loadImageIntoStores]);
 
   const [opened, { toggle }] = useDisclosure();
 
