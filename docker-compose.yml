@@ -1,30 +1,39 @@
-version: '3.7'
-services: 
-  postgres_db: 
+# Deployed via Dokploy: the image is built and pushed from a dev machine, so this
+# file pulls a tag rather than building. Override APP_TAG per deploy to pin a commit.
+services:
+  postgres_db:
     image: postgres:15
     hostname: postgres_db
-    container_name: postgres_db
     restart: always
-    environment: 
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: prisma
-    ports: 
-      - '5432:5432'
-    networks: 
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      # No default: a hardcoded password must not ship in the repo.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+    # Intentionally NOT published. On a public VPS, `ports: 5432:5432` exposes the
+    # database to the internet; the app reaches it over prisma-network instead.
+    # Uncomment only for temporary admin access, and prefer an SSH tunnel.
+    # ports:
+    #   - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
       - prisma-network
-    healthcheck: 
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"] 
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
       interval: 5s
       timeout: 2s
       retries: 20
-  server: 
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    ports: 
-      - '3002:3000'
-    environment: 
+
+  server:
+    image: bekzodjon/go2img:${APP_TAG:-latest}
+    restart: always
+    # Dokploy's proxy routes to container port 3000 over dokploy-network, so the
+    # host port is not published; publishing it would bypass the proxy and TLS.
+    expose:
+      - '3000'
+    environment:
       - DATABASE_URL=${DATABASE_URL}
       - SESSION_SECRET=${SESSION_SECRET}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
@@ -33,18 +42,22 @@ services:
       - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
       - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
       - R2_DEV_URL=${R2_DEV_URL}
-    stdin_open: true
-    tty: true  # Keeps the container running for debugging
-    depends_on: 
-      postgres_db: 
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - POLAR_ACCESS_TOKEN=${POLAR_ACCESS_TOKEN}
+      - POLAR_SANDBOX_ACCESS_TOKEN=${POLAR_SANDBOX_ACCESS_TOKEN}
+    depends_on:
+      postgres_db:
         condition: service_healthy
-    # env_file: 
-    #   - .env.prod
-    networks: 
+    networks:
       - prisma-network
       - dokploy-network
+
 networks:
   prisma-network:
     external: true
   dokploy-network:
     external: true
+
+volumes:
+  postgres_data:
