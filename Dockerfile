@@ -14,7 +14,10 @@ COPY package.json package-lock.json ./
 COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
 
-RUN npm ci
+# --ignore-scripts: the postinstall hook runs `prisma generate`, which loads
+# prisma.config.ts and requires DATABASE_URL. .env is dockerignored, so there is
+# no DATABASE_URL here. The build stage generates explicitly instead.
+RUN npm ci --ignore-scripts
 
 # -------------------------------
 # Build stage
@@ -24,21 +27,11 @@ FROM base AS build
 COPY . .
 COPY --from=dev-deps /app/node_modules ./node_modules
 
-# TODO(prisma-generate): stop committing prisma/generated/ to git.
-# Prisma recommends generating on install/build instead -- a committed client
-# can silently drift from schema.prisma and from the @prisma/client runtime.
-# Handover:
-#   1. gitignore + untrack prisma/generated/
-#   2. add "postinstall": "prisma generate" to package.json (the dev-deps stage
-#      already copies prisma/ before npm ci, so it has the schema)
-#   3. prod-deps stage MUST become `npm ci --omit=dev --ignore-scripts`, else
-#      postinstall runs there without the prisma CLI (devDep) and the build fails
-#   4. drop `prisma generate` from the runtime CMD below -- it cannot help, the
-#      client is already inlined into build/server at build time
-# Open decision: CMD's `migrate deploy` still needs the prisma CLI at runtime,
-# but prisma is a devDependency, so npx fetches it over the network on boot.
-# Either move prisma to dependencies, or run migrations as a separate release step.
-RUN echo "Skipping prisma generate at build"
+# Prisma client is gitignored, so generate it here. prisma.config.ts resolves
+# DATABASE_URL at load time, but generate never connects, so a placeholder is
+# enough -- the real URL is injected at runtime.
+RUN DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder" \
+    npx prisma generate
 
 # Build your app (React Router / server build)
 RUN npm run build
@@ -52,7 +45,10 @@ COPY package.json package-lock.json ./
 COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
 
-RUN npm ci --omit=dev
+# --ignore-scripts: same reason as above -- postinstall's `prisma generate` needs
+# DATABASE_URL, and generating here is pointless anyway since the client is
+# already baked into build/server at build time.
+RUN npm ci --omit=dev --ignore-scripts
 
 # -------------------------------
 # Runtime (final image)

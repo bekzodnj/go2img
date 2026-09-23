@@ -16,3 +16,6 @@ node_modules
 .vscode/
 data.db
 .DS_Store
+
+# Prisma client is generated on install/build, not committed
+/prisma/generated
