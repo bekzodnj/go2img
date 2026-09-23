@@ -15,7 +15,8 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "@db/*": ["./prisma/generated/prisma/*"]
     },
     "skipLibCheck": true,
     "isolatedModules": true,

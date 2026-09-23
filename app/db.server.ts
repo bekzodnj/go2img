@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { env } from "prisma/config";
-import { PrismaClient } from "../prisma/generated/prisma/client";
+import { PrismaClient } from "@db/client";
 
 import { singleton } from "./singleton.server";
 
