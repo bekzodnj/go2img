@@ -36,11 +36,8 @@ export function HeroSection() {
   return (
     <section className="px-6 pb-32 pt-24 sm:pt-36">
       <div className="mx-auto max-w-2xl text-center">
-        <p className="text-sm font-medium text-indigo-500">
-          Image annotation tool
-        </p>
         <h1 className="mt-4 text-5xl font-semibold tracking-tight text-gray-900 sm:text-6xl">
-          Draw on your images.
+          Annotate your images.
         </h1>
         <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-gray-500">
           Annotate and map your images, one at a time or a whole batch. Then

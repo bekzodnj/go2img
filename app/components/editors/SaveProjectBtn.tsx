@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, Group, Text } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
 import { useCallback } from "react";
 import { useFetcher } from "react-router";
@@ -40,17 +40,17 @@ export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
   };
 
   const isSubmitting = fetcher.state !== "idle";
+  // An existing project's save returns data; a first save redirects instead
+  const hasSaved = fetcher.state === "idle" && fetcher.data != null;
 
   return (
-    <fetcher.Form method="post">
-      <Button
-        disabled={isSubmitting}
-        onClick={handleSave}
-        variant="light"
-        color="blue"
-      >
-        {isSubmitting ? "Saving..." : "Save Progress"}
+    <Group gap="sm" wrap="nowrap">
+      <Text size="xs" c="dimmed" visibleFrom="xs">
+        {isSubmitting ? "Saving…" : hasSaved ? "Saved" : null}
+      </Text>
+      <Button size="xs" loading={isSubmitting} onClick={handleSave}>
+        Save
       </Button>
-    </fetcher.Form>
+    </Group>
   );
 }

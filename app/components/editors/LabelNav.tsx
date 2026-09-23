@@ -17,9 +17,6 @@ export function LabelNav() {
         flexDirection: "column",
         flex: 1,
         minHeight: 0,
-        background: "white",
-        border: "1px solid #E5E7EB",
-        borderRadius: 8,
         padding: 12,
       }}
     >

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Button, Paper, Text } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
 import { ImageListStore } from "~/lib/editorLogic";
 
@@ -18,13 +18,10 @@ export function ImageThumbnailStrip({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Paper
-      p="xs"
-      radius="md"
+    <div
       style={{
-        border: "1px solid #E5E7EB",
-        background: "white",
-        flexShrink: 0,
+        padding: 12,
+        borderBottom: "1px solid var(--mantine-color-gray-3)",
       }}
     >
       <div
@@ -107,7 +104,11 @@ export function ImageThumbnailStrip({
         ))}
 
         {images.length === 0 ? (
-          <Text size="xs" c="gray.5" style={{ textAlign: "center", padding: "0.5rem 0" }}>
+          <Text
+            size="xs"
+            c="gray.5"
+            style={{ textAlign: "center", padding: "0.5rem 0" }}
+          >
             No images yet
           </Text>
         ) : null}
@@ -127,6 +128,6 @@ export function ImageThumbnailStrip({
           e.currentTarget.value = "";
         }}
       />
-    </Paper>
+    </div>
   );
 }

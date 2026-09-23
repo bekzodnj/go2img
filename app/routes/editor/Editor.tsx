@@ -1,11 +1,4 @@
-import {
-  AppShell,
-  Burger,
-  Flex,
-  Group,
-  ScrollArea,
-  Space,
-} from "@mantine/core";
+import { AppShell, Burger, Group, ScrollArea, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { lazy, useCallback, useEffect, useRef } from "react";
 import {
@@ -294,65 +287,68 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
 
   return (
     <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      header={{ height: 56 }}
+      navbar={{ width: 280, breakpoint: "sm", collapsed: { mobile: !opened } }}
       aside={{
         width: 300,
         breakpoint: "md",
         collapsed: { desktop: false, mobile: true },
       }}
-      padding="md"
+      padding={0}
     >
       <AppShell.Header>
-        <Group h="100%" px="md" align="center">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <h1 className="text-xl font-bold">
-            <Link to="/">Go2Img</Link>
-          </h1>
-          <Link to="/app" className="text-base text-gray-600">
-            &larr; Go back to projects
-          </Link>
+        <Group h="100%" px="md" justify="space-between" wrap="nowrap">
+          <Group gap="xs" wrap="nowrap" miw={0}>
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+            />
+            <Link to="/" className="text-lg font-semibold tracking-tight">
+              Go2Img
+            </Link>
+            <Text c="gray.4">/</Text>
+            <Link
+              to="/app"
+              className="text-sm text-gray-500 hover:text-gray-900"
+            >
+              Projects
+            </Link>
+            <Text c="gray.4">/</Text>
+            <Text size="sm" fw={500} truncate>
+              {loaderData.project?.name ?? "New project"}
+            </Text>
+          </Group>
+          <SaveProjectBtn projectId={params.projectId} />
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="sm" w={300}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-            gap: 12,
-            background: "#F3F4F6",
-            padding: 12,
-            borderRadius: 8,
-          }}
-        >
+      <AppShell.Navbar>
+        <AppShell.Section>
           <ImageThumbnailStrip
             onSelect={handleSelectImage}
             onFiles={handleFiles}
           />
+        </AppShell.Section>
+        <AppShell.Section grow mih={0} display="flex">
           <LabelNav />
-        </div>
+        </AppShell.Section>
       </AppShell.Navbar>
-      <AppShell.Main>
-        <div>
-          <Space h="md" />
-          <div>
-            <SaveProjectBtn projectId={params.projectId} />
-          </div>
-          <Flex direction="column">
-            <div>
-              <ClientOnly>
-                <Canvas />
-              </ClientOnly>
-            </div>
-          </Flex>
+
+      {/* Exactly one screen tall: only the panels and the canvas scroll or pan */}
+      <AppShell.Main h="100dvh" style={{ display: "flex" }}>
+        <div style={{ flex: 1, minWidth: 0, display: "flex" }}>
+          <ClientOnly>
+            <Canvas onFiles={handleFiles} />
+          </ClientOnly>
         </div>
       </AppShell.Main>
-      <AppShell.Aside p="xs" w={300}>
-        <ScrollArea h={850} type="auto">
+
+      <AppShell.Aside>
+        <AppShell.Section grow component={ScrollArea} p="md">
           <RightSidePanel onFiles={handleReplaceFile} />
-        </ScrollArea>
+        </AppShell.Section>
       </AppShell.Aside>
     </AppShell>
   );
