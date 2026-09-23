@@ -65,8 +65,8 @@ COPY prisma ./prisma
 COPY package.json ./
 COPY prisma.config.ts ./prisma.config.ts
 
-# Add this so Prisma knows DATABASE_URL will come from runtime env
-ENV DATABASE_URL=${DATABASE_URL}
+# The app listens on 3000 (react-router-serve default, honors PORT).
+EXPOSE 3000
 
 # Run migrations only at startup (NOT generate)
 CMD ["sh", "-c", "npm run db:deploy && npm run start"]
