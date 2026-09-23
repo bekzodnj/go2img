@@ -1,72 +1,36 @@
-import type { ActionFunctionArgs, MetaFunction } from "react-router";
-import { Form, Link, useActionData } from "react-router";
+import type { MetaFunction } from "react-router";
+import { Link } from "react-router";
 import { HeroSection } from "~/components/main/HeroSection";
-
-import React, { lazy, useState } from "react";
-import { Route } from "./+types/_index";
-import { Box, Button, Container, Flex } from "@mantine/core";
-
-const Canvas = lazy(() => import("../components/Canvas"));
-
-import ClientOnly from "~/components/ClientOnly";
-import { Polygon } from "~/lib/editorLogic";
 
 export const meta: MetaFunction = () => [{ title: "Go2Img" }];
 
-export default function Index({ actionData }: Route.ComponentProps) {
-  const [polygons, setPolygons] = useState<Polygon[]>([]);
+const navLink = "text-sm text-gray-500 transition-colors hover:text-gray-900";
 
+export default function Index() {
   return (
-    <div className="min-h-screen bg-white pt-14">
-      {/* Nav Bar */}
-      <nav className="fixed top-0 z-10 w-full border-b border-gray-200 bg-white pb-10">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex h-20 flex-col items-center gap-3 py-4 sm:h-auto sm:flex-row sm:justify-between sm:py-4">
-            {/* Logo */}
-            <h1
-              className="select-none text-3xl font-semibold tracking-tight text-gray-900"
-              suppressHydrationWarning
-            >
-              Go2Img
-            </h1>
+    <div className="min-h-screen bg-white">
+      <nav className="mx-auto flex h-20 max-w-5xl items-center justify-between px-6">
+        <Link
+          to="/"
+          className="select-none text-lg font-semibold tracking-tight text-gray-900"
+        >
+          Go2Img
+        </Link>
 
-            {/* Navigation Links */}
-            <div className="flex items-center space-x-10">
-              <Link
-                to="/app"
-                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/editor"
-                className="relative pl-4 text-lg font-semibold text-gray-900 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-full before:bg-gradient-to-r before:from-indigo-500 before:to-pink-500 after:absolute after:-bottom-2 after:left-0 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-indigo-500 after:to-pink-500 after:transition-all after:duration-300 hover:after:w-full"
-              >
-                Editor
-              </Link>
-
-              <a
-                href="/login"
-                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
-              >
-                Sign In
-              </a>
-              <a
-                href="#contact"
-                className="relative text-lg font-medium text-gray-600 transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:text-gray-900 hover:after:w-full"
-              >
-                Contact
-              </a>
-            </div>
-          </div>
+        <div className="flex items-center gap-8">
+          <Link to="/editor" className={navLink}>
+            Editor
+          </Link>
+          <Link to="/app" className={navLink}>
+            Dashboard
+          </Link>
+          <a href="/login" className={navLink}>
+            Sign in
+          </a>
         </div>
       </nav>
 
-      <Container strategy="grid" size={800} className="border">
-        <div>
-          <HeroSection />
-        </div>
-      </Container>
+      <HeroSection />
     </div>
   );
 }
