@@ -136,6 +136,10 @@ export async function getProjectsByUser({ userId }: { userId: string }) {
   });
 }
 
+export async function countProjectsByUser({ userId }: { userId: string }) {
+  return prisma.project.count({ where: { userId } });
+}
+
 export async function getProjectById({
   id,
   userId,

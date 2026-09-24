@@ -1,6 +1,15 @@
 import { useRef, useState } from "react";
-import { ActionIcon, Button, Group, Popover, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Anchor,
+  Button,
+  Group,
+  Popover,
+  Text,
+} from "@mantine/core";
 import { useSelector } from "@xstate/store/react";
+import { authClient } from "~/lib/auth-client";
+import { PRO_PRODUCT_ID } from "~/lib/constants";
 import { ImageListStore } from "~/lib/editorLogic";
 import { Icon, icons } from "./icons";
 import { SectionTitle } from "./SectionTitle";
@@ -9,10 +18,15 @@ export function ImageThumbnailStrip({
   onSelect,
   onFiles,
   onDelete,
+  maxImages,
+  error,
 }: {
   onSelect: (imageId: string) => void;
   onFiles: (files: File[]) => void;
   onDelete: (imageId: string) => void;
+  // Free plan cap; undefined means unlimited
+  maxImages?: number;
+  error?: string;
 }) {
   const images = useSelector(ImageListStore, (state) => state.context.images);
   const currentImageId = useSelector(
@@ -22,6 +36,7 @@ export function ImageThumbnailStrip({
   const inputRef = useRef<HTMLInputElement>(null);
   // Which thumbnail's delete confirmation is open
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const atLimit = maxImages !== undefined && images.length >= maxImages;
 
   return (
     <div
@@ -37,9 +52,30 @@ export function ImageThumbnailStrip({
         variant="light"
         leftSection={<Icon d={icons.upload} />}
         onClick={() => inputRef.current?.click()}
+        disabled={atLimit}
       >
         Upload images
       </Button>
+
+      {atLimit ? (
+        <Text size="xs" c="dimmed" mt={6}>
+          The free plan includes {maxImages}{" "}
+          {maxImages === 1 ? "image" : "images"} per project.{" "}
+          <Anchor
+            component="button"
+            size="xs"
+            onClick={() => authClient.checkout({ products: [PRO_PRODUCT_ID] })}
+          >
+            Upgrade to Pro
+          </Anchor>
+        </Text>
+      ) : null}
+
+      {error ? (
+        <Text size="xs" c="red.7" mt={6}>
+          {error}
+        </Text>
+      ) : null}
 
       {images.length > 0 ? (
         <div
@@ -166,7 +202,7 @@ export function ImageThumbnailStrip({
         ref={inputRef}
         type="file"
         accept="image/*"
-        multiple
+        multiple={maxImages === undefined}
         hidden
         onChange={(e) => {
           const files = Array.from(e.currentTarget.files ?? []);

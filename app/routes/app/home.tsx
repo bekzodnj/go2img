@@ -5,11 +5,17 @@ import {
 import { requireUserIdWithRedirect } from "~/session.server";
 import { Route } from "./+types/home";
 import { Link, useFetcher } from "react-router";
+import { hasActiveSubscription } from "~/lib/billing.server";
+import { authClient } from "~/lib/auth-client";
+import { FREE_PROJECT_LIMIT, PRO_PRODUCT_ID } from "~/lib/constants";
 
 export const loader = async ({ request, url }: Route.LoaderArgs) => {
   const user = await requireUserIdWithRedirect(request, url);
   const projects = await getProjectsByUser({ userId: user.id });
-  return { projects };
+  const canCreateProject =
+    projects.length < FREE_PROJECT_LIMIT ||
+    (await hasActiveSubscription(user.id));
+  return { projects, canCreateProject };
 };
 
 export const action = async ({ request, url }: Route.ActionArgs) => {
@@ -71,7 +77,7 @@ const getPolygonCount = (project: {
 };
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { projects } = loaderData;
+  const { projects, canCreateProject } = loaderData;
 
   const fetcher = useFetcher();
   const handleDelete = (projectId: string) => {
@@ -94,18 +100,36 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link to="/editor">
-            <div className="group relative flex h-52 flex-col items-center justify-center rounded-xl border border-neutral-200 bg-white transition-all hover:border-neutral-400 hover:bg-neutral-50">
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-5xl font-light text-neutral-400 transition-colors group-hover:text-neutral-600">
-                  +
+          {canCreateProject ? (
+            <Link to="/editor">
+              <div className="group relative flex h-52 flex-col items-center justify-center rounded-xl border border-neutral-200 bg-white transition-all hover:border-neutral-400 hover:bg-neutral-50">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-5xl font-light text-neutral-400 transition-colors group-hover:text-neutral-600">
+                    +
+                  </div>
+                  <span className="text-sm font-medium text-neutral-600">
+                    New project
+                  </span>
                 </div>
-                <span className="text-sm font-medium text-neutral-600">
-                  New project
-                </span>
               </div>
-            </div>
-          </Link>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() =>
+                authClient.checkout({ products: [PRO_PRODUCT_ID] })
+              }
+              className="flex h-52 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-6 text-center transition-all hover:border-neutral-400"
+            >
+              <span className="text-sm font-medium text-neutral-700">
+                Upgrade to Pro
+              </span>
+              <span className="text-xs text-neutral-500">
+                The free plan includes {FREE_PROJECT_LIMIT} project. Upgrade to
+                create more.
+              </span>
+            </button>
+          )}
 
           {projects.map((project) => (
             <div

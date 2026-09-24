@@ -7,6 +7,12 @@ import {
   updateImage,
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
+import {
+  getPlan,
+  IMAGE_LIMIT_MESSAGE,
+  planLimitError,
+  PROJECT_LIMIT_MESSAGE,
+} from "~/lib/billing.server";
 
 export async function action({ request, url }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -56,16 +62,29 @@ export async function action({ request, url }: ActionFunctionArgs) {
     });
   }
 
-  const uploads = await Promise.all(files.map(uploadFile));
-
+  // Check the plan before storing anything
+  const plan = getPlan(user.id);
+  let existingImages = 0;
   if (!projectId) {
-    const project = await createEmptyProject({ userId: user.id });
-    projectId = project.id;
+    if (!(await plan.canCreateProject())) {
+      return planLimitError(PROJECT_LIMIT_MESSAGE);
+    }
   } else {
     const project = await getProjectById({ id: projectId, userId: user.id });
     if (!project) {
       throw new Response("Not Found", { status: 404 });
     }
+    existingImages = project.images.length;
+  }
+  if (!(await plan.canAddImages(existingImages, files.length))) {
+    return planLimitError(IMAGE_LIMIT_MESSAGE);
+  }
+
+  const uploads = await Promise.all(files.map(uploadFile));
+
+  if (!projectId) {
+    const project = await createEmptyProject({ userId: user.id });
+    projectId = project.id;
   }
 
   const images = await Promise.all(

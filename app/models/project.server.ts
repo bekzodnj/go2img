@@ -6,6 +6,7 @@ export {
   deleteImage,
   upsertPolygons,
   getProjectsByUser,
+  countProjectsByUser,
   getProjectById,
   deleteProject,
 } from "~/db/project.server";

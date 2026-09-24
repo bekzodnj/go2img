@@ -5,7 +5,7 @@ import { prisma } from "~/db.server";
 import { Polar } from "@polar-sh/sdk";
 import { polar, checkout, portal } from "@polar-sh/better-auth";
 
-const client = new Polar({
+export const polarClient = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN,
   server: "sandbox",
 });
@@ -32,7 +32,7 @@ export const auth = betterAuth({
   },
   plugins: [
     polar({
-      client,
+      client: polarClient,
       // Enable automatic Polar Customer creation on signup
       createCustomerOnSignUp: true,
       use: [

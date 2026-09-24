@@ -10,11 +10,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       # No default: a hardcoded password must not ship in the repo.
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
-    # Intentionally NOT published. On a public VPS, `ports: 5432:5432` exposes the
-    # database to the internet; the app reaches it over prisma-network instead.
-    # Uncomment only for temporary admin access, and prefer an SSH tunnel.
-    # ports:
-    #   - '5432:5432'
+    # Published on the host's loopback only, for admin access over an SSH tunnel
+    # (ssh -N -L 5433:127.0.0.1:5432 root@<server>); the app uses prisma-network.
+    # Keep the 127.0.0.1 prefix: without it Docker binds 0.0.0.0, bypassing ufw,
+    # and exposes the database to the internet.
+    ports:
+      - '127.0.0.1:5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

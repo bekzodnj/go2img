@@ -1,5 +1,6 @@
 import { authClient } from "~/lib/auth-client";
 import { useEffect, useState } from "react";
+import { PRO_PRODUCT_ID } from "~/lib/constants";
 import type { CustomerState } from "@polar-sh/sdk/models/components/customerstate";
 
 const navItemClass =
@@ -30,9 +31,7 @@ export function BillingState() {
       onClick={() =>
         isPaid
           ? authClient.customer.portal()
-          : authClient.checkout({
-              products: ["234888b5-f3b3-489c-814d-c3ad22e1538b"],
-            })
+          : authClient.checkout({ products: [PRO_PRODUCT_ID] })
       }
     >
       {isPaid ? "Manage plan (Premium)" : "Upgrade to Pro"}

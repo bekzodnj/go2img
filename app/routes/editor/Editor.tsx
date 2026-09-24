@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { lazy, useCallback, useEffect, useRef } from "react";
 import {
   Link,
+  redirect,
   replace,
   type ShouldRevalidateFunctionArgs,
   useFetcher,
@@ -26,6 +27,14 @@ import {
   updateImage,
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
+import { auth } from "~/lib/auth";
+import { FREE_IMAGES_PER_PROJECT } from "~/lib/constants";
+import {
+  getPlan,
+  IMAGE_LIMIT_MESSAGE,
+  planLimitError,
+  PROJECT_LIMIT_MESSAGE,
+} from "~/lib/billing.server";
 import { SaveProjectBtn } from "~/components/editors/SaveProjectBtn";
 import { RightSidePanel } from "~/components/editors/RightSidePanel";
 import { ImageThumbnailStrip } from "~/components/editors/ImageThumbnailStrip";
@@ -34,7 +43,16 @@ const Canvas = lazy(() => import("~/components/Canvas"));
 
 export const loader = async ({ request, url, params }: Route.LoaderArgs) => {
   if (!params.projectId) {
-    return {};
+    // Signed-out visitors can still try the editor; saving asks them to log in
+    const session = await auth.api.getSession({ headers: request.headers });
+    if (!session) {
+      return { isPaid: false };
+    }
+    const plan = getPlan(session.user.id);
+    if (!(await plan.canCreateProject())) {
+      throw redirect("/app");
+    }
+    return { isPaid: await plan.isPaid() };
   }
   const user = await requireUserIdWithRedirect(request, url);
 
@@ -51,6 +69,7 @@ export const loader = async ({ request, url, params }: Route.LoaderArgs) => {
   return {
     project,
     imageId: project.images[0]?.id ?? null,
+    isPaid: await getPlan(user.id).isPaid(),
   };
 };
 
@@ -78,6 +97,9 @@ export const action = async ({ request, url }: Route.ActionArgs) => {
     : [];
 
   if (!projectId) {
+    if (!(await getPlan(user.id).canCreateProject())) {
+      return planLimitError(PROJECT_LIMIT_MESSAGE);
+    }
     const project = await createProject({
       userId: user.id,
       imageUrl: formData.get("imageUrl") as string,
@@ -98,6 +120,14 @@ export const action = async ({ request, url }: Route.ActionArgs) => {
     }
     await upsertPolygons({ imageId, polygons });
     return { projectId, imageId };
+  }
+
+  const project = await getProjectById({ id: projectId, userId: user.id });
+  if (!project) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  if (!(await getPlan(user.id).canAddImages(project.images.length, 1))) {
+    return planLimitError(IMAGE_LIMIT_MESSAGE);
   }
 
   const image = await addImageToProject({
@@ -203,7 +233,16 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
     [deleteFetcher, loadImageIntoStores],
   );
 
-  const handleFiles = (files: File[]) => {
+  // Free plan: keep only as many files as there are image slots left
+  const maxImages = loaderData.isPaid ? undefined : FREE_IMAGES_PER_PROJECT;
+  const handleFiles = (allFiles: File[]) => {
+    const existing = ImageListStore.getSnapshot().context.images.length;
+    const files =
+      maxImages === undefined
+        ? allFiles
+        : allFiles.slice(0, Math.max(maxImages - existing, 0));
+    if (files.length === 0) return;
+
     const formData = new FormData();
     for (const file of files) {
       formData.append("fileUpload", file);
@@ -290,6 +329,9 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
     }
   }, [loaderData.project, loadImageIntoStores]);
 
+  const uploadError = (uploadFetcher.data as { error?: string } | undefined)
+    ?.error;
+
   useEffect(() => {
     const data = uploadFetcher.data as
       | {
@@ -366,6 +408,8 @@ export default function Editor({ loaderData, params }: Route.ComponentProps) {
             onSelect={handleSelectImage}
             onFiles={handleFiles}
             onDelete={handleDeleteImage}
+            maxImages={maxImages}
+            error={uploadError}
           />
         </AppShell.Section>
         <AppShell.Section grow mih={0} display="flex">

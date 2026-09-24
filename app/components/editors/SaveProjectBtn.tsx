@@ -40,13 +40,14 @@ export function SaveProjectBtn({ projectId = "" }: { projectId?: string }) {
   };
 
   const isSubmitting = fetcher.state !== "idle";
+  const error = (fetcher.data as { error?: string } | undefined)?.error;
   // An existing project's save returns data; a first save redirects instead
-  const hasSaved = fetcher.state === "idle" && fetcher.data != null;
+  const hasSaved = fetcher.state === "idle" && fetcher.data != null && !error;
 
   return (
     <Group gap="sm" wrap="nowrap">
-      <Text size="xs" c="dimmed" visibleFrom="xs">
-        {isSubmitting ? "Saving…" : hasSaved ? "Saved" : null}
+      <Text size="xs" c={error ? "red.7" : "dimmed"} visibleFrom="xs">
+        {isSubmitting ? "Saving…" : error ?? (hasSaved ? "Saved" : null)}
       </Text>
       <Button size="xs" loading={isSubmitting} onClick={handleSave}>
         Save

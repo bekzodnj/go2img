@@ -25,3 +25,9 @@ export const COLORS = [
     "#38B000",
     "#FF4D6D",
 ];
+
+// Free plan (no active Polar subscription) limits, enforced in billing.server.ts
+export const FREE_PROJECT_LIMIT = 1;
+export const FREE_IMAGES_PER_PROJECT = 1;
+
+export const PRO_PRODUCT_ID = "234888b5-f3b3-489c-814d-c3ad22e1538b";

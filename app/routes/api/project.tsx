@@ -3,8 +3,15 @@ import {
   upsertPolygons,
   addImageToProject,
   updateImage,
+  getProjectById,
 } from "~/models/project.server";
 import { requireUserIdWithRedirect } from "~/session.server";
+import {
+  getPlan,
+  IMAGE_LIMIT_MESSAGE,
+  planLimitError,
+  PROJECT_LIMIT_MESSAGE,
+} from "~/lib/billing.server";
 import { Route } from "./+types/project";
 import { type Polygon } from "~/lib/editorLogic";
 
@@ -33,6 +40,9 @@ export async function action({ request, url }: Route.ActionArgs) {
     : [];
 
   if (!projectId) {
+    if (!(await getPlan(user.id).canCreateProject())) {
+      return planLimitError(PROJECT_LIMIT_MESSAGE);
+    }
     const project = await createProject({
       userId: user.id,
       imageUrl: formData.get("imageUrl") as string,
@@ -52,6 +62,14 @@ export async function action({ request, url }: Route.ActionArgs) {
     }
     await upsertPolygons({ imageId, polygons });
     return { projectId, imageId };
+  }
+
+  const project = await getProjectById({ id: projectId, userId: user.id });
+  if (!project) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  if (!(await getPlan(user.id).canAddImages(project.images.length, 1))) {
+    return planLimitError(IMAGE_LIMIT_MESSAGE);
   }
 
   const image = await addImageToProject({
